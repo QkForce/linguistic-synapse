@@ -205,3 +205,62 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Manually added ignores
+data/
+uploads/
+videos/
+*.mp4
+*.avi
+
+# Node.js / React Native / Expo
+node_modules/
+.expo/
+.expo-shared/
+web-build/
+.android/
+.ios/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.keystore
+
+# Expo specific
+.expo/
+.expo-shared/
+
+# Android
+mobile/android/app/build/
+mobile/android/.gradle/
+mobile/android/build/
+
+# iOS
+mobile/ios/Pods/
+mobile/ios/build/
+mobile/ios/.xcworkspace/
+mobile/ios/.xcodeproj/project.xcworkspace/
+mobile/ios/.xcodeproj/xcuserdata/
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+
+# PyCharm / JetBrains
+.idea/
+
+# Logs and databases
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.cursorignore
+.cursorindexingignore
+.ruff_cache/
+.mypy_cache/
