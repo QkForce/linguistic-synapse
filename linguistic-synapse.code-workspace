@@ -1,0 +1,11 @@
+{
+  "folders": [
+    { "path": "." },
+    { "path": "parser" },
+    { "path": "mobile" },
+    { "path": "server" }
+  ],
+  "settings": {
+    "files.exclude": { "**/node_modules": true }
+  }
+}
