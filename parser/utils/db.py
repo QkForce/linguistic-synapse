@@ -72,6 +72,16 @@ def insert_lesson(conn: sqlite3.Connection, id, title, number):
     )
 
 
+def get_all_lessons(conn: sqlite3.Connection, properties: list[str] | None = None):
+    cursor = conn.cursor()
+    if properties is None:
+        cursor.execute("SELECT * FROM lessons")
+    else:
+        props_str = ", ".join(properties)
+        cursor.execute(f"SELECT {props_str} FROM lessons")
+    return cursor.fetchall()
+
+
 def get_or_create_tag(conn: sqlite3.Connection, tag_name: str) -> int:
     cursor = conn.cursor()
     cursor.execute(
