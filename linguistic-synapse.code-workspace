@@ -3,7 +3,8 @@
     { "path": "." },
     { "path": "parser" },
     { "path": "mobile" },
-    { "path": "server" }
+    { "path": "server" },
+    { "path": "generator" }
   ],
   "settings": {
     "files.exclude": { "**/node_modules": true }
