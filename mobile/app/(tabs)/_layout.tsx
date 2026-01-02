@@ -27,7 +27,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="modules"
+        name="index"
         options={{
           headerShown: false,
           title: "Tab One",
