@@ -1,13 +1,14 @@
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BackgroundSVG } from "@/components/BackgroundSVG";
 import { ParallaxFlatList } from "@/components/ParallaxFlatList";
 import { LessonItem } from "@/components/items/LessonItem";
-import { lessons } from "@/data/lessons";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { Lesson, lessonService } from "@/services/lessonService";
+// import { lessons } from "@/data/lessons";
 
 export default function ModuleDetailsScreen() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function ModuleDetailsScreen() {
   const insets = useSafeAreaInsets();
   const { moduleId } = useLocalSearchParams();
   const navigation = useNavigation();
+  const [lessons, setLessons] = useState<Lesson[]>([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -29,6 +31,11 @@ export default function ModuleDetailsScreen() {
     });
   });
 
+  useEffect(() => {
+    const data = lessonService.getAllLessons(Number(moduleId));
+    setLessons(data);
+  }, [moduleId]);
+
   return (
     <View style={[styles.container, { backgroundColor }]}>
       <BackgroundSVG />
@@ -39,7 +46,7 @@ export default function ModuleDetailsScreen() {
           renderItem={({ item }) => (
             <LessonItem
               title={item.title}
-              completed={item.completed}
+              completed={item.completed || false}
               onPress={() => {}}
             />
           )}

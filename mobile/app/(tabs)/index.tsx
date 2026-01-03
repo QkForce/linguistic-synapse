@@ -1,17 +1,25 @@
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BackgroundSVG } from "@/components/BackgroundSVG";
 import { ParallaxFlatList } from "@/components/ParallaxFlatList";
 import { ModuleItem } from "@/components/items/ModuleItem";
-import { modules } from "@/data/modules";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { Module, moduleService } from "@/services/moduleService";
+// import { modules } from "@/data/modules";
 
 export default function ModulesScreen() {
   const router = useRouter();
   const backgroundColor = useThemeColor({}, "background");
   const insets = useSafeAreaInsets();
+  const [modules, setModules] = useState<Module[]>([]);
+
+  useEffect(() => {
+    const data = moduleService.getAllModules();
+    setModules(data);
+  }, []);
 
   return (
     <View style={[styles.container, { backgroundColor }]}>
@@ -22,11 +30,11 @@ export default function ModulesScreen() {
           data={modules}
           renderItem={({ item }) => (
             <ModuleItem
-              title={item.title}
-              description={item.description}
+              title={item.title || "no title"}
+              description={item.description || "no description"}
               onPress={() => router.push(`/modules/${item.id}/`)}
-              totalLessons={item.totalLessons}
-              completedLessons={item.completedLessons}
+              totalLessons={item.totalLessons || 0}
+              completedLessons={item.completedLessons || 0}
             />
           )}
           keyExtractor={(item) => item.id.toString()}

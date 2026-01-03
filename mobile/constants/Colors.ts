@@ -17,7 +17,8 @@ export const Colors = {
     border: "rgba(0,100,255,0.2)",
     glass: "rgba(255,255,255,0.7)",
     glassLesson: "rgba(161, 62, 236, 0.3)",
-    success: "#4BB543",
+    success: "#15803D",
+    innerGlass: "rgba(255, 255, 255, 0.4)",
   },
   dark: {
     text: "#fff",
@@ -32,7 +33,8 @@ export const Colors = {
     border: "rgba(0,255,255,0.3)",
     glass: "rgba(255,255,255,0.05)",
     glassLesson: "rgba(156, 57, 231, 0.15)",
-    success: "#4BB543",
+    success: "#4ADE80",
+    innerGlass: "rgba(255, 255, 255, 0.1)",
   },
 };
 

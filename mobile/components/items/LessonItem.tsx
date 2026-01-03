@@ -54,7 +54,14 @@ export function LessonItem({ title, completed, onPress }: LessonItemProps) {
           >
             <Text style={[styles.title, { color: colors.title }]}>{title}</Text>
             {completed && (
-              <IconSymbol name="check" size={24} color={colors.success} />
+              <View
+                style={[
+                  styles.iconContainer,
+                  { backgroundColor: colors.innerGlass },
+                ]}
+              >
+                <IconSymbol name="check" size={24} color={colors.success} />
+              </View>
             )}
           </View>
         </Animated.View>
@@ -92,6 +99,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
+    flex: 1,
+    marginRight: 12,
     fontSize: 18,
     fontWeight: "700",
     color: "#00ffff",
@@ -99,26 +108,8 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 8,
   },
-  description: {
-    color: "#a0f0ff",
-    marginTop: 4,
-    fontSize: 14,
-  },
-  progressLabel: {
-    alignSelf: "flex-end",
-    color: "#a0f0ff",
-    marginTop: 12,
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  progressContainer: {
-    height: 6,
-    borderRadius: 4,
-    overflow: "hidden",
-    marginTop: 10,
-  },
-  progressBar: {
-    height: "100%",
-    borderRadius: 4,
+  iconContainer: {
+    borderRadius: 12,
+    padding: 8,
   },
 });
