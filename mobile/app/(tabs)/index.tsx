@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -8,6 +9,7 @@ import { modules } from "@/data/modules";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 export default function ModulesScreen() {
+  const router = useRouter();
   const backgroundColor = useThemeColor({}, "background");
   const insets = useSafeAreaInsets();
 
@@ -22,13 +24,12 @@ export default function ModulesScreen() {
             <ModuleItem
               title={item.title}
               description={item.description}
-              onPress={() => {}}
+              onPress={() => router.push(`/modules/${item.id}/`)}
               totalLessons={item.totalLessons}
               completedLessons={item.completedLessons}
-              // onPress={() => router.push(`/lessons/${item.id}/edit`)}
             />
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           style={styles.listContainer}
           contentContainerStyle={styles.listContentContainer}
         />

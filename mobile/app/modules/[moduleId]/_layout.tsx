@@ -1,10 +1,20 @@
 import { Stack } from "expo-router";
 
-export default function CourseLayout() {
+export default function ModuleLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{}} />
-      <Stack.Screen name="edit" options={{ title: "Edit Course" }} />
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#f4511e",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "bold",
+        },
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="index" />
     </Stack>
   );
 }

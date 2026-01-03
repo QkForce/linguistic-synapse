@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 
-export default function LessonScreen() {
+export default function ModuleLayout() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Lesson Content Goes Here</Text>
+      <Text style={styles.text}>Module Layout</Text>
     </View>
   );
 }
@@ -11,10 +11,11 @@ export default function LessonScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     fontSize: 18,
-    textAlign: "center",
-    marginTop: 20,
+    fontWeight: "bold",
   },
 });
