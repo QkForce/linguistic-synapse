@@ -9,6 +9,7 @@ CREATE TABLE
   IF NOT EXISTS modules (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
+    description TEXT,
     source_id INTEGER NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (source_id) REFERENCES sources (id) ON DELETE CASCADE

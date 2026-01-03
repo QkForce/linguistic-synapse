@@ -49,16 +49,16 @@ def insert_source(conn: sqlite3.Connection, name):
     return cursor.lastrowid
 
 
-def insert_module(conn: sqlite3.Connection, title, source_id):
+def insert_module(conn: sqlite3.Connection, source_id, title, description):
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO modules (title, source_id) VALUES (?, ?)",
-        (title, source_id),
+        "INSERT INTO modules (title, description, source_id) VALUES (?, ?, ?)",
+        (title, description, source_id),
     )
     return cursor.lastrowid
 
 
-def insert_lesson(conn: sqlite3.Connection, title, module_id):
+def insert_lesson(conn: sqlite3.Connection, module_id, title):
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO lessons (title, module_id) VALUES (?, ?)",
@@ -92,3 +92,23 @@ def insert_sentences(conn: sqlite3.Connection, data):
                     (sentence_id, lang.lower(), text.strip()),
                 )
     return last_id
+
+
+def insert_lesson_log(
+    conn: sqlite3.Connection,
+    lesson_id,
+    accuracy,
+    confidence,
+    time_efficiency,
+    final_score,
+):
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        INSERT INTO lesson_logs 
+        (lesson_id, accuracy, confidence, time_efficiency, final_score) 
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        (lesson_id, accuracy, confidence, time_efficiency, final_score),
+    )
+    return cursor.lastrowid
