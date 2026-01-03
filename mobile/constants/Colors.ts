@@ -40,4 +40,6 @@ type GradientScheme = readonly [ColorValue, ColorValue, ...ColorValue[]];
 
 export const gradients = {
   cardBorder: ["#00ffff", "#0077ff"] as GradientScheme,
+  purple: ["#a020f0", "#ff00ff"] as GradientScheme,
+  gray100: ["#4A5568", "#2D3748"] as GradientScheme,
 };
