@@ -3,47 +3,10 @@ from utils.db import (
     insert_source,
     insert_module,
     insert_lesson,
+    insert_sentences,
     insert_lesson_log,
 )
-
-MODULES = [
-    {
-        "title": "Module 1: Основы",
-        "description": "Базалық сөйлемдер мен құрылымдар",
-        "lessons": [
-            {
-                "title": "Lesson 1: Сәлемдесу және танысу",
-            },
-            {
-                "title": "Lesson 2: Өзің туралы айту",
-            },
-        ],
-    },
-    {
-        "title": "Module 2: Грамматика",
-        "description": "Күрделі шақтар мен жалғаулар",
-        "lessons": [
-            {
-                "title": "Lesson 1: Өткен шақ",
-            }
-        ],
-    },
-    {
-        "title": "Module 3: Практика",
-        "description": "Күнделікті сөйлесу үлгілері",
-        "lessons": [{"title": "Lesson 1: Дүкенде"}],
-    },
-]
-
-LESSON_LOGS = [
-    {
-        "lesson_id": 1,
-        "accuracy": 85,
-        "confidence": 90,
-        "time_efficiency": 80,
-        "final_score": 85,
-    },
-]
+from config.mock_data import MODULES, LESSON_LOGS
 
 
 def fill_mock_data():
@@ -54,7 +17,20 @@ def fill_mock_data():
                 conn, source_id, module["title"], module["description"]
             )
             for lesson in module["lessons"]:
-                insert_lesson(conn, module_id, lesson["title"])
+                lesson_id = insert_lesson(conn, module_id, lesson["title"])
+                sentence_data = [
+                    (
+                        lesson_id,
+                        sentence["number"],
+                        {
+                            "en": sentence.get("en", ""),
+                            "ru": sentence.get("ru", ""),
+                            "kk": sentence.get("kk", ""),
+                        },
+                    )
+                    for sentence in lesson["sentences"]
+                ]
+                insert_sentences(conn, sentence_data)
     with db_connection() as conn:
         for log in LESSON_LOGS:
             insert_lesson_log(
