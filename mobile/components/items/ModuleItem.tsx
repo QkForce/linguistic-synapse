@@ -1,5 +1,3 @@
-import { gradients } from "@/constants/Colors";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -8,6 +6,10 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+
+import { ProgressBar } from "@/components/ProgressBar";
+import { gradients } from "@/constants/Colors";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 interface ModuleItemProps {
   title: string;
@@ -31,7 +33,6 @@ export function ModuleItem({
     transform: [{ scale: scale.value }],
   }));
 
-  const progress = totalLessons > 0 ? completedLessons / totalLessons : 0;
   return (
     <View style={styles.cardContainer}>
       <Pressable
@@ -75,19 +76,16 @@ export function ModuleItem({
               style={[styles.progressLabel, { color: colors.description }]}
             >{`${completedLessons}/${totalLessons}`}</Text>
 
-            <View
+            <ProgressBar
+              current={completedLessons}
+              total={totalLessons}
               style={[
                 styles.progressContainer,
                 { backgroundColor: colors.progressTrack },
               ]}
-            >
-              <LinearGradient
-                colors={gradients.primaryGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={[styles.progressBar, { width: `${progress * 100}%` }]}
-              />
-            </View>
+              indicatorStyle={styles.progressIndicator}
+              indicatorGradient={gradients.primaryGradient}
+            />
           </View>
         </Animated.View>
       </Pressable>
@@ -139,7 +137,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginTop: 10,
   },
-  progressBar: {
+  progressIndicator: {
     height: "100%",
     borderRadius: 4,
   },
