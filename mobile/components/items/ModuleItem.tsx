@@ -1,3 +1,4 @@
+import { gradients } from "@/constants/Colors";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
@@ -42,7 +43,7 @@ export function ModuleItem({
         <Animated.View style={[styles.animatedWrapper, animatedStyle]}>
           {/* Neon border */}
           <LinearGradient
-            colors={["#00ffff", "#0077ff"]}
+            colors={gradients.primaryGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.borderGlow}
@@ -52,25 +53,36 @@ export function ModuleItem({
           <View
             style={[
               styles.innerGlass,
-              { borderColor: colors.border, backgroundColor: colors.glass },
+              {
+                backgroundColor: colors.itemGlass,
+                borderColor: colors.itemBorder,
+                shadowColor: colors.title,
+              },
             ]}
           >
-            <Text style={[styles.title, { color: colors.title }]}>{title}</Text>
-            <Text style={[styles.description, { color: colors.subtext }]}>
+            <Text
+              style={[
+                styles.title,
+                { color: colors.title, textShadowColor: colors.titleShadow },
+              ]}
+            >
+              {title}
+            </Text>
+            <Text style={[styles.description, { color: colors.description }]}>
               {description}
             </Text>
             <Text
-              style={[styles.progressLabel, { color: colors.subtext }]}
+              style={[styles.progressLabel, { color: colors.description }]}
             >{`${completedLessons}/${totalLessons}`}</Text>
 
             <View
               style={[
                 styles.progressContainer,
-                { backgroundColor: colors.backgroundTertiary },
+                { backgroundColor: colors.progressTrack },
               ]}
             >
               <LinearGradient
-                colors={["#00ffff", "#0077ff"]}
+                colors={gradients.primaryGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={[styles.progressBar, { width: `${progress * 100}%` }]}
@@ -98,12 +110,9 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   innerGlass: {
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderColor: "rgba(0,255,255,0.3)",
     borderWidth: 1,
     borderRadius: 16,
     padding: 16,
-    shadowColor: "#00ffff",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
@@ -111,19 +120,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#00ffff",
-    textShadowColor: "rgba(0,255,255,0.6)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 8,
   },
   description: {
-    color: "#a0f0ff",
     marginTop: 4,
     fontSize: 14,
   },
   progressLabel: {
     alignSelf: "flex-end",
-    color: "#a0f0ff",
     marginTop: 12,
     fontSize: 12,
     fontWeight: "600",

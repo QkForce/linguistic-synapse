@@ -2,9 +2,12 @@ import { StyleSheet, Text, View } from "react-native";
 
 import Button from "@/components/Button";
 import { gradients } from "@/constants/Colors";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { importSQLiteFile } from "@/utils/sqliteUtils";
 
 export default function DatabaseScreen() {
+  const colors = useThemeColor();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Настройки</Text>
@@ -17,10 +20,11 @@ export default function DatabaseScreen() {
           }
         }}
         iconName="file.download"
-        gradient={gradients.purple}
+        iconColor={colors.text}
+        gradient={gradients.actionPurple}
         buttonStyle={{ height: 48, marginBottom: 16 }}
         buttonGradientStyle={styles.importButton}
-        textStyle={styles.importButtonText}
+        textStyle={{ color: colors.text, ...styles.importButtonText }}
       />
     </View>
   );
@@ -29,7 +33,6 @@ export default function DatabaseScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 24, justifyContent: "flex-start" },
   title: { fontSize: 22, fontWeight: "bold", marginBottom: 24 },
-  path: { marginTop: 16, fontSize: 12, color: "#888" },
   importButton: {
     height: 48,
     borderRadius: 8,
@@ -37,7 +40,6 @@ const styles = StyleSheet.create({
   },
   importButtonText: {
     fontSize: 16,
-    color: "#fff",
     textAlign: "center",
   },
 });

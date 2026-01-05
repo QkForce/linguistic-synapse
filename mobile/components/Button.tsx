@@ -12,12 +12,13 @@ import {
 
 import { IconSymbol, IconSymbolName } from "@/components/ui/IconSymbol";
 import { gradients } from "@/constants/Colors";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 type ButtonProps = TouchableOpacityProps & {
   title?: string;
   iconName?: IconSymbolName;
   iconSize?: number;
-  iconColor?: string;
+  iconColor: ColorValue;
   gradient?: readonly [ColorValue, ColorValue, ...ColorValue[]];
   buttonStyle?: ViewStyle;
   buttonGradientStyle?: ViewStyle;
@@ -33,8 +34,8 @@ export default function Button({
   title,
   iconName,
   iconSize = 20,
-  iconColor = "#fff",
-  gradient = gradients.gray100,
+  iconColor,
+  gradient = gradients.disabledGray,
   buttonStyle,
   buttonGradientStyle,
   textStyle,
@@ -42,10 +43,12 @@ export default function Button({
   children,
   ...rest
 }: ButtonProps) {
+  const colors = useThemeColor();
+
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.button, buttonStyle]}
+      style={[styles.button, { shadowColor: colors.title }, buttonStyle]}
       disabled={disabled}
       {...rest}
     >
@@ -72,10 +75,8 @@ export default function Button({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#4A5568",
     borderRadius: 8,
     overflow: "hidden",
-    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
@@ -91,7 +92,6 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   buttonText: {
-    color: "#fff",
     textAlign: "center",
     fontSize: 18,
   },

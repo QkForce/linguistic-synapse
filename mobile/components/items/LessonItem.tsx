@@ -36,7 +36,7 @@ export function LessonItem({ title, completed, onPress }: LessonItemProps) {
         <Animated.View style={[styles.animatedWrapper, animatedStyle]}>
           {/* Neon border */}
           <LinearGradient
-            colors={gradients.cardBorder}
+            colors={gradients.primaryGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.borderGlow}
@@ -47,17 +47,25 @@ export function LessonItem({ title, completed, onPress }: LessonItemProps) {
             style={[
               styles.innerGlass,
               {
-                borderColor: colors.border,
-                backgroundColor: colors.glassLesson,
+                backgroundColor: colors.itemGlass,
+                borderColor: colors.itemBorder,
+                shadowColor: colors.title,
               },
             ]}
           >
-            <Text style={[styles.title, { color: colors.title }]}>{title}</Text>
+            <Text
+              style={[
+                styles.title,
+                { color: colors.title, textShadowColor: colors.titleShadow },
+              ]}
+            >
+              {title}
+            </Text>
             {completed && (
               <View
                 style={[
                   styles.iconContainer,
-                  { backgroundColor: colors.innerGlass },
+                  { backgroundColor: colors.itemInnerGlass },
                 ]}
               >
                 <IconSymbol name="check" size={24} color={colors.success} />
@@ -85,12 +93,9 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   innerGlass: {
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderColor: "rgba(0,255,255,0.3)",
     borderWidth: 1,
     borderRadius: 8,
     padding: 16,
-    shadowColor: "#00ffff",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -103,8 +108,6 @@ const styles = StyleSheet.create({
     marginRight: 12,
     fontSize: 18,
     fontWeight: "700",
-    color: "#00ffff",
-    textShadowColor: "rgba(0,255,255,0.6)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 8,
   },
