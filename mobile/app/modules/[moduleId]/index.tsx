@@ -46,8 +46,8 @@ export default function ModuleDetailsScreen() {
           renderItem={({ item }) => (
             <LessonItem
               title={item.title}
-              completed={item.completed || false}
-              onPress={() => {}}
+              completed={Boolean(item.completed)}
+              onPress={() => router.push(`/modules/${moduleId}/${item.id}/`)}
             />
           )}
           keyExtractor={(item) => item.id.toString()}
