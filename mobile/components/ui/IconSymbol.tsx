@@ -45,8 +45,6 @@ const MAPPING = {
   "error": "error",
   "success": "check-circle",
   "loading": "autorenew",
-  "close": "close",
-  "replay": "replay",
 } as const;
 
 /**
