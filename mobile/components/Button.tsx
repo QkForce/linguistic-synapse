@@ -1,98 +1,160 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
-  ColorValue,
+  ActivityIndicator,
+  Pressable,
   StyleSheet,
   Text,
-  TextStyle,
-  TouchableOpacity,
-  TouchableOpacityProps,
+  View,
   ViewStyle,
 } from "react-native";
 
 import { IconSymbol, IconSymbolName } from "@/components/ui/IconSymbol";
-import { gradients } from "@/constants/Colors";
+import { Gradient } from "@/constants/Colors";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
-type ButtonProps = TouchableOpacityProps & {
-  title?: string;
+type Variant = "primary" | "success" | "danger" | "ghost";
+
+interface ButtonProps {
+  title: string;
+  onPress: () => void;
+  variant?: Variant;
   iconName?: IconSymbolName;
-  iconSize?: number;
-  iconColor: ColorValue;
-  gradient?: readonly [ColorValue, ColorValue, ...ColorValue[]];
-  buttonStyle?: ViewStyle;
-  buttonGradientStyle?: ViewStyle;
-  textStyle?: TextStyle;
-  iconStyle?: TextStyle;
-  disabled?: Boolean;
-  children?: React.ReactNode;
-};
-
-export default function Button({
-  onPress,
-  disabled = false,
-  title,
-  iconName,
-  iconSize = 20,
-  iconColor,
-  gradient = gradients.disabledGray,
-  buttonStyle,
-  buttonGradientStyle,
-  textStyle,
-  iconStyle,
-  children,
-  ...rest
-}: ButtonProps) {
-  const colors = useThemeColor();
-
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[styles.button, { shadowColor: colors.title }, buttonStyle]}
-      disabled={disabled}
-      {...rest}
-    >
-      <LinearGradient
-        colors={gradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.gradient, buttonGradientStyle]}
-      >
-        {iconName && (
-          <IconSymbol
-            name={iconName}
-            size={iconSize}
-            color={iconColor}
-            style={[styles.icon, iconStyle]}
-          />
-        )}
-        {title && <Text style={[styles.buttonText, textStyle]}>{title}</Text>}
-        {children}
-      </LinearGradient>
-    </TouchableOpacity>
-  );
+  iconPosition?: "left" | "right";
+  disabled?: boolean;
+  loading?: boolean;
+  height?: number;
+  style?: ViewStyle;
 }
 
+export const Button = ({
+  title,
+  onPress,
+  variant = "primary",
+  iconName,
+  iconPosition = "left",
+  disabled = false,
+  loading = false,
+  height = 56,
+  style,
+}: ButtonProps) => {
+  const colors = useThemeColor();
+  const borderRadius = height * 0.3;
+  const BORDER_COLORS = {
+    primary: colors.btnPrimaryBorder,
+    success: colors.btnSuccessBorder,
+    danger: colors.btnDangerBorder,
+    ghost: colors.btnGhostBorder,
+  };
+  const GRADIENTS = {
+    primary: colors.btnPrimaryGrad,
+    success: colors.btnSuccessGrad,
+    danger: colors.btnDangerGrad,
+    ghost: colors.btnGhostGrad,
+  };
+  const CONTENT_COLORS = {
+    primary: colors.btnPrimaryContent,
+    success: colors.btnSuccessContent,
+    danger: colors.btnDangerContent,
+    ghost: colors.btnGhostContent,
+  };
+  const borderColor = BORDER_COLORS[variant];
+  const contentColor = disabled
+    ? CONTENT_COLORS.ghost
+    : CONTENT_COLORS[variant];
+
+  return (
+    <View style={[styles.container, { height }, style]}>
+      <Pressable
+        onPress={onPress}
+        disabled={disabled || loading}
+        style={({ pressed }) => [
+          styles.pressable,
+          {
+            borderRadius,
+            opacity: pressed ? 0.7 : 1,
+            borderColor: colors.btnOuterBorder,
+          },
+        ]}
+      >
+        {/* LAYER 1: Glow - Low Opacity Gradient */}
+        <LinearGradient
+          colors={GRADIENTS[variant] as unknown as Gradient}
+          style={[StyleSheet.absoluteFill, { borderRadius, opacity: 0.15 }]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+        />
+
+        {/* LAYER 2: Base Glass */}
+        <View
+          style={[
+            styles.innerFrame,
+            {
+              borderRadius,
+              borderColor: borderColor,
+              backgroundColor: colors.btnGlassBg,
+            },
+          ]}
+        >
+          {loading ? (
+            <ActivityIndicator color={contentColor} size="small" />
+          ) : (
+            <View
+              style={[
+                styles.content,
+                {
+                  flexDirection:
+                    iconPosition === "left" ? "row" : "row-reverse",
+                },
+              ]}
+            >
+              {iconName && (
+                <IconSymbol
+                  name={iconName}
+                  size={18}
+                  color={contentColor}
+                  style={
+                    iconPosition === "left"
+                      ? { marginRight: 12 }
+                      : { marginLeft: 12 }
+                  }
+                />
+              )}
+              <Text style={[styles.text, { color: contentColor }]}>
+                {title}
+              </Text>
+            </View>
+          )}
+        </View>
+      </Pressable>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-  button: {
-    borderRadius: 8,
-    overflow: "hidden",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+  container: {
+    width: "100%",
   },
-  gradient: {
+  pressable: {
     flex: 1,
-    flexDirection: "row",
+    overflow: "hidden",
+    borderWidth: 1,
+  },
+  innerFrame: {
+    flex: 1,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 8,
+    paddingHorizontal: 20,
   },
-  icon: {
-    marginRight: 8,
+  content: {
+    alignItems: "center",
+    justifyContent: "center",
   },
-  buttonText: {
-    textAlign: "center",
-    fontSize: 18,
+  text: {
+    fontSize: 14,
+    fontWeight: "800",
+    letterSpacing: 1.2,
+    textTransform: "uppercase",
   },
 });

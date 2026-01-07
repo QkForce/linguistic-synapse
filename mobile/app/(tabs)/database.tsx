@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 
-import Button from "@/components/Button";
-import { gradients } from "@/constants/Colors";
+import { Button } from "@/components/Button";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { importSQLiteFile } from "@/utils/sqliteUtils";
 
@@ -12,7 +11,7 @@ export default function DatabaseScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Настройки</Text>
       <Button
-        title="Импортировать базы данных"
+        title="Импортировать БД"
         onPress={async () => {
           const success = await importSQLiteFile();
           if (success) {
@@ -20,11 +19,8 @@ export default function DatabaseScreen() {
           }
         }}
         iconName="file.download"
-        iconColor={colors.text}
-        gradient={gradients.actionPurple}
-        buttonStyle={{ height: 48, marginBottom: 16 }}
-        buttonGradientStyle={styles.importButton}
-        textStyle={{ color: colors.text, ...styles.importButtonText }}
+        style={styles.importButton}
+        variant="primary"
       />
     </View>
   );
@@ -34,12 +30,6 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 24, justifyContent: "flex-start" },
   title: { fontSize: 22, fontWeight: "bold", marginBottom: 24 },
   importButton: {
-    height: 48,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-  },
-  importButtonText: {
-    fontSize: 16,
-    textAlign: "center",
+    marginTop: 20,
   },
 });

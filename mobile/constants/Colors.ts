@@ -1,5 +1,25 @@
 import { ColorValue } from "react-native";
 
+export type Gradient = readonly [ColorValue, ColorValue, ...ColorValue[]];
+
+const palette = {
+  cyan: "#00ffff",
+  lightCyan: "rgba(0, 255, 255, 0.15)",
+  green: "#4ADE80",
+  lightGreen: "rgba(74, 222, 128, 0.15)",
+  red: "#EF4444",
+  lightRed: "rgba(239, 68, 68, 0.15)",
+  gray: "#6B7280",
+  darkGray: "#1E293B",
+  white: "#FFFFFF",
+  whiteOpacity: "rgba(255, 255, 255, 0.5)",
+  black: "#050607",
+  blackOpacity: "rgba(0, 0, 0, 0.45)",
+  deepBlue: "#0064FF",
+  deepGreen: "#15803D",
+  deepRed: "#B91C1C",
+};
+
 export const Colors = {
   light: {
     background: "#fff",
@@ -14,6 +34,27 @@ export const Colors = {
 
     success: "#15803D",
     progressTrack: "rgba(0, 0, 0, 0.05)",
+
+    btnPrimaryBorder: palette.deepBlue,
+    btnPrimaryContent: palette.deepBlue,
+    btnPrimaryGrad: [palette.deepBlue, "transparent"] as Gradient,
+
+    btnSuccessBorder: palette.deepGreen,
+    btnSuccessContent: palette.deepGreen,
+    btnSuccessGrad: [palette.deepGreen, "transparent"] as Gradient,
+
+    btnDangerBorder: palette.deepRed,
+    btnDangerContent: palette.deepRed,
+    btnDangerGrad: [palette.deepRed, "transparent"] as Gradient,
+
+    btnGhostBorder: "rgba(0, 0, 0, 0.1)",
+    btnGhostContent: palette.blackOpacity,
+    btnGhostGrad: ["transparent", "transparent"] as Gradient,
+
+    btnDisabledContent: "#9CA3AF",
+    btnGlassBg: "rgba(0, 0, 0, 0.03)",
+    btnOuterBorder: "rgba(0, 0, 0, 0.08)",
+    btnGlowOpacity: 0.05,
   },
   dark: {
     background: "#1D1F22",
@@ -28,13 +69,32 @@ export const Colors = {
 
     success: "#4ADE80",
     progressTrack: "rgba(255, 255, 255, 0.1)",
+
+    btnPrimaryBorder: palette.cyan,
+    btnPrimaryContent: palette.cyan,
+    btnPrimaryGrad: [palette.cyan, "transparent"] as Gradient,
+
+    btnSuccessBorder: palette.green,
+    btnSuccessContent: palette.green,
+    btnSuccessGrad: [palette.green, "transparent"] as Gradient,
+
+    btnDangerBorder: palette.red,
+    btnDangerContent: palette.red,
+    btnDangerGrad: [palette.red, "transparent"] as Gradient,
+
+    btnGhostBorder: "rgba(255, 255, 255, 0.15)",
+    btnGhostContent: palette.whiteOpacity,
+    btnGhostGrad: ["transparent", "transparent"] as Gradient,
+
+    btnDisabledContent: palette.gray,
+    btnGlassBg: "rgba(255, 255, 255, 0.04)",
+    btnOuterBorder: "rgba(255, 255, 255, 0.1)",
+    btnGlowOpacity: 0.15,
   },
 };
 
-type GradientScheme = readonly [ColorValue, ColorValue, ...ColorValue[]];
-
 export const gradients = {
-  primaryGradient: ["#00ffff", "#0077ff"] as GradientScheme,
-  actionPurple: ["#a020f0", "#ff00ff"] as GradientScheme,
-  disabledGray: ["#4A5568", "#2D3748"] as GradientScheme,
+  primaryGradient: ["#00ffff", "#0077ff"] as Gradient,
+  actionPurple: ["#a020f0", "#ff00ff"] as Gradient,
+  disabledGray: ["#4A5568", "#2D3748"] as Gradient,
 };
