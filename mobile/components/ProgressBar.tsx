@@ -13,7 +13,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
-import { gradients } from "@/constants/Colors";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 interface ProgressBarProps {
@@ -29,7 +28,7 @@ export function ProgressBar({
   total,
   style,
   indicatorStyle = {},
-  indicatorGradient = gradients.primaryGradient,
+  indicatorGradient,
 }: ProgressBarProps) {
   const progress = useSharedValue(0);
   const colors = useThemeColor();

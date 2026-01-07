@@ -1,8 +1,4 @@
-import { ColorValue } from "react-native";
-
-export type Gradient = readonly [ColorValue, ColorValue, ...ColorValue[]];
-
-const palette = {
+export const palette = {
   cyan: "#00ffff",
   lightCyan: "rgba(0, 255, 255, 0.15)",
   green: "#4ADE80",
@@ -37,19 +33,15 @@ export const Colors = {
 
     btnPrimaryBorder: palette.deepBlue,
     btnPrimaryContent: palette.deepBlue,
-    btnPrimaryGrad: [palette.deepBlue, "transparent"] as Gradient,
 
     btnSuccessBorder: palette.deepGreen,
     btnSuccessContent: palette.deepGreen,
-    btnSuccessGrad: [palette.deepGreen, "transparent"] as Gradient,
 
     btnDangerBorder: palette.deepRed,
     btnDangerContent: palette.deepRed,
-    btnDangerGrad: [palette.deepRed, "transparent"] as Gradient,
 
     btnGhostBorder: "rgba(0, 0, 0, 0.1)",
     btnGhostContent: palette.blackOpacity,
-    btnGhostGrad: ["transparent", "transparent"] as Gradient,
 
     btnDisabledContent: "#9CA3AF",
     btnGlassBg: "rgba(0, 0, 0, 0.03)",
@@ -72,29 +64,19 @@ export const Colors = {
 
     btnPrimaryBorder: palette.cyan,
     btnPrimaryContent: palette.cyan,
-    btnPrimaryGrad: [palette.cyan, "transparent"] as Gradient,
 
     btnSuccessBorder: palette.green,
     btnSuccessContent: palette.green,
-    btnSuccessGrad: [palette.green, "transparent"] as Gradient,
 
     btnDangerBorder: palette.red,
     btnDangerContent: palette.red,
-    btnDangerGrad: [palette.red, "transparent"] as Gradient,
 
     btnGhostBorder: "rgba(255, 255, 255, 0.15)",
     btnGhostContent: palette.whiteOpacity,
-    btnGhostGrad: ["transparent", "transparent"] as Gradient,
 
     btnDisabledContent: palette.gray,
     btnGlassBg: "rgba(255, 255, 255, 0.04)",
     btnOuterBorder: "rgba(255, 255, 255, 0.1)",
     btnGlowOpacity: 0.15,
   },
-};
-
-export const gradients = {
-  primaryGradient: ["#00ffff", "#0077ff"] as Gradient,
-  actionPurple: ["#a020f0", "#ff00ff"] as Gradient,
-  disabledGray: ["#4A5568", "#2D3748"] as Gradient,
 };

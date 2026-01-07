@@ -8,8 +8,8 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ProgressBar } from "@/components/ProgressBar";
-import { gradients } from "@/constants/Colors";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useThemeGradient } from "@/hooks/useThemeGradient";
 
 interface ModuleItemProps {
   title: string;
@@ -27,6 +27,7 @@ export function ModuleItem({
   onPress,
 }: ModuleItemProps) {
   const colors = useThemeColor();
+  const gradColors = useThemeGradient("brand");
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -44,7 +45,7 @@ export function ModuleItem({
         <Animated.View style={[styles.animatedWrapper, animatedStyle]}>
           {/* Neon border */}
           <LinearGradient
-            colors={gradients.primaryGradient}
+            colors={gradColors}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.borderGlow}
@@ -84,7 +85,7 @@ export function ModuleItem({
                 { backgroundColor: colors.progressTrack },
               ]}
               indicatorStyle={styles.progressIndicator}
-              indicatorGradient={gradients.primaryGradient}
+              indicatorGradient={gradColors}
             />
           </View>
         </Animated.View>

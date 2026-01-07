@@ -10,8 +10,8 @@ import {
 } from "react-native";
 
 import { IconSymbol, IconSymbolName } from "@/components/ui/IconSymbol";
-import { Gradient } from "@/constants/Colors";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useThemeGradient } from "@/hooks/useThemeGradient";
 
 type Variant = "primary" | "success" | "danger" | "ghost";
 
@@ -39,18 +39,13 @@ export const Button = ({
   style,
 }: ButtonProps) => {
   const colors = useThemeColor();
+  const gradColors = useThemeGradient(variant);
   const borderRadius = height * 0.3;
   const BORDER_COLORS = {
     primary: colors.btnPrimaryBorder,
     success: colors.btnSuccessBorder,
     danger: colors.btnDangerBorder,
     ghost: colors.btnGhostBorder,
-  };
-  const GRADIENTS = {
-    primary: colors.btnPrimaryGrad,
-    success: colors.btnSuccessGrad,
-    danger: colors.btnDangerGrad,
-    ghost: colors.btnGhostGrad,
   };
   const CONTENT_COLORS = {
     primary: colors.btnPrimaryContent,
@@ -79,7 +74,7 @@ export const Button = ({
       >
         {/* LAYER 1: Glow - Low Opacity Gradient */}
         <LinearGradient
-          colors={GRADIENTS[variant] as unknown as Gradient}
+          colors={gradColors}
           style={[StyleSheet.absoluteFill, { borderRadius, opacity: 0.15 }]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
