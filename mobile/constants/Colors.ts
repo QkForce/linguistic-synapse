@@ -46,7 +46,6 @@ export const Colors = {
     btnDisabledContent: "#9CA3AF",
     btnGlassBg: "rgba(0, 0, 0, 0.03)",
     btnOuterBorder: "rgba(0, 0, 0, 0.08)",
-    btnGlowOpacity: 0.05,
   },
   dark: {
     background: "#1D1F22",
@@ -77,6 +76,5 @@ export const Colors = {
     btnDisabledContent: palette.gray,
     btnGlassBg: "rgba(255, 255, 255, 0.04)",
     btnOuterBorder: "rgba(255, 255, 255, 0.1)",
-    btnGlowOpacity: 0.15,
   },
 };

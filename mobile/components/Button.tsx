@@ -12,6 +12,7 @@ import {
 import { IconSymbol, IconSymbolName } from "@/components/ui/IconSymbol";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
+import { useThemeTokens } from "@/hooks/useThemeTokens";
 
 type Variant = "primary" | "success" | "danger" | "ghost";
 
@@ -40,6 +41,7 @@ export const Button = ({
 }: ButtonProps) => {
   const colors = useThemeColor();
   const gradColors = useThemeGradient(variant);
+  const tokens = useThemeTokens();
   const borderRadius = height * 0.3;
   const BORDER_COLORS = {
     primary: colors.btnPrimaryBorder,
@@ -67,15 +69,19 @@ export const Button = ({
           styles.pressable,
           {
             borderRadius,
-            opacity: pressed ? 0.7 : 1,
+            opacity: pressed ? tokens.pressOpacity : 1,
             borderColor: colors.btnOuterBorder,
+            borderWidth: tokens.btnOuterBorderWidth,
           },
         ]}
       >
         {/* LAYER 1: Glow - Low Opacity Gradient */}
         <LinearGradient
           colors={gradColors}
-          style={[StyleSheet.absoluteFill, { borderRadius, opacity: 0.15 }]}
+          style={[
+            StyleSheet.absoluteFill,
+            { borderRadius, opacity: tokens.btnGlowOpacity },
+          ]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
         />
