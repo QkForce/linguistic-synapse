@@ -3,8 +3,10 @@ import React from "react";
 import {
   ActivityIndicator,
   Pressable,
+  StyleProp,
   StyleSheet,
   Text,
+  TextStyle,
   View,
   ViewStyle,
 } from "react-native";
@@ -22,10 +24,12 @@ interface ButtonProps {
   variant?: Variant;
   iconName?: IconSymbolName;
   iconPosition?: "left" | "right";
+  iconSize?: number;
+  iconStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
   loading?: boolean;
   height?: number;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const Button = ({
@@ -34,6 +38,8 @@ export const Button = ({
   variant = "primary",
   iconName,
   iconPosition = "left",
+  iconSize = 24,
+  iconStyle,
   disabled = false,
   loading = false,
   height = 56,
@@ -59,6 +65,9 @@ export const Button = ({
   const contentColor = disabled
     ? CONTENT_COLORS.ghost
     : CONTENT_COLORS[variant];
+  const flatStyle = StyleSheet.flatten(style) as TextStyle;
+  const fontSize = flatStyle?.fontSize || 16;
+  const fontWeight = flatStyle?.fontWeight || "600";
 
   return (
     <View style={[styles.container, { height }, style]}>
@@ -112,16 +121,17 @@ export const Button = ({
               {iconName && (
                 <IconSymbol
                   name={iconName}
-                  size={18}
+                  size={iconSize}
                   color={contentColor}
-                  style={
-                    iconPosition === "left"
-                      ? { marginRight: 12 }
-                      : { marginLeft: 12 }
-                  }
+                  style={iconStyle}
                 />
               )}
-              <Text style={[styles.text, { color: contentColor }]}>
+              <Text
+                style={[
+                  styles.text,
+                  { color: contentColor, fontSize, fontWeight },
+                ]}
+              >
                 {title}
               </Text>
             </View>
