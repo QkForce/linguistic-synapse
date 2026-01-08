@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "@/components/Button";
@@ -40,11 +49,12 @@ export default function LessonScreen() {
   };
 
   return (
-    <View
+    <KeyboardAvoidingView
       style={[
         styles.container,
         { paddingTop: insets.top + 16, backgroundColor: colors.background },
       ]}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ProgressBar
         current={state.currentSentenceIndex}
@@ -80,91 +90,99 @@ export default function LessonScreen() {
         {state.lessonTitle}
       </Text>
 
-      <View
-        style={[
-          styles.cardContainer,
-          { borderColor: colors.itemBorder, backgroundColor: colors.itemGlass },
-        ]}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
       >
-        <Text style={[styles.nativeText, { color: colors.title }]}>
-          {state.currentNativeSentence}
-        </Text>
-        <Pressable
+        <View
           style={[
-            styles.voiceButton,
+            styles.cardContainer,
             {
-              backgroundColor: colors.itemInnerGlass,
               borderColor: colors.itemBorder,
+              backgroundColor: colors.itemGlass,
             },
           ]}
         >
-          <IconSymbol
-            name="volume-up"
-            color={colors.title}
-            style={styles.volumeIcon}
-            size={30}
+          <Text style={[styles.nativeText, { color: colors.title }]}>
+            {state.currentNativeSentence}
+          </Text>
+          <Pressable
+            style={[
+              styles.voiceButton,
+              {
+                backgroundColor: colors.itemInnerGlass,
+                borderColor: colors.itemBorder,
+              },
+            ]}
+          >
+            <IconSymbol
+              name="volume-up"
+              color={colors.title}
+              style={styles.volumeIcon}
+              size={30}
+            />
+          </Pressable>
+        </View>
+
+        <Text style={[styles.inputLabel, { color: colors.label }]}>
+          Enter the translation:
+        </Text>
+        <TextInput
+          onChangeText={(text) =>
+            setState((prev) => ({ ...prev, translation: text }))
+          }
+          value={state.translation}
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              borderColor: colors.itemBorder,
+              backgroundColor: colors.itemInnerGlass,
+            },
+          ]}
+          multiline={true}
+          placeholder="Type translationhere…"
+          placeholderTextColor={colors.placeholder}
+        />
+
+        <View style={styles.assessmentControls}>
+          <Button
+            title="unsure"
+            variant={state.confidence === "unsure" ? "danger" : "ghost"}
+            onPress={() => toggleConfidence("unsure")}
+            height={40}
+            style={{ marginRight: 20, ...styles.assessmentButton }}
+            iconName="close"
+            iconSize={18}
+            iconStyle={styles.assessmentButtonIcon}
           />
-        </Pressable>
-      </View>
-
-      <Text style={[styles.inputLabel, { color: colors.label }]}>
-        Enter the translation:
-      </Text>
-      <TextInput
-        onChangeText={(text) =>
-          setState((prev) => ({ ...prev, translation: text }))
-        }
-        value={state.translation}
-        style={[
-          styles.input,
-          {
-            color: colors.text,
-            borderColor: colors.itemBorder,
-            backgroundColor: colors.itemInnerGlass,
-          },
-        ]}
-        multiline={true}
-        placeholder="Type translationhere…"
-        placeholderTextColor={colors.placeholder}
-      />
-
-      <View style={styles.assessmentControls}>
+          <Button
+            title="sure"
+            variant={state.confidence === "sure" ? "success" : "ghost"}
+            onPress={() => toggleConfidence("sure")}
+            height={40}
+            style={styles.assessmentButton}
+            iconName="check"
+            iconSize={18}
+            iconStyle={styles.assessmentButtonIcon}
+          />
+        </View>
         <Button
-          title="unsure"
-          variant={state.confidence === "unsure" ? "danger" : "ghost"}
-          onPress={() => toggleConfidence("unsure")}
-          height={40}
-          style={{ marginRight: 20, ...styles.assessmentButton }}
-          iconName="close"
-          iconSize={18}
-          iconStyle={styles.assessmentButtonIcon}
+          title="next"
+          variant={
+            state.translation.trim() && state.confidence ? "primary" : "ghost"
+          }
+          disabled={!state.translation.trim() || !state.confidence}
+          onPress={() => {}}
+          style={styles.nextButton}
+          height={65}
+          iconName="chevron.right"
+          iconPosition="right"
+          iconSize={28}
+          iconStyle={styles.nextButtonIcon}
         />
-        <Button
-          title="sure"
-          variant={state.confidence === "sure" ? "success" : "ghost"}
-          onPress={() => toggleConfidence("sure")}
-          height={40}
-          style={styles.assessmentButton}
-          iconName="check"
-          iconSize={18}
-          iconStyle={styles.assessmentButtonIcon}
-        />
-      </View>
-      <Button
-        title="next"
-        variant={
-          state.translation.trim() && state.confidence ? "primary" : "ghost"
-        }
-        disabled={!state.translation.trim() || !state.confidence}
-        onPress={() => {}}
-        style={styles.nextButton}
-        height={65}
-        iconName="chevron.right"
-        iconPosition="right"
-        iconSize={28}
-        iconStyle={styles.nextButtonIcon}
-      />
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
