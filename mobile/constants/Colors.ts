@@ -31,6 +31,9 @@ export const Colors = {
     success: "#15803D",
     progressTrack: "rgba(0, 0, 0, 0.05)",
 
+    label: palette.blackOpacity,
+    placeholder: palette.blackOpacity,
+
     btnPrimaryBorder: palette.deepBlue,
     btnPrimaryContent: palette.deepBlue,
 
@@ -60,6 +63,9 @@ export const Colors = {
 
     success: "#4ADE80",
     progressTrack: "rgba(255, 255, 255, 0.1)",
+
+    label: palette.whiteOpacity,
+    placeholder: palette.whiteOpacity,
 
     btnPrimaryBorder: palette.cyan,
     btnPrimaryContent: palette.cyan,
