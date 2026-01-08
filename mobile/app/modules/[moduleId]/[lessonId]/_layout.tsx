@@ -7,7 +7,7 @@ export default function LessonLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen options={{}} />
+      <Stack.Screen name="index" options={{}} />
     </Stack>
   );
 }
