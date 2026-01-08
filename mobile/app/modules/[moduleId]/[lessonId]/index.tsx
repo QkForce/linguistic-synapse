@@ -1,3 +1,4 @@
+import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -14,7 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "@/components/Button";
 import { ProgressBar } from "@/components/ProgressBar";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
 
 interface ExerciseState {
@@ -31,6 +32,7 @@ export default function LessonScreen() {
   const insets = useSafeAreaInsets();
   const gradColors = useThemeGradient("brand");
   const colors = useThemeColor();
+  const theme = useCurrentTheme();
   const [state, setState] = useState<ExerciseState>({
     lessonTitle: "Lesson 1: Begining",
     currentNativeSentence: "Мен бүгін жұмысқа барамын!",
@@ -56,6 +58,7 @@ export default function LessonScreen() {
       ]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
+      <StatusBar style={theme} />
       <ProgressBar
         current={state.currentSentenceIndex}
         total={state.totalSentences}

@@ -24,3 +24,8 @@ export function useThemeColor(
   // Новый стиль: вернуть все цвета
   return Colors[theme];
 }
+
+export function useCurrentTheme() {
+  const theme = useColorScheme() ?? "light";
+  return theme;
+}
