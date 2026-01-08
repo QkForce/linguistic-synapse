@@ -136,6 +136,8 @@ export default function LessonScreen() {
           height={40}
           style={{ marginRight: 20, ...styles.assessmentButton }}
           iconName="close"
+          iconSize={18}
+          iconStyle={styles.assessmentButtonIcon}
         />
         <Button
           title="sure"
@@ -144,6 +146,8 @@ export default function LessonScreen() {
           height={40}
           style={styles.assessmentButton}
           iconName="check"
+          iconSize={18}
+          iconStyle={styles.assessmentButtonIcon}
         />
       </View>
       <Button
@@ -154,6 +158,8 @@ export default function LessonScreen() {
         height={65}
         iconName="chevron.right"
         iconPosition="right"
+        iconSize={28}
+        iconStyle={styles.nextButtonIcon}
       />
     </View>
   );
@@ -248,11 +254,20 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     marginTop: 20,
     flex: 1,
+    fontSize: 14,
   },
   assessmentButton: {
     flex: 1,
   },
+  assessmentButtonIcon: {
+    marginRight: 5,
+  },
   nextButton: {
     marginVertical: 30,
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  nextButtonIcon: {
+    marginLeft: 2,
   },
 });
