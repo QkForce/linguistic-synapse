@@ -57,6 +57,7 @@ export default function LessonScreen() {
         { paddingTop: insets.top + 16, backgroundColor: colors.background },
       ]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "android" ? -insets.top : 0}
     >
       <StatusBar style={theme} />
       <ProgressBar
