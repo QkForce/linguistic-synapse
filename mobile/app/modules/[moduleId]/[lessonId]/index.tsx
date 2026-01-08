@@ -152,7 +152,10 @@ export default function LessonScreen() {
       </View>
       <Button
         title="next"
-        variant="primary"
+        variant={
+          state.translation.trim() && state.confidence ? "primary" : "ghost"
+        }
+        disabled={!state.translation.trim() || !state.confidence}
         onPress={() => {}}
         style={styles.nextButton}
         height={65}
