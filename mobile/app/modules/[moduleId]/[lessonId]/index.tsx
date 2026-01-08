@@ -8,18 +8,36 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
 
+interface ExerciseState {
+  lessonTitle: string;
+  currentNativeSentence: string;
+  currentSentenceIndex: number;
+  totalSentences: number;
+  timeString: string;
+  translation: string;
+  confidence: "sure" | "unsure" | null;
+}
+
 export default function LessonScreen() {
   const insets = useSafeAreaInsets();
   const gradColors = useThemeGradient("brand");
   const colors = useThemeColor();
-  const [state, setState] = useState({
+  const [state, setState] = useState<ExerciseState>({
     lessonTitle: "Lesson 1: Begining",
     currentNativeSentence: "Мен бүгін жұмысқа барамын!",
     currentSentenceIndex: 3,
     totalSentences: 35,
-    timeSting: "00:05",
+    timeString: "00:05",
     translation: "",
+    confidence: null,
   });
+
+  const toggleConfidence = (value: "sure" | "unsure") => {
+    setState((prev) => ({
+      ...prev,
+      confidence: value,
+    }));
+  };
 
   return (
     <View
@@ -51,7 +69,7 @@ export default function LessonScreen() {
             size={18}
           />
           <Text style={[styles.timeText, { color: colors.text }]}>
-            {state.timeSting}
+            {state.timeString}
           </Text>
         </View>
         <Text
@@ -113,16 +131,16 @@ export default function LessonScreen() {
       <View style={styles.assessmentControls}>
         <Button
           title="unsure"
-          variant="danger"
-          onPress={() => {}}
+          variant={state.confidence === "unsure" ? "danger" : "ghost"}
+          onPress={() => toggleConfidence("unsure")}
           height={40}
           style={{ marginRight: 20, ...styles.assessmentButton }}
           iconName="close"
         />
         <Button
           title="sure"
-          variant="success"
-          onPress={() => {}}
+          variant={state.confidence === "sure" ? "success" : "ghost"}
+          onPress={() => toggleConfidence("sure")}
           height={40}
           style={styles.assessmentButton}
           iconName="check"
