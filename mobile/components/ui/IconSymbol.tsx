@@ -48,6 +48,8 @@ const MAPPING = {
   "close": "close",
   "access-time": "access-time",
   "volume-up": "volume-up",
+  "database": "storage",
+  "search-off": "search-off",
 } as const;
 
 /**
