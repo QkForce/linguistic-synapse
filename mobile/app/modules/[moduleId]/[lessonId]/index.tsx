@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -17,12 +17,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "@/components/Button";
 import { ProgressBar } from "@/components/ProgressBar";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { sentences } from "@/data/sentences";
 import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { useTimer } from "@/hooks/useTimer";
 
 interface ExerciseState {
   lessonTitle: string;
+  sentences: Object[];
   currentNativeSentence: string;
   currentSentenceIndex: number;
   totalSentences: number;
@@ -38,13 +40,27 @@ export default function LessonScreen() {
   const router = useRouter();
   const { timeString } = useTimer(true);
   const [state, setState] = useState<ExerciseState>({
-    lessonTitle: "Lesson 1: Begining",
-    currentNativeSentence: "Мен бүгін жұмысқа барамын!",
-    currentSentenceIndex: 3,
-    totalSentences: 35,
+    lessonTitle: "",
+    sentences: [],
+    currentNativeSentence: "",
+    currentSentenceIndex: 0,
+    totalSentences: 0,
     translation: "",
     confidence: null,
   });
+
+  useEffect(() => {
+    setState((prev) => ({
+      ...prev,
+      lessonTitle: "Lesson 1: Begining",
+      sentences: sentences,
+      currentNativeSentence: sentences[0].native,
+      currentSentenceIndex: 0,
+      totalSentences: sentences.length,
+      translation: "",
+      confidence: null,
+    }));
+  }, [sentences]);
 
   const toggleConfidence = (value: "sure" | "unsure") => {
     setState((prev) => ({
@@ -62,6 +78,21 @@ export default function LessonScreen() {
         { text: "Quit", style: "destructive", onPress: () => router.back() },
       ]
     );
+  };
+
+  const handleNext = () => {
+    const nextIndex = state.currentSentenceIndex + 1;
+    if (nextIndex < sentences.length) {
+      setState((prev) => ({
+        ...prev,
+        currentSentenceIndex: nextIndex,
+        currentNativeSentence: sentences[nextIndex].native,
+        translation: "",
+        confidence: null,
+      }));
+    } else {
+      Alert.alert("Congratulations!", "You finished the whole sentences.");
+    }
   };
 
   return (
@@ -191,7 +222,7 @@ export default function LessonScreen() {
             state.translation.trim() && state.confidence ? "primary" : "ghost"
           }
           disabled={!state.translation.trim() || !state.confidence}
-          onPress={() => {}}
+          onPress={handleNext}
           style={styles.nextButton}
           height={65}
           iconName="chevron.right"
