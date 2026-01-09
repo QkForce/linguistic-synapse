@@ -19,13 +19,13 @@ import { ProgressBar } from "@/components/ProgressBar";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
+import { useTimer } from "@/hooks/useTimer";
 
 interface ExerciseState {
   lessonTitle: string;
   currentNativeSentence: string;
   currentSentenceIndex: number;
   totalSentences: number;
-  timeString: string;
   translation: string;
   confidence: "sure" | "unsure" | null;
 }
@@ -36,12 +36,12 @@ export default function LessonScreen() {
   const colors = useThemeColor();
   const theme = useCurrentTheme();
   const router = useRouter();
+  const { timeString } = useTimer(true);
   const [state, setState] = useState<ExerciseState>({
     lessonTitle: "Lesson 1: Begining",
     currentNativeSentence: "Мен бүгін жұмысқа барамын!",
     currentSentenceIndex: 3,
     totalSentences: 35,
-    timeString: "00:05",
     translation: "",
     confidence: null,
   });
@@ -97,7 +97,7 @@ export default function LessonScreen() {
             size={18}
           />
           <Text style={[styles.timeText, { color: colors.text }]}>
-            {state.timeString}
+            {timeString}
           </Text>
         </View>
         <Text
