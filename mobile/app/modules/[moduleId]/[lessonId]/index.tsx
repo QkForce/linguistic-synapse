@@ -1,6 +1,8 @@
+import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -33,6 +35,7 @@ export default function LessonScreen() {
   const gradColors = useThemeGradient("brand");
   const colors = useThemeColor();
   const theme = useCurrentTheme();
+  const router = useRouter();
   const [state, setState] = useState<ExerciseState>({
     lessonTitle: "Lesson 1: Begining",
     currentNativeSentence: "Мен бүгін жұмысқа барамын!",
@@ -48,6 +51,17 @@ export default function LessonScreen() {
       ...prev,
       confidence: value,
     }));
+  };
+
+  const handleClose = () => {
+    Alert.alert(
+      "Stop training",
+      "Are you sure you want to quit? Progress will not be saved.",
+      [
+        { text: "Stay", style: "cancel" },
+        { text: "Quit", style: "destructive", onPress: () => router.back() },
+      ]
+    );
   };
 
   return (
@@ -68,7 +82,7 @@ export default function LessonScreen() {
       />
 
       <View style={styles.header}>
-        <Pressable onPress={() => {}} style={styles.closeButton}>
+        <Pressable onPress={handleClose} style={styles.closeButton}>
           <IconSymbol
             color={colors.title}
             name="close"
