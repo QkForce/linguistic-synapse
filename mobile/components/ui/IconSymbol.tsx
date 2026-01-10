@@ -50,6 +50,7 @@ const MAPPING = {
   "volume-up": "volume-up",
   "database": "storage",
   "search-off": "search-off",
+  "hourglass-bottom": "hourglass-bottom",
 } as const;
 
 /**
