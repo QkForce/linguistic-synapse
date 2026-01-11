@@ -29,6 +29,8 @@ export const Colors = {
     itemInnerGlass: "rgba(255, 255, 255, 0.4)",
 
     success: "#15803D",
+    error: palette.deepRed,
+    errorBackground: palette.lightRed,
     progressTrack: "rgba(0, 0, 0, 0.05)",
 
     label: palette.blackOpacity,
@@ -62,6 +64,8 @@ export const Colors = {
     itemInnerGlass: "rgba(255, 255, 255, 0.1)",
 
     success: "#4ADE80",
+    error: palette.red,
+    errorBackground: palette.lightRed,
     progressTrack: "rgba(255, 255, 255, 0.1)",
 
     label: palette.whiteOpacity,

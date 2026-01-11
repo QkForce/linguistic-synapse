@@ -51,6 +51,8 @@ const MAPPING = {
   "database": "storage",
   "search-off": "search-off",
   "hourglass-bottom": "hourglass-bottom",
+  "replay": "replay",
+  "warning-amber": "warning-amber",
 } as const;
 
 /**
