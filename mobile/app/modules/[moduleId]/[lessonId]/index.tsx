@@ -16,6 +16,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "@/components/Button";
 import { ProgressBar } from "@/components/ProgressBar";
+import { EmptyState } from "@/components/states/EmptyState";
+import { ErrorState } from "@/components/states/ErrorState";
+import { LoadingState } from "@/components/states/LoadingState";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { sentences } from "@/data/sentences";
 import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
@@ -32,6 +35,8 @@ interface ExerciseState {
   confidence: "sure" | "unsure" | null;
 }
 
+type ScreenStatus = "loading" | "success" | "error" | "empty";
+
 export default function LessonScreen() {
   const insets = useSafeAreaInsets();
   const gradColors = useThemeGradient("brand");
@@ -39,6 +44,7 @@ export default function LessonScreen() {
   const theme = useCurrentTheme();
   const router = useRouter();
   const { timeString } = useTimer(true);
+  const [status, setStatus] = useState<ScreenStatus>("loading");
   const [state, setState] = useState<ExerciseState>({
     lessonTitle: "",
     sentences: [],
@@ -50,17 +56,30 @@ export default function LessonScreen() {
   });
 
   useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      lessonTitle: "Lesson 1: Begining",
-      sentences: sentences,
-      currentNativeSentence: sentences[0].native,
-      currentSentenceIndex: 0,
-      totalSentences: sentences.length,
-      translation: "",
-      confidence: null,
-    }));
-  }, [sentences]);
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setStatus("loading");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (!sentences || sentences.length === 0) {
+        setStatus("empty");
+        return;
+      }
+      setState((prev) => ({
+        ...prev,
+        lessonTitle: "Lesson 1: Beginning",
+        sentences: sentences,
+        currentNativeSentence: sentences[0].native,
+        currentSentenceIndex: 0,
+        totalSentences: sentences.length,
+      }));
+      setStatus("success");
+    } catch (e) {
+      setStatus("error");
+    }
+  };
 
   const toggleConfidence = (value: "sure" | "unsure") => {
     setState((prev) => ({
@@ -82,7 +101,7 @@ export default function LessonScreen() {
 
   const handleNext = () => {
     const nextIndex = state.currentSentenceIndex + 1;
-    if (nextIndex < sentences.length) {
+    if (nextIndex < state.sentences.length) {
       setState((prev) => ({
         ...prev,
         currentSentenceIndex: nextIndex,
@@ -94,6 +113,30 @@ export default function LessonScreen() {
       Alert.alert("Congratulations!", "You finished the whole sentences.");
     }
   };
+
+  if (status === "loading")
+    return (
+      <LoadingState title="Loading" description="Data is being retrieved." />
+    );
+
+  if (status === "error")
+    return (
+      <ErrorState
+        title="Error"
+        description="An erroroccurred"
+        onPressRetry={loadData}
+        onPressClose={() => router.back()}
+      />
+    );
+
+  if (status === "empty")
+    return (
+      <EmptyState
+        title="Data not found"
+        description="Currently, lessons for this section are not in the database or have not been loaded."
+        onPressClose={() => router.back()}
+      />
+    );
 
   return (
     <KeyboardAvoidingView
@@ -235,7 +278,7 @@ export default function LessonScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
