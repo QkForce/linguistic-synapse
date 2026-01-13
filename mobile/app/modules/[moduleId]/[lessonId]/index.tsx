@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import {
@@ -20,14 +20,14 @@ import { EmptyState } from "@/components/states/EmptyState";
 import { ErrorState } from "@/components/states/ErrorState";
 import { LoadingState } from "@/components/states/LoadingState";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { sentences } from "@/data/sentences";
 import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { useTimer } from "@/hooks/useTimer";
+import { Exercise, lessonService } from "@/services/lessonService";
 
 interface ExerciseState {
   lessonTitle: string;
-  sentences: Object[];
+  sentences: Exercise[];
   currentNativeSentence: string;
   currentSentenceIndex: number;
   totalSentences: number;
@@ -38,6 +38,7 @@ interface ExerciseState {
 type ScreenStatus = "loading" | "success" | "error" | "empty";
 
 export default function LessonScreen() {
+  const { lessonId } = useLocalSearchParams();
   const insets = useSafeAreaInsets();
   const gradColors = useThemeGradient("brand");
   const colors = useThemeColor();
@@ -63,17 +64,22 @@ export default function LessonScreen() {
     try {
       setStatus("loading");
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      if (!sentences || sentences.length === 0) {
+      const data = lessonService.getExercisesByLessonId(
+        Number(lessonId),
+        "kk",
+        "en"
+      );
+      if (!data || data.length === 0) {
         setStatus("empty");
         return;
       }
       setState((prev) => ({
         ...prev,
         lessonTitle: "Lesson 1: Beginning",
-        sentences: sentences,
-        currentNativeSentence: sentences[0].native,
+        sentences: data,
+        currentNativeSentence: data[0].native_text,
         currentSentenceIndex: 0,
-        totalSentences: sentences.length,
+        totalSentences: data.length,
       }));
       setStatus("success");
     } catch (e) {
@@ -105,7 +111,7 @@ export default function LessonScreen() {
       setState((prev) => ({
         ...prev,
         currentSentenceIndex: nextIndex,
-        currentNativeSentence: sentences[nextIndex].native,
+        currentNativeSentence: state.sentences[nextIndex].native_text,
         translation: "",
         confidence: null,
       }));

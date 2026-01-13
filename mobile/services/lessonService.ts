@@ -6,6 +6,14 @@ export interface Lesson {
   completed: number;
 }
 
+export interface Exercise {
+  id: number;
+  lesson_id: number;
+  number: number;
+  native_text: string;
+  target_text: string;
+}
+
 export const lessonService = {
   getAllLessons: (moduleId: number): Lesson[] => {
     return db.getAllSync<Lesson>(
@@ -20,5 +28,25 @@ export const lessonService = {
   },
   getLessonById: (id: number): Lesson | null => {
     return db.getFirstSync<Lesson>("SELECT * FROM lessons WHERE id = ?", [id]);
+  },
+  getExercisesByLessonId: (
+    lessonId: number,
+    nativeLang: string = "kk",
+    targetLang: string = "en"
+  ): Exercise[] => {
+    return db.getAllSync<Exercise>(
+      `SELECT 
+        s.id, 
+        s.lesson_id, 
+        s.number,
+        st_native.text as native_text,
+        st_target.text as target_text
+      FROM sentences s
+      JOIN sentence_translations st_native ON s.id = st_native.sentence_id AND st_native.lang = ?
+      JOIN sentence_translations st_target ON s.id = st_target.sentence_id AND st_target.lang = ?
+      WHERE s.lesson_id = ?
+      ORDER BY s.number ASC`,
+      [nativeLang, targetLang, lessonId]
+    );
   },
 };
