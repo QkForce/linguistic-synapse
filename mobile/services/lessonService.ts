@@ -8,7 +8,7 @@ export interface Lesson {
 
 export interface Exercise {
   id: number;
-  lesson_id: number;
+  lesson_title: string;
   number: number;
   native_text: string;
   target_text: string;
@@ -36,12 +36,13 @@ export const lessonService = {
   ): Exercise[] => {
     return db.getAllSync<Exercise>(
       `SELECT 
-        s.id, 
-        s.lesson_id, 
+        s.id,
+        l.title as lesson_title,
         s.number,
         st_native.text as native_text,
         st_target.text as target_text
       FROM sentences s
+      JOIN lessons l ON s.lesson_id = l.id
       JOIN sentence_translations st_native ON s.id = st_native.sentence_id AND st_native.lang = ?
       JOIN sentence_translations st_target ON s.id = st_target.sentence_id AND st_target.lang = ?
       WHERE s.lesson_id = ?

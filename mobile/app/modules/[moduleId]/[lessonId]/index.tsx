@@ -75,7 +75,7 @@ export default function LessonScreen() {
       }
       setState((prev) => ({
         ...prev,
-        lessonTitle: "Lesson 1: Beginning",
+        lessonTitle: data[0].lesson_title,
         sentences: data,
         currentNativeSentence: data[0].native_text,
         currentSentenceIndex: 0,
