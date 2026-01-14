@@ -61,11 +61,14 @@ CREATE TABLE
   IF NOT EXISTS lesson_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     lesson_id INTEGER NOT NULL,
+    total_time_ms INTEGER,
+    ideal_time_ms INTEGER,
     accuracy REAL,
     confidence REAL,
     time_efficiency REAL,
+    time_overuse_ms REAL,
     final_score REAL,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (lesson_id) REFERENCES lessons (id)
   );
 
@@ -77,9 +80,10 @@ CREATE TABLE
     native_text TEXT,
     target_text TEXT,
     response_text TEXT,
-    accuracy_score REAL,
-    response_time REAL,
+    accuracy REAL,
     confidence REAL,
+    response_time_ms INTEGER,
+    ideal_time_ms INTEGER,
     FOREIGN KEY (lesson_log_id) REFERENCES lesson_logs (id),
     FOREIGN KEY (sentence_id) REFERENCES sentences (id)
   );
@@ -96,6 +100,6 @@ CREATE INDEX IF NOT EXISTS idx_translations_sentence ON sentence_translations (s
 
 CREATE INDEX IF NOT EXISTS idx_translations_lang ON sentence_translations (lang);
 
-CREATE INDEX IF NOT EXISTS idx_lesson_logs_timestamp ON lesson_logs (timestamp);
+CREATE INDEX IF NOT EXISTS idx_lesson_logs_created_at ON lesson_logs (created_at);
 
 CREATE INDEX IF NOT EXISTS idx_sentence_logs_lesson_log ON sentence_logs (lesson_log_id);
