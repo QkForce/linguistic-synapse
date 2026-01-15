@@ -61,6 +61,8 @@ CREATE TABLE
   IF NOT EXISTS lesson_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     lesson_id INTEGER NOT NULL,
+    native_lang TEXT,
+    target_lang TEXT,
     total_time_ms INTEGER,
     ideal_time_ms INTEGER,
     accuracy REAL,
