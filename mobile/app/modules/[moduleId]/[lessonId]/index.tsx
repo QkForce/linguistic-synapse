@@ -24,7 +24,8 @@ import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { useTimer } from "@/hooks/useTimer";
 import { lessonService } from "@/services/lessonService";
-import { Exercise } from "@/types/lesson";
+import { Exercise, SentenceResult } from "@/types/lesson";
+import { calculateLessonStats, prepareSentenceResult } from "@/utils/scoring";
 
 interface ExerciseState {
   lessonTitle: string;
@@ -34,6 +35,8 @@ interface ExerciseState {
   totalSentences: number;
   translation: string;
   confidence: "sure" | "unsure" | null;
+  startTime: number;
+  results: SentenceResult[];
 }
 
 type ScreenStatus = "loading" | "success" | "error" | "empty";
@@ -47,6 +50,8 @@ export default function LessonScreen() {
   const router = useRouter();
   const { timeString } = useTimer(true);
   const [status, setStatus] = useState<ScreenStatus>("loading");
+  const [nativeLang, setNativeLang] = useState("kk");
+  const [targetLang, setTargetLang] = useState("en");
   const [state, setState] = useState<ExerciseState>({
     lessonTitle: "",
     sentences: [],
@@ -55,6 +60,8 @@ export default function LessonScreen() {
     totalSentences: 0,
     translation: "",
     confidence: null,
+    startTime: Date.now(),
+    results: [],
   });
 
   useEffect(() => {
@@ -67,8 +74,8 @@ export default function LessonScreen() {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       const data = lessonService.getExercisesByLessonId(
         Number(lessonId),
-        "kk",
-        "en"
+        nativeLang,
+        targetLang
       );
       if (!data || data.length === 0) {
         setStatus("empty");
@@ -107,7 +114,21 @@ export default function LessonScreen() {
   };
 
   const handleNext = () => {
+    const endTime = Date.now();
+    const currentEx = state.sentences[state.currentSentenceIndex];
+    const currentResult = prepareSentenceResult(
+      currentEx.id,
+      currentEx.native_text,
+      currentEx.target_text,
+      state.translation,
+      state.confidence === "sure" ? 1.0 : 0.5,
+      endTime - state.startTime,
+      targetLang
+    );
+
+    const updatedResults = [...state.results, currentResult];
     const nextIndex = state.currentSentenceIndex + 1;
+
     if (nextIndex < state.sentences.length) {
       setState((prev) => ({
         ...prev,
@@ -115,9 +136,31 @@ export default function LessonScreen() {
         currentNativeSentence: state.sentences[nextIndex].native_text,
         translation: "",
         confidence: null,
+        startTime: Date.now(),
+        results: updatedResults,
       }));
     } else {
-      Alert.alert("Congratulations!", "You finished the whole sentences.");
+      finishLesson(updatedResults);
+    }
+  };
+
+  const finishLesson = (finalResults: SentenceResult[]) => {
+    try {
+      const stats = calculateLessonStats(finalResults);
+      lessonService.saveLessonResults(
+        Number(lessonId),
+        {
+          ...stats,
+          native_lang: nativeLang,
+          target_lang: targetLang,
+        },
+        finalResults
+      );
+      Alert.alert("Керемет!", "Жаттығу аяқталды, нәтижелер сақталды.", [
+        { text: "OK", onPress: () => router.back() },
+      ]);
+    } catch (error) {
+      Alert.alert("Қате", "Нәтижелерді сақтау мүмкін болмады.");
     }
   };
 
@@ -267,7 +310,11 @@ export default function LessonScreen() {
           />
         </View>
         <Button
-          title="next"
+          title={
+            state.currentSentenceIndex === state.totalSentences - 1
+              ? "finish"
+              : "next"
+          }
           variant={
             state.translation.trim() && state.confidence ? "primary" : "ghost"
           }

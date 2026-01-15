@@ -7,10 +7,13 @@ const WEIGHT_CONFIDENCE = 0.3;
 const WEIGHT_TIME = 0.2;
 
 const calculateWordsCount = (sentence: string, target_lang: string): number => {
-  const segmenter = new Intl.Segmenter(target_lang, { granularity: "word" });
-  const segments = segmenter.segment(sentence);
-  const wordsOnly = [...segments].filter((s) => s.isWordLike);
-  return wordsOnly.length;
+  const words = sentence.trim().split(/\s+/);
+  return words.filter((word) => word.length > 0).length;
+};
+
+const calculateIdealTime = (sentence: string, target_lang: string): number => {
+  const words = calculateWordsCount(sentence, target_lang);
+  return words * TIME_TO_WORD_RATIO + BASE_TIME;
 };
 
 const getLevenshteinDistance = (a: string, b: string): number => {
@@ -29,7 +32,7 @@ const getLevenshteinDistance = (a: string, b: string): number => {
   return matrix[b.length][a.length];
 };
 
-export const calculateSentenceAccuracy = (
+const calculateSentenceAccuracy = (
   responseText: string,
   targetText: string
 ): number => {
@@ -47,9 +50,31 @@ export const calculateSentenceAccuracy = (
   return 0;
 };
 
-export const calculateLessonStats = (
-  results: SentenceResult[],
+export const prepareSentenceResult = (
+  sentence_id: number,
+  native_text: string,
+  target_text: string,
+  response_text: string,
+  confidence: number,
+  response_time_ms: number,
   target_lang: string
+): SentenceResult => {
+  const accuracy = calculateSentenceAccuracy(response_text, target_text);
+  const ideal_time_ms = calculateIdealTime(target_text, target_lang);
+  return {
+    sentence_id,
+    native_text,
+    target_text,
+    response_text,
+    accuracy,
+    confidence,
+    response_time_ms,
+    ideal_time_ms,
+  };
+};
+
+export const calculateLessonStats = (
+  results: SentenceResult[]
 ): LessonFinalStats => {
   const total = results.length;
   if (total === 0)
@@ -69,10 +94,9 @@ export const calculateLessonStats = (
   let responseTimeTotal = 0;
 
   results.forEach((res) => {
-    const words = calculateWordsCount(res.target_text, target_lang);
     accuracyAvg += res.accuracy;
     confidenceAvg += res.confidence;
-    idealTimeTotal += words * TIME_TO_WORD_RATIO + BASE_TIME;
+    idealTimeTotal += res.ideal_time_ms;
     responseTimeTotal += res.response_time_ms;
   });
 
