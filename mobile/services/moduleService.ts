@@ -12,11 +12,11 @@ export const moduleService = {
   getAllModules: (): Module[] => {
     return db.getAllSync<Module>(`
       SELECT 
-          m.id, 
-          m.title, 
+          m.id,
+          m.title,
           m.description,
-          COUNT(l.id) AS totalLessons,
-          COUNT(ll.lesson_id) AS completedLessons
+          COUNT(DISTINCT l.id) AS totalLessons,
+          COUNT(DISTINCT ll.lesson_id) AS completedLessons
       FROM modules m
       LEFT JOIN lessons l ON m.id = l.module_id
       LEFT JOIN lesson_logs ll ON l.id = ll.lesson_id
