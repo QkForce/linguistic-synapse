@@ -23,7 +23,8 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { useTimer } from "@/hooks/useTimer";
-import { Exercise, lessonService } from "@/services/lessonService";
+import { lessonService } from "@/services/lessonService";
+import { Exercise } from "@/types/lesson";
 
 interface ExerciseState {
   lessonTitle: string;

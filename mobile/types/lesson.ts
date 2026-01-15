@@ -1,3 +1,17 @@
+export interface Lesson {
+  id: number;
+  title: string;
+  completed: number;
+}
+
+export interface Exercise {
+  id: number;
+  lesson_title: string;
+  number: number;
+  native_text: string;
+  target_text: string;
+}
+
 export interface SentenceResult {
   sentence_id: number;
   native_text: string;

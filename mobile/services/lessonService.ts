@@ -1,18 +1,5 @@
+import { Exercise, Lesson } from "@/types/lesson";
 import { db } from "./db";
-
-export interface Lesson {
-  id: number;
-  title: string;
-  completed: number;
-}
-
-export interface Exercise {
-  id: number;
-  lesson_title: string;
-  number: number;
-  native_text: string;
-  target_text: string;
-}
 
 export const lessonService = {
   getAllLessons: (moduleId: number): Lesson[] => {
