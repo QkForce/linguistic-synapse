@@ -1,0 +1,105 @@
+import { LessonFinalStats, SentenceResult } from "@/types/lesson";
+
+const TIME_TO_WORD_RATIO = 2000;
+const BASE_TIME = 3000;
+const WEIGHT_ACCURACY = 0.5;
+const WEIGHT_CONFIDENCE = 0.3;
+const WEIGHT_TIME = 0.2;
+
+const calculateWordsCount = (sentence: string, target_lang: string): number => {
+  const segmenter = new Intl.Segmenter(target_lang, { granularity: "word" });
+  const segments = segmenter.segment(sentence);
+  const wordsOnly = [...segments].filter((s) => s.isWordLike);
+  return wordsOnly.length;
+};
+
+const getLevenshteinDistance = (a: string, b: string): number => {
+  const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= a.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b[i - 1] === a[j - 1]) matrix[i][j] = matrix[i - 1][j - 1];
+      else
+        matrix[i][j] =
+          Math.min(matrix[i - 1][j - 1], matrix[i][j - 1], matrix[i - 1][j]) +
+          1;
+    }
+  }
+  return matrix[b.length][a.length];
+};
+
+export const calculateSentenceAccuracy = (
+  responseText: string,
+  targetText: string
+): number => {
+  const response = responseText.trim().toLowerCase();
+  const target = targetText.trim().toLowerCase();
+
+  if (response === target) return 1.0;
+
+  const distance = getLevenshteinDistance(response, target);
+  const maxLength = Math.max(response.length, target.length);
+
+  // Егер қате саны мәтін ұзындығының 20%-ынан аспаса - 0.5 балл
+  if (distance <= maxLength * 0.2) return 0.5;
+
+  return 0;
+};
+
+export const calculateLessonStats = (
+  results: SentenceResult[],
+  target_lang: string
+): LessonFinalStats => {
+  const total = results.length;
+  if (total === 0)
+    return {
+      total_time_ms: 0,
+      ideal_time_ms: 0,
+      accuracy: 0,
+      confidence: 0,
+      time_efficiency: 0,
+      time_overuse_ms: 0,
+      final_score: 0,
+    };
+
+  let accuracyAvg = 0;
+  let confidenceAvg = 0;
+  let idealTimeTotal = 0;
+  let responseTimeTotal = 0;
+
+  results.forEach((res) => {
+    const words = calculateWordsCount(res.target_text, target_lang);
+    accuracyAvg += res.accuracy;
+    confidenceAvg += res.confidence;
+    idealTimeTotal += words * TIME_TO_WORD_RATIO + BASE_TIME;
+    responseTimeTotal += res.response_time_ms;
+  });
+
+  accuracyAvg = (accuracyAvg / total) * 100;
+  confidenceAvg = (confidenceAvg / total) * 100;
+
+  // [0-100]
+  let timeEfficiency = 0;
+  if (responseTimeTotal > 0) {
+    timeEfficiency = (idealTimeTotal / responseTimeTotal) * 100;
+  }
+  timeEfficiency = Math.min(100, Math.max(0, timeEfficiency));
+
+  const timeOveruseMs = responseTimeTotal - idealTimeTotal;
+
+  const finalScore =
+    accuracyAvg * WEIGHT_ACCURACY +
+    confidenceAvg * WEIGHT_CONFIDENCE +
+    timeEfficiency * WEIGHT_TIME;
+
+  return {
+    total_time_ms: responseTimeTotal,
+    ideal_time_ms: idealTimeTotal,
+    accuracy: parseFloat(accuracyAvg.toFixed(2)),
+    confidence: parseFloat(confidenceAvg.toFixed(2)),
+    time_efficiency: parseFloat(timeEfficiency.toFixed(2)),
+    time_overuse_ms: timeOveruseMs,
+    final_score: parseFloat(finalScore.toFixed(2)),
+  };
+};
