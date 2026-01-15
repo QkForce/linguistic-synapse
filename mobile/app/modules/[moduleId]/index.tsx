@@ -7,8 +7,8 @@ import { BackgroundSVG } from "@/components/BackgroundSVG";
 import { ParallaxFlatList } from "@/components/ParallaxFlatList";
 import { LessonItem } from "@/components/items/LessonItem";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Lesson, lessonService } from "@/services/lessonService";
-// import { lessons } from "@/data/lessons";
+import { lessonService } from "@/services/lessonService";
+import { Lesson } from "@/types/lesson";
 
 export default function ModuleDetailsScreen() {
   const router = useRouter();
