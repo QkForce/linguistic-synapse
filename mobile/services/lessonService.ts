@@ -5,11 +5,13 @@ export const lessonService = {
   getAllLessons: (moduleId: number): Lesson[] => {
     return db.getAllSync<Lesson>(
       `SELECT 
-          l.*, 
-          CASE WHEN log.lesson_id IS NOT NULL THEN 1 ELSE 0 END as completed
+          l.id,
+          l.title,
+          MAX(CASE WHEN log.lesson_id IS NOT NULL THEN 1 ELSE 0 END) as completed
       FROM lessons l
       LEFT JOIN lesson_logs log ON l.id = log.lesson_id
-      WHERE l.module_id = ?`,
+      WHERE l.module_id = ?
+      GROUP BY l.id`,
       [moduleId]
     );
   },
