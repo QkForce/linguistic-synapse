@@ -8,6 +8,7 @@ export default function LessonLayout() {
       }}
     >
       <Stack.Screen name="index" options={{}} />
+      <Stack.Screen name="summary" options={{}} />
     </Stack>
   );
 }

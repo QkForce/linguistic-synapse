@@ -42,7 +42,7 @@ interface ExerciseState {
 type ScreenStatus = "loading" | "success" | "error" | "empty";
 
 export default function LessonScreen() {
-  const { lessonId } = useLocalSearchParams();
+  const { moduleId, lessonId } = useLocalSearchParams();
   const insets = useSafeAreaInsets();
   const gradColors = useThemeGradient("brand");
   const colors = useThemeColor();
@@ -157,7 +157,11 @@ export default function LessonScreen() {
         finalResults
       );
       Alert.alert("Керемет!", "Жаттығу аяқталды, нәтижелер сақталды.", [
-        { text: "OK", onPress: () => router.back() },
+        {
+          text: "OK",
+          onPress: () =>
+            router.replace(`/modules/${moduleId}/${lessonId}/summary`),
+        },
       ]);
     } catch (error) {
       Alert.alert("Қате", "Нәтижелерді сақтау мүмкін болмады.");
