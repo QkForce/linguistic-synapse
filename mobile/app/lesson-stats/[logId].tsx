@@ -1,17 +1,72 @@
-import { Button } from "@/components/Button";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+
+import { Button } from "@/components/Button";
+import { EmptyState } from "@/components/states/EmptyState";
+import { ErrorState } from "@/components/states/ErrorState";
+import { LoadingState } from "@/components/states/LoadingState";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { statService } from "@/services/statService";
+import { LogDetails } from "@/types/stat";
+
+type ScreenStatus = "loading" | "success" | "error" | "empty";
 
 export default function StatDetailScreen() {
   const { logId } = useLocalSearchParams();
   const router = useRouter();
   const colors = useThemeColor();
+  const [status, setStatus] = useState<ScreenStatus>("loading");
+  const [state, setState] = useState<LogDetails | null>(null);
 
+  useEffect(() => {
+    loadData();
+  }, [logId]);
+
+  const loadData = async () => {
+    try {
+      setStatus("loading");
+      const data = await statService.getLogDetails(Number(logId));
+      if (!data) {
+        setStatus("empty");
+        return;
+      }
+      setState(data);
+      console.log(data);
+      setStatus("success");
+    } catch (e) {
+      setStatus("error");
+    }
+  };
+
+  if (status === "loading") {
+    return (
+      <LoadingState title="Loading" description="Stat details are loading!" />
+    );
+  }
+  if (status === "empty" || state == null) {
+    return (
+      <EmptyState
+        title="Empty state"
+        description="There is no data!"
+        onPressClose={() => router.back()}
+      />
+    );
+  }
+  if (status === "error") {
+    return (
+      <ErrorState
+        title="Empty state"
+        description="There is no data!"
+        onPressRetry={loadData}
+        onPressClose={() => router.back()}
+      />
+    );
+  }
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Text style={[styles.title, { color: colors.title }]}>
-        Lesson Results!
+        {state.lesson_title}
       </Text>
       <Text style={[styles.subtitle, { color: colors.text }]}>
         Log: {logId}
