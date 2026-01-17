@@ -3,18 +3,18 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function LessonSummaryScreen() {
-  const { moduleId, lessonId } = useLocalSearchParams();
+export default function StatDetailScreen() {
+  const { logId } = useLocalSearchParams();
   const router = useRouter();
   const colors = useThemeColor();
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Text style={[styles.title, { color: colors.title }]}>
-        Lesson Complete!
+        Lesson Results!
       </Text>
       <Text style={[styles.subtitle, { color: colors.text }]}>
-        Module: {moduleId} | Lesson: {lessonId}
+        Log: {logId}
       </Text>
       <View style={styles.statsPlaceholder}>
         <Text style={{ color: colors.label }}>

@@ -147,7 +147,7 @@ export default function LessonScreen() {
   const finishLesson = (finalResults: SentenceResult[]) => {
     try {
       const stats = calculateLessonStats(finalResults);
-      lessonService.saveLessonResults(
+      const logId = lessonService.saveLessonResults(
         Number(lessonId),
         {
           ...stats,
@@ -160,7 +160,10 @@ export default function LessonScreen() {
         {
           text: "OK",
           onPress: () =>
-            router.replace(`/modules/${moduleId}/${lessonId}/summary`),
+            router.replace({
+              pathname: `/lesson-stats/[logId]`,
+              params: { logId: logId },
+            }),
         },
       ]);
     } catch (error) {

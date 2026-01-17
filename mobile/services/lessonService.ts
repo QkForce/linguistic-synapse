@@ -53,7 +53,8 @@ export const lessonService = {
       final_score: number;
     },
     sentenceResults: SentenceResult[]
-  ) => {
+  ): number | null => {
+    let lessonLogId: number | null = null;
     db.withTransactionSync(() => {
       const result = db.runSync(
         `INSERT INTO
@@ -84,7 +85,7 @@ export const lessonService = {
           totalStats.final_score,
         ]
       );
-      const lessonLogId = result.lastInsertRowId;
+      lessonLogId = result.lastInsertRowId;
       for (const res of sentenceResults) {
         db.runSync(
           `INSERT INTO
@@ -115,5 +116,6 @@ export const lessonService = {
         );
       }
     });
+    return lessonLogId;
   },
 };
