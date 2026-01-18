@@ -53,6 +53,12 @@ const MAPPING = {
   "hourglass-bottom": "hourglass-bottom",
   "replay": "replay",
   "warning-amber": "warning-amber",
+  "trophy": "emoji-events",
+  "calendar": "calendar-today",
+  "target": "gps-fixed",
+  "chart": "show-chart",
+  "message": "message",
+  "bolt": "electric-bolt",
 } as const;
 
 /**

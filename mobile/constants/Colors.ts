@@ -14,6 +14,11 @@ export const palette = {
   deepBlue: "#0064FF",
   deepGreen: "#15803D",
   deepRed: "#B91C1C",
+  violet: "#6331DD",
+  lightViolet: "rgba(99, 49, 221, 0.15)",
+  deepViolet: "#4C21B3",
+  amber: "#F59E0B",
+  lightAmber: "rgba(245, 158, 11, 0.1)",
 };
 
 export const Colors = {
@@ -31,6 +36,8 @@ export const Colors = {
     success: "#15803D",
     error: palette.deepRed,
     errorBackground: palette.lightRed,
+    warning: palette.amber,
+    warningBackground: palette.lightAmber,
     progressTrack: "rgba(0, 0, 0, 0.05)",
 
     label: palette.blackOpacity,
@@ -51,6 +58,9 @@ export const Colors = {
     btnDisabledContent: "#9CA3AF",
     btnGlassBg: "rgba(0, 0, 0, 0.03)",
     btnOuterBorder: "rgba(0, 0, 0, 0.08)",
+
+    awardIconBg: palette.violet,
+    awardIconContent: palette.white,
   },
   dark: {
     background: "#1D1F22",
@@ -66,6 +76,8 @@ export const Colors = {
     success: "#4ADE80",
     error: palette.red,
     errorBackground: palette.lightRed,
+    warning: "#FBBF24",
+    warningBackground: "rgba(251, 191, 36, 0.15)",
     progressTrack: "rgba(255, 255, 255, 0.1)",
 
     label: palette.whiteOpacity,
@@ -86,5 +98,8 @@ export const Colors = {
     btnDisabledContent: palette.gray,
     btnGlassBg: "rgba(255, 255, 255, 0.04)",
     btnOuterBorder: "rgba(255, 255, 255, 0.1)",
+
+    awardIconBg: palette.violet,
+    awardIconContent: palette.white,
   },
 };
