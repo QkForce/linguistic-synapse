@@ -131,7 +131,7 @@ export const calculateLessonStats = (
     ideal_time_ms: idealTimeTotal,
     accuracy: parseFloat(accuracyAvg.toFixed(2)),
     confidence: parseFloat(confidenceAvg.toFixed(2)),
-    time_efficiency: parseFloat(timeEfficiency.toFixed(2)),
+    time_efficiency: parseFloat(timeEfficiencyAvg.toFixed(2)),
     time_overuse_ms: timeOveruseMs,
     final_score: parseFloat(finalScore.toFixed(2)),
   };
