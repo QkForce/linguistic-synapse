@@ -104,24 +104,21 @@ export const calculateLessonStats = (
   let confidenceAvg = 0;
   let idealTimeTotal = 0;
   let responseTimeTotal = 0;
+  let timeEfficiencyAvg = 0;
 
   results.forEach((res) => {
     accuracyAvg += res.accuracy;
     confidenceAvg += res.confidence;
     idealTimeTotal += res.ideal_time_ms;
     responseTimeTotal += res.response_time_ms;
+    timeEfficiencyAvg +=
+      res.response_time_ms > 0 ? res.ideal_time_ms / res.response_time_ms : 0;
   });
 
   accuracyAvg = (accuracyAvg / total) * 100;
   confidenceAvg = (confidenceAvg / total) * 100;
-
-  // [0-100]
-  let timeEfficiency = 0;
-  if (responseTimeTotal > 0) {
-    timeEfficiency = (idealTimeTotal / responseTimeTotal) * 100;
-  }
-  timeEfficiency = Math.min(100, Math.max(0, timeEfficiency));
-
+  timeEfficiencyAvg = (timeEfficiencyAvg / total) * 100;
+  const timeEfficiency = Math.min(100, Math.max(0, timeEfficiencyAvg));
   const timeOveruseMs = responseTimeTotal - idealTimeTotal;
 
   const finalScore =
