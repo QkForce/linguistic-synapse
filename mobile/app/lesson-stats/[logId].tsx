@@ -11,6 +11,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { statService } from "@/services/statService";
 import { LogDetails } from "@/types/stat";
+import { formatMsToTime } from "@/utils/time";
 
 type ScreenStatus = "loading" | "success" | "error" | "empty";
 
@@ -100,7 +101,7 @@ export default function StatDetailScreen() {
           style={styles.dateIcon}
         />
         <Text style={[styles.dateText, { color: colors.label }]}>
-          {state.created_at}
+          {state.created_at.substring(0, 16)}
         </Text>
       </View>
 
@@ -196,7 +197,7 @@ export default function StatDetailScreen() {
             {" Артық жұмсалды:"}
           </Text>
           <Text style={[styles.commonScoreText, { color: colors.error }]}>
-            {`${state.time_overuse_ms}ms`}
+            {formatMsToTime(state.time_overuse_ms)}
           </Text>
         </View>
       </View>
@@ -289,7 +290,7 @@ export default function StatDetailScreen() {
                     size={10}
                     color={colors.label}
                   />
-                  {` ${item.response_time_ms}ms`}
+                  {` ${formatMsToTime(item.response_time_ms)}`}
                 </Text>
                 <Text
                   style={[[styles.itemCardBottomText, { color: colors.label }]]}
