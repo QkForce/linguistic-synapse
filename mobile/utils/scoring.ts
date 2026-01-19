@@ -6,6 +6,8 @@ const WEIGHT_ACCURACY = 0.5;
 const WEIGHT_CONFIDENCE = 0.3;
 const WEIGHT_TIME = 0.2;
 
+type TimeEfficiencyScore = "slow" | "normal" | "fast" | "cheating";
+
 const calculateWordsCount = (sentence: string, target_lang: string): number => {
   const words = sentence.trim().split(/\s+/);
   return words.filter((word) => word.length > 0).length;
@@ -48,6 +50,16 @@ const calculateSentenceAccuracy = (
   if (distance <= maxLength * 0.2) return 0.5;
 
   return 0;
+};
+
+export const getScoreForTimeEfficiency = (
+  timeEfficiency: number
+): TimeEfficiencyScore => {
+  let status: TimeEfficiencyScore = "normal";
+  if (timeEfficiency < 70) status = "slow";
+  else if (timeEfficiency > 250) status = "cheating";
+  else if (timeEfficiency > 120) status = "fast";
+  return status;
 };
 
 export const prepareSentenceResult = (

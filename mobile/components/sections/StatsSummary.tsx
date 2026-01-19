@@ -11,6 +11,7 @@ import {
 import { IconSymbol, IconSymbolName } from "@/components/ui/IconSymbol";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { LogDetails } from "@/types/stat";
+import { getScoreForTimeEfficiency } from "@/utils/scoring";
 import { formatMsToTime } from "@/utils/time";
 
 type InfoCardProps = {
@@ -49,6 +50,23 @@ const InfoCard = ({
 
 export const StatsSummary = ({ state }: { state: LogDetails }) => {
   const colors = useThemeColor();
+  const timeTimeEfficiencyScore = getScoreForTimeEfficiency(
+    state.time_efficiency
+  );
+
+  const getTimeEfficiencyStyle = (): { scoreColor: ColorValue } => {
+    if (timeTimeEfficiencyScore == "slow") return { scoreColor: colors.error };
+    if (timeTimeEfficiencyScore == "cheating")
+      return { scoreColor: colors.warning };
+    if (timeTimeEfficiencyScore == "fast")
+      return { scoreColor: colors.success };
+
+    return {
+      scoreColor: colors.success,
+    };
+  };
+
+  const { scoreColor } = getTimeEfficiencyStyle();
 
   return (
     <View style={styles.container}>
@@ -87,7 +105,7 @@ export const StatsSummary = ({ state }: { state: LogDetails }) => {
             <IconSymbol name="access-time" size={14} color={colors.title} />
             {" Уақытты қолдану тиімділігі:"}
           </Text>
-          <Text style={[styles.commonScoreText, { color: colors.title }]}>
+          <Text style={[styles.commonScoreText, { color: scoreColor }]}>
             {`${state.time_efficiency}%`}
           </Text>
         </View>
@@ -97,7 +115,7 @@ export const StatsSummary = ({ state }: { state: LogDetails }) => {
             <IconSymbol name="error" size={14} color={colors.title} />
             {" Уақыт балансы:"}
           </Text>
-          <Text style={[styles.commonScoreText, { color: colors.error }]}>
+          <Text style={[styles.commonScoreText, { color: scoreColor }]}>
             {formatMsToTime(state.time_overuse_ms)}
           </Text>
         </View>
