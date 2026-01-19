@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "@/components/Button";
 import { LessonStatsItem } from "@/components/items/LessonStatsItem";
+import { StatsSummary } from "@/components/sections/StatsSummary";
 import { EmptyState } from "@/components/states/EmptyState";
 import { ErrorState } from "@/components/states/ErrorState";
 import { LoadingState } from "@/components/states/LoadingState";
@@ -12,7 +13,6 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { statService } from "@/services/statService";
 import { LogDetails } from "@/types/stat";
-import { formatMsToTime } from "@/utils/time";
 
 type ScreenStatus = "loading" | "success" | "error" | "empty";
 
@@ -121,86 +121,7 @@ export default function StatDetailScreen() {
         </Text>
       </View>
 
-      <View style={styles.commonScoresContainer}>
-        <View
-          style={[
-            styles.commonScoreCard,
-            { backgroundColor: colors.itemGlass },
-          ]}
-        >
-          <View style={styles.commonScoreCardInnerRow}>
-            <IconSymbol name="target" size={16} color={colors.success} />
-            <Text style={[styles.commonScoreText, { color: colors.success }]}>
-              {`${state.accuracy}%`}
-            </Text>
-          </View>
-          <Text style={[styles.commonScoreLabel, { color: colors.text }]}>
-            Дәлдік
-          </Text>
-        </View>
-        <View
-          style={[
-            styles.commonScoreCard,
-            { backgroundColor: colors.itemGlass },
-          ]}
-        >
-          <View style={styles.commonScoreCardInnerRow}>
-            <IconSymbol name="chart" size={16} color={colors.title} />
-            <Text style={[styles.commonScoreText, { color: colors.title }]}>
-              {`${state.confidence}%`}
-            </Text>
-          </View>
-          <Text style={[styles.commonScoreLabel, { color: colors.text }]}>
-            Сенімділік
-          </Text>
-        </View>
-      </View>
-
-      <View
-        style={[
-          styles.commonScoreCard,
-          { backgroundColor: colors.itemGlass, marginTop: 16, width: "100%" },
-        ]}
-      >
-        <View style={styles.commonScoreCardInnerRow}>
-          <Text
-            style={[
-              styles.commonScoreLabel,
-              { color: colors.title, lineHeight: 14 },
-            ]}
-          >
-            <IconSymbol
-              name="access-time"
-              size={14}
-              color={colors.title}
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                lineHeight: 18,
-              }}
-            />
-            {" Жалпы уақыт:"}
-          </Text>
-          <Text style={[styles.commonScoreText, { color: colors.title }]}>
-            {`${state.time_efficiency}%`}
-          </Text>
-        </View>
-
-        <View style={styles.commonScoreCardInnerRow}>
-          <Text style={[styles.commonScoreLabel, { color: colors.title }]}>
-            <IconSymbol
-              name="error"
-              size={14}
-              color={colors.title}
-              style={{ justifyContent: "center", alignItems: "center" }}
-            />
-            {" Артық жұмсалды:"}
-          </Text>
-          <Text style={[styles.commonScoreText, { color: colors.error }]}>
-            {formatMsToTime(state.time_overuse_ms)}
-          </Text>
-        </View>
-      </View>
+      <StatsSummary state={state} />
 
       <View style={styles.sentencesLabelRow}>
         <IconSymbol
@@ -315,34 +236,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     // borderWidth: 1,
     // borderColor: "white",
-  },
-  commonScoresContainer: {
-    flexDirection: "row",
-    gap: 12,
-    marginTop: 16,
-  },
-  commonScoreCard: {
-    flex: 1,
-    padding: 16,
-    borderRadius: 30,
-    justifyContent: "center",
-  },
-  commonScoreCardInnerRow: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 4,
-  },
-  commonScoreText: {
-    fontSize: 12,
-    textAlign: "center",
-    textAlignVertical: "center",
-    fontWeight: "bold",
-  },
-  commonScoreLabel: {
-    fontSize: 14,
-    fontWeight: "black",
-    textAlignVertical: "center",
   },
   sentencesLabelRow: {
     width: "100%",
