@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "@/components/Button";
+import { LessonStatsItem } from "@/components/items/LessonStatsItem";
 import { EmptyState } from "@/components/states/EmptyState";
 import { ErrorState } from "@/components/states/ErrorState";
 import { LoadingState } from "@/components/states/LoadingState";
@@ -36,7 +37,6 @@ export default function StatDetailScreen() {
         return;
       }
       setState(data);
-      console.log(data);
       setStatus("success");
     } catch (e) {
       setStatus("error");
@@ -216,103 +216,13 @@ export default function StatDetailScreen() {
 
       <View style={styles.sentencesContainer}>
         {state.sentences.map((item, index) => (
-          <View
-            key={item.id || index}
-            style={[
-              styles.itemCard,
-              {
-                backgroundColor: colors.itemGlass,
-                borderColor: colors.itemBorder,
-              },
-            ]}
-          >
-            <View style={styles.itemCardTopBar}>
-              <Text style={[styles.itemIndexLabel, { color: colors.label }]}>
-                {`Сөйлем #${index + 1}`}
-              </Text>
-              <View
-                style={[
-                  styles.itemCardAccuracyContainer,
-                  { backgroundColor: colors.itemInnerGlass },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.itemCardAccuracyText,
-                    { color: colors.warning },
-                  ]}
-                >
-                  {`${item.accuracy * 100}%`}
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.sourceContainer}>
-              <View
-                style={[
-                  styles.langCodeContainer,
-                  { backgroundColor: colors.itemInnerGlass },
-                ]}
-              >
-                <Text style={[styles.langCodeText, { color: colors.label }]}>
-                  {state.native_lang}
-                </Text>
-              </View>
-              <Text style={[styles.sourceText, { color: colors.text }]}>
-                {item.target_text}
-              </Text>
-            </View>
-
-            <Text style={[styles.responseLabel, { color: colors.label }]}>
-              Берілген жауап:
-            </Text>
-            <Text
-              style={[
-                styles.responseText,
-                { color: item.accuracy == 0 ? colors.label : colors.success },
-              ]}
-            >
-              {item.response_text}
-            </Text>
-
-            <View
-              style={[
-                styles.itemCardBottomBar,
-                { borderTopColor: colors.itemBorder },
-              ]}
-            >
-              <View style={{ flexDirection: "row", gap: 4 }}>
-                <Text
-                  style={[styles.itemCardBottomText, { color: colors.label }]}
-                >
-                  <IconSymbol
-                    name="access-time"
-                    size={10}
-                    color={colors.label}
-                  />
-                  {` ${formatMsToTime(item.response_time_ms)}`}
-                </Text>
-                <Text
-                  style={[[styles.itemCardBottomText, { color: colors.label }]]}
-                >
-                  <IconSymbol name="bolt" size={10} color={colors.label} />
-                  {` ${item.confidence * 100}% сенімді`}
-                </Text>
-              </View>
-              <View
-                style={[
-                  styles.transDirection,
-                  { backgroundColor: colors.itemGlass },
-                ]}
-              >
-                <Text
-                  style={[styles.transDirectionText, { color: colors.label }]}
-                >
-                  {`${state.native_lang} › ${state.target_lang}`}
-                </Text>
-              </View>
-            </View>
-          </View>
+          <LessonStatsItem
+            item={item}
+            nativeLang={state.native_lang}
+            targetLang={state.target_lang}
+            index={index}
+            key={index}
+          />
         ))}
       </View>
 
@@ -448,95 +358,6 @@ const styles = StyleSheet.create({
   sentencesContainer: {
     marginTop: 32,
     gap: 16,
-  },
-  itemCard: {
-    width: "100%",
-    padding: 16,
-    borderRadius: 24,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 0.5,
-  },
-  itemCardTopBar: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
-  },
-  itemIndexLabel: {
-    width: 100,
-    fontSize: 9,
-    textTransform: "uppercase",
-  },
-  itemCardAccuracyContainer: {
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-    borderRadius: 14,
-  },
-  itemCardAccuracyText: {
-    fontSize: 10,
-    fontWeight: "bold",
-  },
-  sourceContainer: {
-    flexDirection: "row",
-    width: "100%",
-    marginBottom: 16,
-  },
-  langCodeContainer: {
-    width: 30,
-    marginRight: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 5,
-  },
-  langCodeText: {
-    fontSize: 8,
-    textAlign: "center",
-    textAlignVertical: "center",
-    textTransform: "uppercase",
-  },
-  sourceText: {
-    width: "100%",
-    fontSize: 14,
-  },
-  responseLabel: {
-    width: "100%",
-    fontSize: 8,
-    textTransform: "uppercase",
-    marginBottom: 4,
-  },
-  responseText: {
-    width: "100%",
-    fontSize: 12,
-    marginBottom: 16,
-  },
-  itemCardBottomBar: {
-    width: "100%",
-    borderTopWidth: 0.3,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingTop: 12,
-  },
-  itemCardBottomText: {
-    fontSize: 10,
-    textAlignVertical: "center",
-  },
-  transDirection: {
-    width: 40,
-    borderRadius: 5,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    gap: 4,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  transDirectionText: {
-    fontSize: 8,
-    textAlignVertical: "center",
-    textTransform: "uppercase",
   },
   buttons: {
     width: "100%",
