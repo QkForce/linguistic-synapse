@@ -1,9 +1,10 @@
-import React from "react";
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
+  interpolate,
   useAnimatedStyle,
   useSharedValue,
-  withSpring
+  withSpring,
 } from "react-native-reanimated";
 
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -24,16 +25,45 @@ export const LessonStatsItem = ({
 }) => {
   const colors = useThemeColor();
   const scale = useSharedValue(1);
+  const offset = useSharedValue(0);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
+
+  const textSlideFadeStyle = (isBack: boolean) =>
+    useAnimatedStyle(() => {
+      const translateY = interpolate(
+        offset.value,
+        [0, 1],
+        isBack ? [30, 0] : [0, -30]
+      );
+      const opacity = interpolate(
+        offset.value,
+        [0, 0.9, 1],
+        isBack ? [0, 0.2, 1] : [1, 0.2, 0]
+      );
+      return {
+        transform: [{ translateY }],
+        opacity,
+      };
+    });
+
+  const onPressCard = () => {
+    setIsFlipped(!isFlipped);
+    offset.value = withSpring(isFlipped ? 0 : 1, {
+      damping: 30,
+      stiffness: 180,
+    });
+  };
 
   return (
     <View style={{ width: "100%" }}>
       <Pressable
         onPressIn={() => (scale.value = withSpring(0.97))}
         onPressOut={() => (scale.value = withSpring(1))}
+        onPress={onPressCard}
         style={{ flex: 1 }}
       >
         <Animated.View
@@ -43,7 +73,6 @@ export const LessonStatsItem = ({
               backgroundColor: colors.itemGlass,
               borderColor: colors.itemBorder,
             },
-            ,
             animatedStyle,
           ]}
         >
@@ -64,19 +93,47 @@ export const LessonStatsItem = ({
           </View>
 
           <View style={styles.sourceContainer}>
-            <View
-              style={[
-                styles.langCodeContainer,
-                { backgroundColor: colors.itemInnerGlass },
-              ]}
+            <Animated.View
+              style={[styles.sourceInnerContainer, textSlideFadeStyle(false)]}
             >
-              <Text style={[styles.langCodeText, { color: colors.label }]}>
-                {nativeLang}
+              <View
+                style={[
+                  styles.langCodeContainer,
+                  { backgroundColor: colors.itemInnerGlass },
+                ]}
+              >
+                <Text style={[styles.langCodeText, { color: colors.label }]}>
+                  {targetLang}
+                </Text>
+              </View>
+              <Text
+                style={[styles.sourceText, { color: colors.text }]}
+                ellipsizeMode="tail"
+              >
+                {item.target_text}
               </Text>
-            </View>
-            <Text style={[styles.sourceText, { color: colors.text }]}>
-              {item.target_text}
-            </Text>
+            </Animated.View>
+
+            <Animated.View
+              style={[styles.sourceInnerContainer, textSlideFadeStyle(true)]}
+            >
+              <View
+                style={[
+                  styles.langCodeContainer,
+                  { backgroundColor: colors.itemInnerGlass },
+                ]}
+              >
+                <Text style={[styles.langCodeText, { color: colors.label }]}>
+                  {nativeLang}
+                </Text>
+              </View>
+              <Text
+                style={[styles.sourceText, { color: colors.text }]}
+                ellipsizeMode="tail"
+              >
+                {item.native_text}
+              </Text>
+            </Animated.View>
           </View>
 
           <Text style={[styles.responseLabel, { color: colors.label }]}>
@@ -132,7 +189,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 16,
+    marginBottom: 8,
   },
   indexLabel: {
     width: 100,
@@ -149,9 +206,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   sourceContainer: {
-    flexDirection: "row",
     width: "100%",
-    marginBottom: 16,
+    height: 44,
+    justifyContent: "center",
+  },
+  sourceInnerContainer: {
+    width: "100%",
+    flexDirection: "row",
+    position: "absolute",
+    backfaceVisibility: "hidden",
   },
   langCodeContainer: {
     width: 30,
@@ -169,26 +232,27 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   sourceText: {
-    width: "100%",
+    flex: 1,
     fontSize: 14,
   },
   responseLabel: {
     width: "100%",
     fontSize: 8,
     textTransform: "uppercase",
+    marginTop: 8,
     marginBottom: 4,
   },
   responseText: {
     width: "100%",
     fontSize: 12,
-    marginBottom: 16,
+    marginBottom: 8,
   },
   bottomBar: {
     width: "100%",
     borderTopWidth: 0.3,
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingTop: 12,
+    paddingTop: 6,
   },
   bottomText: {
     fontSize: 10,
