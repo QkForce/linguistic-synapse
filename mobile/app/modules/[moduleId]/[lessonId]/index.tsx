@@ -290,6 +290,8 @@ export default function LessonScreen() {
             },
           ]}
           multiline={true}
+          submitBehavior="blurAndSubmit"
+          returnKeyType="done"
           placeholder="Type translationhere…"
           placeholderTextColor={colors.placeholder}
         />
