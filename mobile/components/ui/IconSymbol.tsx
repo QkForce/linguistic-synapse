@@ -21,6 +21,8 @@ const MAPPING = {
   "settings": "settings",
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
+  "chevron.left": "chevron-left",
+  "keyboard-arrow-down": "keyboard-arrow-down",
   "pencil": "edit",
   "speaker.3": "surround-sound",
   "arrow.forward": "arrow-forward",

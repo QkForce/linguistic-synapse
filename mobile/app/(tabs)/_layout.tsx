@@ -35,6 +35,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="journal"
+        options={{
+          headerShown: false,
+          title: "Journal",
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="database"
         options={{
           title: "Tab Two",
