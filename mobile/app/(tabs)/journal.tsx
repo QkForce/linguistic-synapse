@@ -38,6 +38,12 @@ export default function JournalScreen() {
     }
   };
 
+  const changeMonth = (offset: number) => {
+    const newDate = new Date(date);
+    newDate.setMonth(date.getMonth() + offset);
+    setDate(newDate);
+  };
+
   if (status === "loading") {
     return (
       <LoadingState title="Loading" description="Stat details are loading!" />
@@ -69,7 +75,10 @@ export default function JournalScreen() {
           },
         ]}
       >
-        <TouchableHighlight style={styles.navButton}>
+        <TouchableHighlight
+          onPress={() => changeMonth(-1)}
+          style={styles.navButton}
+        >
           <IconSymbol name="chevron.left" size={24} color={colors.title} />
         </TouchableHighlight>
 
@@ -90,7 +99,10 @@ export default function JournalScreen() {
           </View>
         </TouchableHighlight>
 
-        <TouchableHighlight style={styles.navButton}>
+        <TouchableHighlight
+          onPress={() => changeMonth(-1)}
+          style={styles.navButton}
+        >
           <IconSymbol name="chevron.right" size={24} color={colors.title} />
         </TouchableHighlight>
       </View>
