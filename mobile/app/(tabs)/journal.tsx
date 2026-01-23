@@ -8,6 +8,7 @@ import { ErrorState } from "@/components/states/ErrorState";
 import { LoadingState } from "@/components/states/LoadingState";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { Intensity, LessonLog } from "@/types/stat";
 
 type ScreenStatus = "loading" | "success" | "error" | "empty";
@@ -21,6 +22,7 @@ export default function JournalScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const colors = useThemeColor();
+  const gradColors = useThemeGradient();
   const [status, setStatus] = useState<ScreenStatus>("loading");
   const [date, setDate] = useState<Date>(new Date());
   const [state, setState] = useState<LessonLog[]>([]);
@@ -106,7 +108,7 @@ export default function JournalScreen() {
         </TouchableHighlight>
 
         <TouchableHighlight
-          onPress={() => changeMonth(-1)}
+          onPress={() => changeMonth(1)}
           style={styles.navButton}
         >
           <IconSymbol name="chevron.right" size={24} color={colors.title} />
@@ -116,14 +118,8 @@ export default function JournalScreen() {
       <ActivityCalendar
         monthYear={date}
         intensities={activities}
-        bgColorScale={[
-          "rgba(0, 255, 0, 0.05)",
-          "rgba(0, 255, 0, 0.2)",
-          "rgba(0, 255, 0, 0.4)",
-          "rgba(0, 255, 0, 0.7)",
-          "rgba(0, 255, 0, 1.0)",
-        ]}
-        textColorScale={["gray", "white", "white", "white", "gray"]}
+        bgColorScale={gradColors.heatmapBg}
+        textColorScale={gradColors.heatmapText}
         style={styles.calendar}
       />
     </View>

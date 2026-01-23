@@ -15,8 +15,20 @@ import { Intensity } from "@/types/stat";
 type ActivityCalendarProps = {
   monthYear: Date;
   intensities: Intensity[];
-  bgColorScale: [ColorValue, ColorValue, ColorValue, ColorValue, ColorValue];
-  textColorScale: [ColorValue, ColorValue, ColorValue, ColorValue, ColorValue];
+  bgColorScale: readonly [
+    ColorValue,
+    ColorValue,
+    ColorValue,
+    ColorValue,
+    ColorValue,
+  ];
+  textColorScale: readonly [
+    ColorValue,
+    ColorValue,
+    ColorValue,
+    ColorValue,
+    ColorValue,
+  ];
   style: StyleProp<ViewStyle>;
 };
 
