@@ -57,6 +57,7 @@ const MAPPING = {
   "warning-amber": "warning-amber",
   "trophy": "emoji-events",
   "calendar": "calendar-today",
+  "activity": "event-note",
   "target": "gps-fixed",
   "chart": "show-chart",
   "message": "message",

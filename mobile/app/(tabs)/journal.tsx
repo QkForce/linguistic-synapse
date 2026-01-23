@@ -3,13 +3,19 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { ActivityCalendar } from "@/components/sections/ActivityCalendar";
 import { ErrorState } from "@/components/states/ErrorState";
 import { LoadingState } from "@/components/states/LoadingState";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { LessonLog } from "@/types/stat";
+import { Intensity, LessonLog } from "@/types/stat";
 
 type ScreenStatus = "loading" | "success" | "error" | "empty";
+
+const activities: Intensity[] = [
+  1, 3, 4, 1, 1, 0, 1, 4, 2, 3, 4, 2, 1, 2, 3, 4, 4, 4, 1, 4, 4, 1, 2, 1, 4, 1,
+  2, 2, 1, 2, 2,
+];
 
 export default function JournalScreen() {
   const insets = useSafeAreaInsets();
@@ -106,6 +112,20 @@ export default function JournalScreen() {
           <IconSymbol name="chevron.right" size={24} color={colors.title} />
         </TouchableHighlight>
       </View>
+
+      <ActivityCalendar
+        monthYear={date}
+        intensities={activities}
+        bgColorScale={[
+          "rgba(0, 255, 0, 0.05)",
+          "rgba(0, 255, 0, 0.2)",
+          "rgba(0, 255, 0, 0.4)",
+          "rgba(0, 255, 0, 0.7)",
+          "rgba(0, 255, 0, 1.0)",
+        ]}
+        textColorScale={["gray", "white", "white", "white", "gray"]}
+        style={styles.calendar}
+      />
     </View>
   );
 }
@@ -140,5 +160,9 @@ const styles = StyleSheet.create({
   yearTitle: {
     fontSize: 10,
     textAlign: "center",
+  },
+  calendar: {
+    marginVertical: 30,
+    marginHorizontal: 20,
   },
 });

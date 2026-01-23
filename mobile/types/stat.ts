@@ -31,3 +31,5 @@ export interface LogDetails extends LessonLog {
   module_title: string;
   sentences: SentenceLog[];
 }
+
+export type Intensity = 0 | 1 | 2 | 3 | 4;
