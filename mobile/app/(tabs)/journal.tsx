@@ -13,10 +13,15 @@ import { Intensity, LessonLog } from "@/types/stat";
 
 type ScreenStatus = "loading" | "success" | "error" | "empty";
 
-const activities: Intensity[] = [
-  1, 3, 4, 1, 1, 0, 1, 4, 2, 3, 4, 2, 1, 2, 3, 4, 4, 4, 1, 4, 4, 1, 2, 1, 4, 1,
-  2, 2, 1, 2, 2,
-];
+const activities: Record<string, Intensity> = {
+  "2026-01-01": 4,
+  "2026-01-02": 1,
+  "2026-01-04": 2,
+  "2026-01-09": 3,
+  "2026-01-10": 3,
+  "2026-01-11": 1,
+  "2026-01-12": 2,
+};
 
 export default function JournalScreen() {
   const insets = useSafeAreaInsets();
@@ -117,7 +122,7 @@ export default function JournalScreen() {
 
       <ActivityCalendar
         monthYear={date}
-        intensities={activities}
+        activities={activities}
         bgColorScale={gradColors.heatmapBg}
         textColorScale={gradColors.heatmapText}
         style={styles.calendar}

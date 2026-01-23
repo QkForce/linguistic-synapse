@@ -14,7 +14,7 @@ import { Intensity } from "@/types/stat";
 
 type ActivityCalendarProps = {
   monthYear: Date;
-  intensities: Intensity[];
+  activities: Record<string, Intensity>;
   bgColorScale: readonly [
     ColorValue,
     ColorValue,
@@ -64,7 +64,7 @@ function Cell({
 
 export function ActivityCalendar({
   monthYear,
-  intensities,
+  activities,
   bgColorScale,
   textColorScale,
   style,
@@ -93,18 +93,26 @@ export function ActivityCalendar({
       selectedYear === now.getFullYear() && selectedMonth === now.getMonth();
     for (let i = 0; i < startingPoint; i++) cells[0].push(empty_cell);
     for (let i = 1; i <= daysInMonth; i++) {
+      const monthString = String(selectedMonth + 1).padStart(2, "0");
+      const dayString = String(i).padStart(2, "0");
+      const dateString = `${selectedYear}-${monthString}-${dayString}`;
+      const isInActivity = dateString in activities;
       let isCurrentDay = isCurrentMonth && now.getDate() === i;
       cells[Math.floor((startingPoint + i - 1) / 7)].push({
         day: i,
-        bgColor: bgColorScale[intensities[i - 1] ?? 0],
+        bgColor: isInActivity
+          ? bgColorScale[activities[dateString] ?? 0]
+          : bgColorScale[0],
         borderColor: isCurrentDay ? colors.warning : "transparent",
-        textColor: textColorScale[intensities[i - 1] ?? 0],
+        textColor: isInActivity
+          ? textColorScale[activities[dateString] ?? 0]
+          : textColorScale[0],
       });
     }
     for (let i = 0; i < missingParts; i++)
       cells[Math.floor((startingPoint + daysInMonth + i) / 7)].push(empty_cell);
     return cells;
-  }, [monthYear, intensities]);
+  }, [monthYear, activities]);
 
   return (
     <View
