@@ -1,4 +1,5 @@
 import { LessonFinalStats, SentenceResult } from "@/types/lesson";
+import { LessonLog } from "@/types/stat";
 
 const TIME_TO_WORD_RATIO = 2000;
 const BASE_TIME = 3000;
@@ -36,7 +37,7 @@ const getLevenshteinDistance = (a: string, b: string): number => {
 
 const calculateSentenceAccuracy = (
   responseText: string,
-  targetText: string
+  targetText: string,
 ): number => {
   const response = responseText.trim().toLowerCase();
   const target = targetText.trim().toLowerCase();
@@ -53,7 +54,7 @@ const calculateSentenceAccuracy = (
 };
 
 export const getScoreForTimeEfficiency = (
-  timeEfficiency: number
+  timeEfficiency: number,
 ): TimeEfficiencyScore => {
   let status: TimeEfficiencyScore = "normal";
   if (timeEfficiency < 70) status = "slow";
@@ -69,7 +70,7 @@ export const prepareSentenceResult = (
   response_text: string,
   confidence: number,
   response_time_ms: number,
-  target_lang: string
+  target_lang: string,
 ): SentenceResult => {
   const accuracy = calculateSentenceAccuracy(response_text, target_text);
   const ideal_time_ms = calculateIdealTime(target_text, target_lang);
@@ -86,7 +87,7 @@ export const prepareSentenceResult = (
 };
 
 export const calculateLessonStats = (
-  results: SentenceResult[]
+  results: SentenceResult[],
 ): LessonFinalStats => {
   const total = results.length;
   if (total === 0)
@@ -134,5 +135,22 @@ export const calculateLessonStats = (
     time_efficiency: parseFloat(timeEfficiencyAvg.toFixed(2)),
     time_overuse_ms: timeOveruseMs,
     final_score: parseFloat(finalScore.toFixed(2)),
+  };
+};
+
+export const calculateMonthlyStats = (
+  logs: LessonLog[],
+): { monthlyAccuracy: number } => {
+  const total = logs.length;
+  if (total === 0) return { monthlyAccuracy: 0 };
+
+  let accuracyAvg = 0;
+  logs.forEach((log) => {
+    accuracyAvg += log.accuracy;
+  });
+  accuracyAvg = accuracyAvg / total;
+
+  return {
+    monthlyAccuracy: parseFloat(accuracyAvg.toFixed(2)),
   };
 };

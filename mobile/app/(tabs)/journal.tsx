@@ -12,6 +12,8 @@ import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { statService } from "@/services/statService";
 import { Intensity, LessonLog } from "@/types/stat";
 import { convertLogsToActivityRecord } from "@/utils/journalUtils";
+import { calculateMonthlyStats } from "@/utils/scoring";
+import { getDaysInMonth } from "@/utils/time";
 
 type ScreenStatus = "loading" | "success" | "error" | "empty";
 
@@ -45,6 +47,7 @@ export default function JournalScreen() {
       );
       if (!logs || logs.length === 0) {
         setStatus("empty");
+        setState({ logs: [], activities: {} });
         return;
       }
       const activities = convertLogsToActivityRecord(logs);
@@ -76,6 +79,9 @@ export default function JournalScreen() {
       />
     );
   }
+  const activDays = Object.keys(state.activities).length;
+  const daysInMonth = getDaysInMonth(date.getFullYear(), date.getMonth());
+  const { monthlyAccuracy } = calculateMonthlyStats(state.logs);
   return (
     <View
       style={[
@@ -131,6 +137,48 @@ export default function JournalScreen() {
         textColorScale={gradColors.heatmapText}
         style={styles.calendar}
       />
+
+      <View style={styles.summayRow}>
+        <View
+          style={[
+            styles.summary,
+            {
+              backgroundColor: colors.itemGlass,
+              borderColor: colors.itemBorder,
+            },
+          ]}
+        >
+          <IconSymbol name="bolt" size={18} color={colors.title} />
+          <Text
+            style={[styles.summaryText, { color: colors.text }]}
+            children={`${activDays} / ${daysInMonth}`}
+          />
+          <Text
+            style={[styles.summaryLabel, { color: colors.label }]}
+            children="Белсенді күндер"
+          />
+        </View>
+
+        <View
+          style={[
+            styles.summary,
+            {
+              backgroundColor: colors.successBackground,
+              borderColor: colors.itemBorder,
+            },
+          ]}
+        >
+          <IconSymbol name="target" size={18} color={colors.title} />
+          <Text
+            style={[styles.summaryText, { color: colors.text }]}
+            children={`${monthlyAccuracy}%`}
+          />
+          <Text
+            style={[styles.summaryLabel, { color: colors.label }]}
+            children="Орташа дәлдік"
+          />
+        </View>
+      </View>
     </View>
   );
 }
@@ -169,5 +217,30 @@ const styles = StyleSheet.create({
   calendar: {
     marginVertical: 30,
     marginHorizontal: 20,
+  },
+  summayRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 20,
+    gap: 12,
+  },
+  summary: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    justifyContent: "center",
+  },
+  summaryIcon: {
+    marginBottom: 8,
+  },
+  summaryText: {
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  summaryLabel: {
+    fontSize: 9,
+    fontWeight: "bold",
+    textTransform: "uppercase",
   },
 });
