@@ -11,18 +11,14 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { statService } from "@/services/statService";
 import { Intensity, LessonLog } from "@/types/stat";
+import { convertLogsToActivityRecord } from "@/utils/journalUtils";
 
 type ScreenStatus = "loading" | "success" | "error" | "empty";
 
-const activities: Record<string, Intensity> = {
-  "2026-01-01": 4,
-  "2026-01-02": 1,
-  "2026-01-04": 2,
-  "2026-01-09": 3,
-  "2026-01-10": 3,
-  "2026-01-11": 1,
-  "2026-01-12": 2,
-};
+interface JournalState {
+  logs: LessonLog[];
+  activities: Record<string, Intensity>;
+}
 
 export default function JournalScreen() {
   const insets = useSafeAreaInsets();
@@ -31,7 +27,10 @@ export default function JournalScreen() {
   const gradColors = useThemeGradient();
   const [status, setStatus] = useState<ScreenStatus>("loading");
   const [date, setDate] = useState<Date>(new Date());
-  const [state, setState] = useState<LessonLog[]>([]);
+  const [state, setState] = useState<JournalState>({
+    activities: {},
+    logs: [],
+  });
 
   useEffect(() => {
     loadData();
@@ -44,11 +43,12 @@ export default function JournalScreen() {
         date.getFullYear(),
         date.getMonth(),
       );
-      if (!logs) {
+      if (!logs || logs.length === 0) {
         setStatus("empty");
         return;
       }
-      setState(logs);
+      const activities = convertLogsToActivityRecord(logs);
+      setState({ logs, activities });
       setStatus("success");
     } catch (e) {
       setStatus("error");
@@ -126,7 +126,7 @@ export default function JournalScreen() {
 
       <ActivityCalendar
         monthYear={date}
-        activities={activities}
+        activities={state.activities}
         bgColorScale={gradColors.heatmapBg}
         textColorScale={gradColors.heatmapText}
         style={styles.calendar}
