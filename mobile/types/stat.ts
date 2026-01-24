@@ -11,6 +11,7 @@ export interface LessonLog {
   time_overuse_ms: number;
   final_score: number;
   created_at: string;
+  sentence_count?: number;
 }
 
 export interface SentenceLog {

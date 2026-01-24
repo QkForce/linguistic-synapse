@@ -9,6 +9,7 @@ import { LoadingState } from "@/components/states/LoadingState";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
+import { statService } from "@/services/statService";
 import { Intensity, LessonLog } from "@/types/stat";
 
 type ScreenStatus = "loading" | "success" | "error" | "empty";
@@ -39,12 +40,15 @@ export default function JournalScreen() {
   const loadData = async () => {
     try {
       setStatus("loading");
-      const data = [] as LessonLog[];
-      if (!data) {
+      const logs = await statService.getJournalLogs(
+        date.getFullYear(),
+        date.getMonth(),
+      );
+      if (!logs) {
         setStatus("empty");
         return;
       }
-      setState(data);
+      setState(logs);
       setStatus("success");
     } catch (e) {
       setStatus("error");

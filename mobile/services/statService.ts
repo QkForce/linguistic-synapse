@@ -1,4 +1,5 @@
-import { LogDetails, SentenceLog } from "@/types/stat";
+import { LessonLog, LogDetails, SentenceLog } from "@/types/stat";
+import { formatDate } from "@/utils/time";
 import { db } from "./db";
 
 export const statService = {
@@ -15,7 +16,7 @@ export const statService = {
         JOIN modules m ON l.module_id = m.id
         WHERE log.id = ?
       `,
-        [logId]
+        [logId],
       );
 
       if (!mainInfo) return null;
@@ -26,13 +27,41 @@ export const statService = {
         WHERE lesson_log_id = ?
         ORDER BY id ASC
       `,
-        [logId]
+        [logId],
       );
 
       return {
         ...mainInfo,
         sentences,
       };
+    } catch (error) {
+      console.error("Error fetching log details:", error);
+      return null;
+    }
+  },
+  getJournalLogs: async (
+    year: number,
+    month: number,
+  ): Promise<LessonLog[] | null> => {
+    try {
+      const startDate = formatDate(new Date(year, month, 1));
+      const endDate = formatDate(new Date(year, month + 1, 0, 23, 59, 59));
+      const lesson_logs = await db.getAllAsync<LessonLog>(
+        `
+        SELECT
+          ll.*,
+          (
+            SELECT COUNT(*) FROM sentence_logs sl
+            WHERE sl.lesson_log_id = ll.id
+          ) as sentence_count
+        FROM lesson_logs ll
+        WHERE ll.created_at BETWEEN ? AND ?
+        ORDER BY ll.created_at DESC
+      `,
+        [startDate, endDate],
+      );
+
+      return lesson_logs;
     } catch (error) {
       console.error("Error fetching log details:", error);
       return null;
