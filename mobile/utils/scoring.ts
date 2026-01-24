@@ -35,12 +35,20 @@ const getLevenshteinDistance = (a: string, b: string): number => {
   return matrix[b.length][a.length];
 };
 
+const normalizeText = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()\?¿!¡]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
 const calculateSentenceAccuracy = (
   responseText: string,
   targetText: string,
 ): number => {
-  const response = responseText.trim().toLowerCase();
-  const target = targetText.trim().toLowerCase();
+  const response = normalizeText(responseText || "");
+  const target = normalizeText(targetText);
 
   if (response === target) return 1.0;
   if (response.length === 0) return 0;
