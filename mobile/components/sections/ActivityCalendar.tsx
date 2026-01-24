@@ -11,6 +11,7 @@ import {
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Intensity } from "@/types/stat";
+import { getDaysInMonth } from "@/utils/time";
 
 type ActivityCalendarProps = {
   monthYear: Date;
@@ -76,7 +77,7 @@ export function ActivityCalendar({
     const selectedYear = monthYear.getFullYear();
     const selectedMonth = monthYear.getMonth();
     const firstDayOfMonth = new Date(selectedYear, selectedMonth, 1).getDay();
-    const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+    const daysInMonth = getDaysInMonth(selectedYear, selectedMonth);
     const startingPoint = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
     const empty_cell = {
       day: null,
