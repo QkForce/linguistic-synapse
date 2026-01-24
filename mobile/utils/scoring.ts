@@ -43,14 +43,14 @@ const calculateSentenceAccuracy = (
   const target = targetText.trim().toLowerCase();
 
   if (response === target) return 1.0;
+  if (response.length === 0) return 0;
 
   const distance = getLevenshteinDistance(response, target);
   const maxLength = Math.max(response.length, target.length);
+  let accuracy = (maxLength - distance) / maxLength;
+  accuracy = Math.max(0, accuracy);
 
-  // Егер қате саны мәтін ұзындығының 20%-ынан аспаса - 0.5 балл
-  if (distance <= maxLength * 0.2) return 0.5;
-
-  return 0;
+  return parseFloat(accuracy.toFixed(2));
 };
 
 export const getScoreForTimeEfficiency = (
