@@ -1,8 +1,15 @@
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { JournalItem } from "@/components/items/JournalItem";
 import { ActivityCalendar } from "@/components/sections/ActivityCalendar";
 import { ErrorState } from "@/components/states/ErrorState";
 import { LoadingState } from "@/components/states/LoadingState";
@@ -130,55 +137,82 @@ export default function JournalScreen() {
         </TouchableHighlight>
       </View>
 
-      <ActivityCalendar
-        monthYear={date}
-        activities={state.activities}
-        bgColorScale={gradColors.heatmapBg}
-        textColorScale={gradColors.heatmapText}
-        style={styles.calendar}
-      />
+      <ScrollView style={{ flex: 1 }}>
+        <ActivityCalendar
+          monthYear={date}
+          activities={state.activities}
+          bgColorScale={gradColors.heatmapBg}
+          textColorScale={gradColors.heatmapText}
+          style={styles.calendar}
+        />
 
-      <View style={styles.summayRow}>
-        <View
-          style={[
-            styles.summary,
-            {
-              backgroundColor: colors.itemGlass,
-              borderColor: colors.itemBorder,
-            },
-          ]}
-        >
-          <IconSymbol name="bolt" size={18} color={colors.title} />
+        <View style={styles.summayRow}>
+          <View
+            style={[
+              styles.summary,
+              {
+                backgroundColor: colors.itemGlass,
+                borderColor: colors.itemBorder,
+              },
+            ]}
+          >
+            <IconSymbol name="bolt" size={18} color={colors.title} />
+            <Text
+              style={[styles.summaryText, { color: colors.text }]}
+              children={`${activDays} / ${daysInMonth}`}
+            />
+            <Text
+              style={[styles.summaryLabel, { color: colors.label }]}
+              children="Белсенді күндер"
+            />
+          </View>
+
+          <View
+            style={[
+              styles.summary,
+              {
+                backgroundColor: colors.successBackground,
+                borderColor: colors.itemBorder,
+              },
+            ]}
+          >
+            <IconSymbol name="target" size={18} color={colors.title} />
+            <Text
+              style={[styles.summaryText, { color: colors.text }]}
+              children={`${monthlyAccuracy}%`}
+            />
+            <Text
+              style={[styles.summaryLabel, { color: colors.label }]}
+              children="Орташа дәлдік"
+            />
+          </View>
+        </View>
+
+        <View style={styles.monthlyLessonsHeader}>
           <Text
-            style={[styles.summaryText, { color: colors.text }]}
-            children={`${activDays} / ${daysInMonth}`}
+            style={[styles.monthlyLessonsTitle, { color: colors.label }]}
+            children="Айлық журнал"
           />
           <Text
-            style={[styles.summaryLabel, { color: colors.label }]}
-            children="Белсенді күндер"
+            style={[
+              styles.totalLessons,
+              { color: colors.label, backgroundColor: colors.itemGlass },
+            ]}
+            children={`${state.logs.length} сабақ`}
           />
         </View>
 
-        <View
-          style={[
-            styles.summary,
-            {
-              backgroundColor: colors.successBackground,
-              borderColor: colors.itemBorder,
-            },
-          ]}
-        >
-          <IconSymbol name="target" size={18} color={colors.title} />
-          <Text
-            style={[styles.summaryText, { color: colors.text }]}
-            children={`${monthlyAccuracy}%`}
-          />
-          <Text
-            style={[styles.summaryLabel, { color: colors.label }]}
-            children="Орташа дәлдік"
-          />
+        <View style={styles.lessonLogs}>
+          {state.logs.map((log, i) => (
+            <JournalItem
+              key={i}
+              dateString={log.created_at}
+              lesson_title={log.lesson_id.toString()}
+              accuracy={log.accuracy}
+            />
+          ))}
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -242,5 +276,28 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: "bold",
     textTransform: "uppercase",
+  },
+  monthlyLessonsHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 16,
+    marginHorizontal: 28,
+  },
+  monthlyLessonsTitle: {
+    fontSize: 10,
+    fontWeight: "700",
+    textTransform: "uppercase",
+  },
+  totalLessons: {
+    fontSize: 9,
+    fontWeight: "bold",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 18,
+  },
+  lessonLogs: {
+    marginTop: 16,
+    marginHorizontal: 20,
+    gap: 8,
   },
 });

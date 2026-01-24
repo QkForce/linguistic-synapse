@@ -28,3 +28,51 @@ export const formatDate = (date: Date) => {
 export const getDaysInMonth = (year: number, month: number): number => {
   return new Date(year, month + 1, 0).getDate();
 };
+
+const MONTHS_KK_SHORT = [
+  "Қаң",
+  "Ақп",
+  "Нау",
+  "Сәу",
+  "Мам",
+  "Мау",
+  "Шіл",
+  "Там",
+  "Қыр",
+  "Қаз",
+  "Қар",
+  "Жел",
+];
+
+export const getShortMonthName = (monthIndex: number): string => {
+  return MONTHS_KK_SHORT[monthIndex] || "";
+};
+
+// 2026-01-17 15:34:13
+export const parseDateString = (
+  dateString: string,
+): {
+  year: number;
+  month: number;
+  date: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  dateString: string;
+  timeString: string;
+} => {
+  const parts = dateString.split(" ");
+  const part_1 = parts[0].split("-");
+  const part_2 = parts[1].split(":");
+
+  return {
+    year: Number(part_1[0]),
+    month: Number(part_1[1]),
+    date: Number(part_1[2]),
+    hours: Number(part_2[0]),
+    minutes: Number(part_2[1]),
+    seconds: Number(part_2[2]),
+    dateString: parts[0],
+    timeString: parts[1],
+  };
+};
