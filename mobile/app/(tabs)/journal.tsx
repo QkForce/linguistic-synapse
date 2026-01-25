@@ -209,6 +209,7 @@ export default function JournalScreen() {
               dateString={log.created_at}
               lesson_title={log.lesson_title}
               accuracy={Math.round(log.accuracy)}
+              onPress={() => router.push(`/lesson-stats/${log.id}`)}
             />
           ))}
         </View>
@@ -299,5 +300,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginHorizontal: 20,
     gap: 8,
+    marginBottom: 8,
   },
 });

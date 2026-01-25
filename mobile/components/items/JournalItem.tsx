@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { getShortMonthName, parseDateString } from "@/utils/time";
@@ -8,18 +8,21 @@ type JournalItemProps = {
   dateString: string;
   lesson_title: string;
   accuracy: number;
+  onPress: () => void;
 };
 
 export function JournalItem({
   dateString,
   lesson_title,
   accuracy,
+  onPress,
 }: JournalItemProps) {
   const colors = useThemeColor();
   const { month, date, timeString } = parseDateString(dateString);
 
   return (
-    <View
+    <Pressable
+      onPress={onPress}
       style={[
         styles.container,
         { backgroundColor: colors.itemGlass, borderColor: colors.itemBorder },
@@ -72,7 +75,7 @@ export function JournalItem({
         </View>
         <IconSymbol name="chevron.right" size={20} color={colors.label} />
       </View>
-    </View>
+    </Pressable>
   );
 }
 
