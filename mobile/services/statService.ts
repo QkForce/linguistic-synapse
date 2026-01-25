@@ -50,11 +50,13 @@ export const statService = {
         `
         SELECT
           ll.*,
+          l.title AS lesson_title,
           (
             SELECT COUNT(*) FROM sentence_logs sl
             WHERE sl.lesson_log_id = ll.id
           ) as sentence_count
         FROM lesson_logs ll
+        JOIN lessons l ON ll.lesson_id = l.id
         WHERE ll.created_at BETWEEN ? AND ?
         ORDER BY ll.created_at DESC
       `,

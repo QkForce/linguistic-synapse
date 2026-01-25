@@ -80,15 +80,17 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     flexDirection: "row",
-    padding: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
     borderWidth: 0.5,
-    borderRadius: 18,
+    borderRadius: 12,
+    alignItems: "center",
   },
   date: {
     width: 40,
     height: 40,
     borderWidth: 0.5,
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -132,6 +134,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   accuracy: {
+    width: 45,
     borderRadius: 6,
     marginRight: 12,
     paddingHorizontal: 8,
@@ -140,6 +143,7 @@ const styles = StyleSheet.create({
   accuracyText: {
     fontSize: 10,
     fontWeight: "700",
+    textAlign: "right",
     textAlignVertical: "center",
   },
 });

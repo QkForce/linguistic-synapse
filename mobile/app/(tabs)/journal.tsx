@@ -207,8 +207,8 @@ export default function JournalScreen() {
             <JournalItem
               key={i}
               dateString={log.created_at}
-              lesson_title={log.lesson_id.toString()}
-              accuracy={log.accuracy}
+              lesson_title={log.lesson_title}
+              accuracy={Math.round(log.accuracy)}
             />
           ))}
         </View>

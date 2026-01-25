@@ -11,6 +11,7 @@ export interface LessonLog {
   time_overuse_ms: number;
   final_score: number;
   created_at: string;
+  lesson_title: string;
   sentence_count?: number;
 }
 
@@ -28,7 +29,6 @@ export interface SentenceLog {
 }
 
 export interface LogDetails extends LessonLog {
-  lesson_title: string;
   module_title: string;
   sentences: SentenceLog[];
 }
