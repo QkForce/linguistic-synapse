@@ -10,6 +10,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { JournalItem } from "@/components/items/JournalItem";
+import { MonthYearPickerModal } from "@/components/modals/MonthYearPickerModal";
 import { ActivityCalendar } from "@/components/sections/ActivityCalendar";
 import { ErrorState } from "@/components/states/ErrorState";
 import { LoadingState } from "@/components/states/LoadingState";
@@ -34,6 +35,7 @@ export default function JournalScreen() {
   const router = useRouter();
   const colors = useThemeColor();
   const gradColors = useThemeGradient();
+  const [isPickerOpen, setIsPickerOpen] = useState<boolean>(false);
   const [status, setStatus] = useState<ScreenStatus>("loading");
   const [date, setDate] = useState<Date>(new Date());
   const [state, setState] = useState<JournalState>({
@@ -69,6 +71,14 @@ export default function JournalScreen() {
     const newDate = new Date(date);
     newDate.setMonth(date.getMonth() + offset);
     setDate(newDate);
+  };
+
+  const changeMonthYear = (month: number, year: number) => {
+    const newDate = new Date(date);
+    newDate.setMonth(month);
+    newDate.setFullYear(year);
+    setDate(newDate);
+    setIsPickerOpen(false);
   };
 
   if (status === "loading") {
@@ -112,7 +122,7 @@ export default function JournalScreen() {
           <IconSymbol name="chevron.left" size={24} color={colors.title} />
         </TouchableHighlight>
 
-        <TouchableHighlight>
+        <TouchableHighlight onPress={() => setIsPickerOpen(true)}>
           <View style={{ flex: 1 }}>
             <Text style={[styles.monthTitle, { color: colors.title }]}>
               {date.toLocaleString("kk-KZ", { month: "long" })}
@@ -214,6 +224,15 @@ export default function JournalScreen() {
           ))}
         </View>
       </ScrollView>
+      {isPickerOpen && (
+        <MonthYearPickerModal
+          visible={isPickerOpen}
+          initialMonth={date.getMonth()}
+          initialYear={date.getFullYear()}
+          onClose={() => setIsPickerOpen(false)}
+          onApply={(month, year) => changeMonthYear(month, year)}
+        />
+      )}
     </View>
   );
 }
