@@ -75,7 +75,7 @@ export default function LessonScreen() {
       const data = lessonService.getExercisesByLessonId(
         Number(lessonId),
         nativeLang,
-        targetLang
+        targetLang,
       );
       if (!data || data.length === 0) {
         setStatus("empty");
@@ -109,7 +109,7 @@ export default function LessonScreen() {
       [
         { text: "Stay", style: "cancel" },
         { text: "Quit", style: "destructive", onPress: () => router.back() },
-      ]
+      ],
     );
   };
 
@@ -123,7 +123,7 @@ export default function LessonScreen() {
       state.translation,
       state.confidence === "sure" ? 1.0 : 0.5,
       endTime - state.startTime,
-      targetLang
+      targetLang,
     );
 
     const updatedResults = [...state.results, currentResult];
@@ -154,7 +154,7 @@ export default function LessonScreen() {
           native_lang: nativeLang,
           target_lang: targetLang,
         },
-        finalResults
+        finalResults,
       );
       Alert.alert("Керемет!", "Жаттығу аяқталды, нәтижелер сақталды.", [
         {
@@ -290,7 +290,7 @@ export default function LessonScreen() {
             },
           ]}
           multiline={true}
-          submitBehavior="blurAndSubmit"
+          autoFocus={true}
           returnKeyType="done"
           placeholder="Type translationhere…"
           placeholderTextColor={colors.placeholder}
