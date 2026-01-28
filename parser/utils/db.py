@@ -30,7 +30,7 @@ def create_tables():
 
 def get_unprocessed_videos(conn: sqlite3.Connection):
     cursor = conn.cursor()
-    cursor.execute("SELECT id FROM lessons WHERE processed=0")
+    cursor.execute("SELECT id FROM lessons WHERE processed='pending'")
     rows = cursor.fetchall()
     return rows
 
@@ -62,7 +62,7 @@ def insert_sentences(conn: sqlite3.Connection, data):
 
 def mark_video_processed(conn: sqlite3.Connection, lesson_id):
     cursor = conn.cursor()
-    cursor.execute("UPDATE lessons SET processed=1 WHERE id=?", (lesson_id,))
+    cursor.execute("UPDATE lessons SET processed='parsed' WHERE id=?", (lesson_id,))
 
 
 def insert_lesson(conn: sqlite3.Connection, id, title, number):
