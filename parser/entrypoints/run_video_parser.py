@@ -41,7 +41,7 @@ if __name__ == "__main__":
             lesson_id = lesson[0]
             lines = parse_video_file(lesson_id)
             data = [
-                (lesson_id, number, {"en": lines[number]})
+                (lesson_id, number, {"en_raw": lines[number]})
                 for number in lines.keys()
             ]
             db.insert_sentences(conn, data)
