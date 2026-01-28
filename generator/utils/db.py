@@ -6,8 +6,8 @@ from config.seeds import LANGUAGES_SEED
 
 
 @contextmanager
-def db_connection():
-    conn = sqlite3.connect(config.DB_PATH)
+def db_connection(db_path=None):
+    conn = sqlite3.connect(db_path or config.DB_PATH)
     try:
         conn.execute("PRAGMA foreign_keys = ON")
         yield conn
@@ -40,21 +40,32 @@ def seed_database(conn: sqlite3.Connection):
     print("[DB] The database has been seeded with initial data.")
 
 
-def insert_source(conn: sqlite3.Connection, name):
+def get_or_create_source(conn: sqlite3.Connection, name):
     cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO sources (name) VALUES (?)",
-        (name,),
-    )
+    cursor.execute("SELECT id FROM sources WHERE name = ?", (name,))
+    row = cursor.fetchone()
+    if row:
+        return row[0]
+
+    cursor.execute("INSERT INTO sources (name) VALUES (?)", (name,))
+    conn.commit()
     return cursor.lastrowid
 
 
-def insert_module(conn: sqlite3.Connection, source_id, title, description):
+def get_or_create_module(conn: sqlite3.Connection, source_id, title, description):
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO modules (title, description, source_id) VALUES (?, ?, ?)",
-        (title, description, source_id),
+        "SELECT id FROM modules WHERE source_id = ? AND title = ?", (source_id, title)
     )
+    row = cursor.fetchone()
+    if row:
+        return row[0]
+
+    cursor.execute(
+        "INSERT INTO modules (source_id, title, description) VALUES (?, ?, ?)",
+        (source_id, title, description),
+    )
+    conn.commit()
     return cursor.lastrowid
 
 
