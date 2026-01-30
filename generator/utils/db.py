@@ -82,7 +82,7 @@ def get_parsed_lessons(conn: sqlite3.Connection):
         """
         SELECT id, title, number
         FROM lessons
-        WHERE processed = 'parsed'
+        WHERE parse_start IS NOT NULL AND parse_end IS NOT NULL
         ORDER BY number ASC
     """
     )
@@ -148,10 +148,12 @@ def insert_sentence_translations(conn: sqlite3.Connection, translations: list):
     )
 
 
-def mark_lesson_corrected(conn: sqlite3.Connection, lesson_id):
+def mark_lesson_correcting(conn: sqlite3.Connection, lesson_id, state):
     cursor = conn.cursor()
+    column = "correct_start" if state == "start" else "correct_end"
     cursor.execute(
-        "UPDATE lessons SET processed = 'corrected' WHERE id = ?", (lesson_id,)
+        f"UPDATE lessons SET {column} = CURRENT_TIMESTAMP WHERE id = ?",
+        (lesson_id,),
     )
 
 

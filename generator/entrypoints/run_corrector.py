@@ -3,7 +3,7 @@ from utils.db import (
     get_parsed_lessons,
     get_raw_sentences,
     insert_sentence_translations,
-    mark_lesson_corrected,
+    mark_lesson_correcting,
 )
 from config.config import DB_PATH
 from config.prompts import CORRECTOR_TASK
@@ -17,6 +17,7 @@ def correct_db_sentences(ai):
     for lesson in lessons:
         l_id, title, number = lesson
         with db_connection(DB_PATH) as conn:
+            mark_lesson_correcting(conn, l_id, "start")
             raw_sentences = get_raw_sentences(conn, l_id)
 
             if not raw_sentences:
@@ -37,8 +38,7 @@ def correct_db_sentences(ai):
                     db_data.append((item["id"], "ru", item["ru"]))
 
                 insert_sentence_translations(conn, db_data)
-
-                mark_lesson_corrected(conn, l_id)
+                mark_lesson_correcting(conn, l_id, "end")
                 print(f"Successfully corrected: {title}")
 
 
