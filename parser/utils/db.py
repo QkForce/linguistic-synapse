@@ -28,9 +28,15 @@ def create_tables():
         print("[DB] The database tables have been created successfully.")
 
 
-def get_unprocessed_videos(conn: sqlite3.Connection):
+def get_unparsed_lessons(conn: sqlite3.Connection):
     cursor = conn.cursor()
-    cursor.execute("SELECT id FROM lessons WHERE processed='pending'")
+    cursor.execute(
+        """
+        SELECT id 
+        FROM lessons 
+        WHERE parse_start IS NULL OR parse_end IS NULL
+        """
+    )
     rows = cursor.fetchall()
     return rows
 
@@ -60,15 +66,24 @@ def insert_sentences(conn: sqlite3.Connection, data):
                 )
 
 
-def mark_video_processed(conn: sqlite3.Connection, lesson_id):
+def mark_lesson_parse_start(conn: sqlite3.Connection, lesson_id):
     cursor = conn.cursor()
-    cursor.execute("UPDATE lessons SET processed='parsed' WHERE id=?", (lesson_id,))
+    cursor.execute(
+        "UPDATE lessons SET parse_start=CURRENT_TIMESTAMP WHERE id=?", (lesson_id,)
+    )
 
 
-def insert_lesson(conn: sqlite3.Connection, id, title, number):
+def mark_lesson_parse_end(conn: sqlite3.Connection, lesson_id):
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE lessons SET parse_end=CURRENT_TIMESTAMP WHERE id=?", (lesson_id,)
+    )
+
+
+def insert_lesson(conn: sqlite3.Connection, id, title, number, duration):
     conn.execute(
-        "INSERT INTO lessons (id, title, number) VALUES (?, ?, ?)",
-        (id, title, number),
+        "INSERT INTO lessons (id, title, number, duration) VALUES (?, ?, ?, ?)",
+        (id, title, number, duration),
     )
 
 

@@ -10,7 +10,8 @@ def parse_and_insert(pl_url):
             video_id = lesson["id"]
             title = lesson["title"]
             number = lesson["number"]
-            db.insert_lesson(conn, video_id, title, number)
+            duration = lesson["duration"]
+            db.insert_lesson(conn, video_id, title, number, duration)
 
 
 if __name__ == "__main__":

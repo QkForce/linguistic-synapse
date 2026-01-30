@@ -3,7 +3,11 @@ CREATE TABLE
         id TEXT PRIMARY KEY,
         title TEXT,
         number INTEGER,
-        processed TEXT DEFAULT 'pending',
+        duration INTEGER,
+        parse_start DATETIME,
+        parse_end DATETIME,
+        correct_start DATETIME,
+        correct_end DATETIME,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
