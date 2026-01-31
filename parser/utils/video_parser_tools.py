@@ -55,7 +55,11 @@ def crop_roi(frame):
     return masked_frame
 
 
-def parse_frame(frame, on_sentence):
+def handle_sentence(lines_dict, number, sentence):
+    lines_dict[number] = sentence
+
+
+def parse_frame(frame, lines_dict):
     text = pytesseract.image_to_string(frame, lang="eng")
     text = text.replace("\n", " ")
     text = text.replace(".1", ".I")
@@ -66,22 +70,18 @@ def parse_frame(frame, on_sentence):
         sentence = sentence.strip()
         if len(sentence) < 4:
             continue
-        on_sentence(number, sentence)
+        handle_sentence(lines_dict, number, sentence)
 
 
 # === Распознавание текста ===
 @log_time
 def parse_frames(folder):
     lines = {}
-
-    def handle_sentence(number, sentence):
-        lines[number] = f"{number}. {sentence}"
-
     for fname in sorted(os.listdir(folder)):
         if fname.endswith(".png"):
             path = os.path.join(folder, fname)
             img = cv2.imread(path)
-            parse_frame(img, handle_sentence)
+            parse_frame(img, lines)
 
     return lines
 
@@ -91,10 +91,6 @@ def parse_video_frames(cap, frame_interval):
     # cap = cv2.VideoCapture(video_path)
     frame_count = 0
     lines = {}
-
-    def handle_sentence(number, sentence):
-        lines[number] = sentence
-
     prev_frame = None
     while True:
         ret, frame = cap.read()
@@ -113,7 +109,7 @@ def parse_video_frames(cap, frame_interval):
             continue
         prev_frame = frame.copy()
 
-        parse_frame(frame, handle_sentence)
+        parse_frame(frame, lines)
 
     cap.release()
     return lines
