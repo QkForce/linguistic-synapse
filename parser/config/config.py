@@ -17,3 +17,6 @@ OUTPUT_FILE = "output.txt"
 FRAME_INTERVAL = int(os.getenv("FRAME_INTERVAL", 30))
 VIDEO_QUALITY = os.getenv("VIDEO_QUALITY", "360")
 FX_FY = float(os.getenv("FX_FY", 0.75))
+WORD_BLACKLIST = [
+    word.strip() for word in os.getenv("WORD_BLACKLIST", "").split(",") if word.strip()
+]

@@ -71,20 +71,30 @@ def handle_sentence(lines_dict, number, sentence):
     lines_dict[number][sentence] = lines_dict[number].get(sentence, 0) + 1
 
 
+def have_blacklisted_word(text):
+    for word in config.WORD_BLACKLIST:
+        if word in text:
+            return True
+    return False
+
+
 def parse_frame(frame, lines_dict):
     text = pytesseract.image_to_string(frame, lang="eng", config=tesseract_config)
+    if have_blacklisted_word(text):
+        return
     print(text)
     print("\npytesseract.image_to_string:\n", text)
     text = text.replace("\n", " ")
     text = text.replace(".1", ".I")
-    # text = re.sub(r"\s+", " ", text)
-    matches = re.findall(r"(\d+)\.\s*([A-Za-z][^0-9]*?)(?=\s+\d+\.\s*|$)", text)
+    text = re.sub(r"[^a-zA-Z0-9.,!?\s]", "", text)
+    matches = re.findall(r"(\d+)\.\s*([A-Z].*?)(?=\s+\d+\.\s*|$)", text)
     print("\nmatches:\n", matches)
     for number_str, sentence in matches:
         number = int(number_str)
         sentence = sentence.strip()
         parts = re.split(r"\s{5,}", sentence)
         sentence = parts[0].strip()
+        sentence = re.sub(r"\s+", " ", sentence)
         if len(sentence) < 4:
             continue
         handle_sentence(lines_dict, number, sentence)
