@@ -9,6 +9,16 @@ import config.config as config
 
 # === Установка пути к Tesseract ===
 pytesseract.pytesseract.tesseract_cmd = config.TESSERACT_PATH
+tessedit_char_whitelist = (
+    "0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz?,' \""
+)
+tesseract_config = (
+    "--oem 3"
+    + " --psm 6"
+    + " -c"
+    + " preserve_interword_spaces=1"
+    + f' tessedit_char_whitelist="{tessedit_char_whitelist}"'
+)
 
 
 # === Извлечение кадров ===
@@ -56,18 +66,25 @@ def crop_roi(frame):
 
 
 def handle_sentence(lines_dict, number, sentence):
-    lines_dict[number] = sentence
+    if number not in lines_dict:
+        lines_dict[number] = {}
+    lines_dict[number][sentence] = lines_dict[number].get(sentence, 0) + 1
 
 
 def parse_frame(frame, lines_dict):
-    text = pytesseract.image_to_string(frame, lang="eng")
+    text = pytesseract.image_to_string(frame, lang="eng", config=tesseract_config)
+    print(text)
+    print("\npytesseract.image_to_string:\n", text)
     text = text.replace("\n", " ")
     text = text.replace(".1", ".I")
+    # text = re.sub(r"\s+", " ", text)
     matches = re.findall(r"(\d+)\.\s*([A-Za-z][^0-9]*?)(?=\s+\d+\.\s*|$)", text)
-    # print(matches)
+    print("\nmatches:\n", matches)
     for number_str, sentence in matches:
         number = int(number_str)
         sentence = sentence.strip()
+        parts = re.split(r"\s{5,}", sentence)
+        sentence = parts[0].strip()
         if len(sentence) < 4:
             continue
         handle_sentence(lines_dict, number, sentence)
@@ -97,10 +114,9 @@ def parse_video_frames(cap, frame_interval):
         if not ret:
             break
         frame_count += 1
-
         if frame_count % frame_interval != 0:
             continue
-        frame = crop_roi(frame)
+        # frame = crop_roi(frame)
         frame = cv2.resize(frame, (0, 0), fx=config.FX_FY, fy=config.FX_FY)
         # cv2.imshow("ROI", frame)
         # cv2.waitKey(0)
@@ -108,8 +124,16 @@ def parse_video_frames(cap, frame_interval):
         if prev_frame is not None and np.array_equal(frame, prev_frame):
             continue
         prev_frame = frame.copy()
-
         parse_frame(frame, lines)
-
     cap.release()
-    return lines
+    best_sentences = {}
+    for number, sentence_dict in lines.items():
+        if not sentence_dict:
+            continue
+        best_sentence = max(sentence_dict.items(), key=lambda x: x[1])
+        text = best_sentence[0]
+        count = best_sentence[1]
+        if count > best_sentences.get(text, (0, -1))[1]:
+            best_sentences[text] = (number, count)
+    final_lines = {v[0]: text for text, v in best_sentences.items()}
+    return final_lines
