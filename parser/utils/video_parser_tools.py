@@ -78,6 +78,35 @@ def have_blacklisted_word(text):
     return False
 
 
+def filter_outliers_mad(numbers, threshold=3.5):
+    """
+    numbers: OCR-ден алынған барлық сандар тізімі (мысалы, [1, 2, 419, 3, 4, 120])
+    threshold: сезімталдық (неғұрлым жоғары болса, соғұрлым "кешірімді")
+    """
+    if not numbers:
+        return []
+
+    data = np.array(numbers)
+    median = np.median(data)
+
+    # Медианадан ауытқуларды есептеу
+    abs_deviation = np.abs(data - median)
+
+    # MAD мәнін есептеу
+    mad = np.median(abs_deviation)
+
+    # Егер MAD 0 болса (барлық сандар бірдей болса), тексеруді өткізіп жіберу
+    if mad == 0:
+        return numbers
+
+    # Z-score-ға ұқсас мән (Modified Z-score)
+    # 0.6745 — қалыпты үлестірімге келтіру үшін қолданылатын тұрақты сан
+    modified_z_scores = 0.6745 * abs_deviation / mad
+
+    # Тек шектен аспаған сандарды қалдыру
+    return data[modified_z_scores < threshold].tolist()
+
+
 def parse_frame(frame, lines_dict):
     text = pytesseract.image_to_string(frame, lang="eng", config=tesseract_config)
     if have_blacklisted_word(text):
@@ -145,5 +174,9 @@ def parse_video_frames(cap, frame_interval):
         count = best_sentence[1]
         if count > best_sentences.get(text, (0, -1))[1]:
             best_sentences[text] = (number, count)
-    final_lines = {v[0]: text for text, v in best_sentences.items()}
+    numbers = [v[0] for v in best_sentences.values()]
+    filtered_numbers = filter_outliers_mad(numbers)
+    final_lines = {
+        v[0]: text for text, v in best_sentences.items() if v[0] in filtered_numbers
+    }
     return final_lines
