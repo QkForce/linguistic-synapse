@@ -4,6 +4,8 @@ CREATE TABLE
         title TEXT,
         number INTEGER,
         duration INTEGER,
+        download_start DATETIME,
+        download_end DATETIME,
         parse_start DATETIME,
         parse_end DATETIME,
         correct_start DATETIME,

@@ -20,8 +20,10 @@ def parse_video_stream(youtube_url):
 
 
 @log_time
-def parse_video_file(lesson_id):
+def parse_video_file(conn, lesson_id):
+    db.mark_lesson_action(conn, db.ActionType.DOWNLOAD_START, lesson_id)
     video_path = download_video(lesson_id, config.VIDEO_QUALITY)
+    db.mark_lesson_action(conn, db.ActionType.DOWNLOAD_END, lesson_id)
 
     if not video_path:
         return None
@@ -39,13 +41,13 @@ if __name__ == "__main__":
     for lesson in lessons:
         with db.db_connection() as conn:
             lesson_id = lesson[0]
-            db.mark_lesson_parse_start(conn, lesson_id)
-            lines = parse_video_file(lesson_id)
+            db.mark_lesson_action(conn, db.ActionType.PARSE_START, lesson_id)
+            lines = parse_video_file(conn, lesson_id)
             data = [
                 (lesson_id, number, {"en_raw": lines[number]})
                 for number in lines.keys()
             ]
             db.insert_sentences(conn, data)
-            db.mark_lesson_parse_end(conn, lesson_id)
+            db.mark_lesson_action(conn, db.ActionType.PARSE_END, lesson_id)
             print(f"[✓] Готово! YT_ID: {lesson_id}")
     print(f"[✓] Готово! Результат в {config.OUTPUT_FILE}")

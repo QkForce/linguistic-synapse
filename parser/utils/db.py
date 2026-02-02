@@ -1,7 +1,17 @@
 import os
 import sqlite3
 from contextlib import contextmanager
+from enum import StrEnum
 import config.config as config
+
+
+class ActionType(StrEnum):
+    DOWNLOAD_START = "download_start"
+    DOWNLOAD_END = "download_end"
+    PARSE_START = "parse_start"
+    PARSE_END = "parse_end"
+    CORRECT_START = "correct_start"
+    CORRECT_END = "correct_end"
 
 
 @contextmanager
@@ -66,17 +76,11 @@ def insert_sentences(conn: sqlite3.Connection, data):
                 )
 
 
-def mark_lesson_parse_start(conn: sqlite3.Connection, lesson_id):
+def mark_lesson_action(conn: sqlite3.Connection, action_type: ActionType, lesson_id):
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE lessons SET parse_start=CURRENT_TIMESTAMP WHERE id=?", (lesson_id,)
-    )
-
-
-def mark_lesson_parse_end(conn: sqlite3.Connection, lesson_id):
-    cursor = conn.cursor()
-    cursor.execute(
-        "UPDATE lessons SET parse_end=CURRENT_TIMESTAMP WHERE id=?", (lesson_id,)
+        f"UPDATE lessons SET {action_type}=CURRENT_TIMESTAMP WHERE id=?",
+        (lesson_id,),
     )
 
 
