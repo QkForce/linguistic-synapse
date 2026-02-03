@@ -115,7 +115,7 @@ def parse_frame(frame, lines_dict):
     print("\npytesseract.image_to_string:\n", text)
     text = text.replace("\n", " ")
     text = text.replace(".1", ".I")
-    text = re.sub(r"[^a-zA-Z0-9.,!?\s]", "", text)
+    # text = re.sub(r"[^a-zA-Z0-9.,!?\s]", "", text)
     matches = re.findall(r"(\d+)\.\s*([A-Z].*?)(?=\s+\d+\.\s*|$)", text)
     print("\nmatches:\n", matches)
     for number_str, sentence in matches:
