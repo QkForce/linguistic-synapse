@@ -111,7 +111,6 @@ def parse_frame(frame, lines_dict):
     text = pytesseract.image_to_string(frame, lang="eng", config=tesseract_config)
     if have_blacklisted_word(text):
         return
-    print(text)
     print("\npytesseract.image_to_string:\n", text)
     text = text.replace("\n", " ")
     text = text.replace(".1", ".I")
