@@ -20,3 +20,8 @@ FX_FY = float(os.getenv("FX_FY", 0.75))
 WORD_BLACKLIST = [
     word.strip() for word in os.getenv("WORD_BLACKLIST", "").split(",") if word.strip()
 ]
+# 0.6745 - The coefficient corresponding to the 75th percentile of the normal distribution.
+MAD_CONSISTENCY_CONSTANT = 0.6745
+# The threshold value proposed by Iglewicz and Hoaglin.
+# 3.5 is the most optimal ("golden mean") indicator for detecting anomalies.
+ANOMALY_THRESHOLD = 3.5

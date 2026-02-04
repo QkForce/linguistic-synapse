@@ -78,7 +78,7 @@ def have_blacklisted_word(text):
     return False
 
 
-def filter_outliers_mad(numbers, threshold=3.5):
+def filter_outliers_mad(numbers, threshold=config.ANOMALY_THRESHOLD):
     """
     numbers: OCR-ден алынған барлық сандар тізімі (мысалы, [1, 2, 419, 3, 4, 120])
     threshold: сезімталдық (неғұрлым жоғары болса, соғұрлым "кешірімді")
@@ -99,9 +99,8 @@ def filter_outliers_mad(numbers, threshold=3.5):
     if mad == 0:
         return numbers
 
-    # Z-score-ға ұқсас мән (Modified Z-score)
-    # 0.6745 — қалыпты үлестірімге келтіру үшін қолданылатын тұрақты сан
-    modified_z_scores = 0.6745 * abs_deviation / mad
+    # Өзгертілген Z-баллдарын есептеу
+    modified_z_scores = config.MAD_CONSISTENCY_CONSTANT * abs_deviation / mad
 
     # Тек шектен аспаған сандарды қалдыру
     return data[modified_z_scores < threshold].tolist()
