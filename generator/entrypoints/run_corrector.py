@@ -21,7 +21,7 @@ def correct_db_sentences(ai):
             raw_sentences = get_raw_sentences(conn, l_id)
 
             if not raw_sentences:
-                continue
+                raise Exception(f"No raw sentences found for lesson {l_id}")
 
             print(f"Processing Lesson {number}: {l_id}")
 
@@ -31,16 +31,22 @@ def correct_db_sentences(ai):
                 response_schema=CORRECTOR_TASK["response_schema"],
             )
 
-            if result and isinstance(result, list):
-                db_data = []
-                for item in result:
-                    db_data.append((item["id"], "en", item["en"]))
-                    db_data.append((item["id"], "ru", item["ru"]))
-                    db_data.append((item["id"], "kk", item["kk"]))
+            if not result or not isinstance(result, list):
+                print(f"AI returned no valid result for lesson {l_id}")
+                raise Exception("AI returned no valid result")
+            if len(result) != len(raw_sentences):
+                print(f"AI returned incomplete result for lesson {l_id}")
+                raise Exception("AI returned incomplete result")
 
-                insert_sentence_translations(conn, db_data)
-                mark_lesson_correcting(conn, l_id, "end")
-                print(f"Successfully corrected: {title}")
+            db_data = []
+            for item in result:
+                db_data.append((item["id"], "en", item["en"]))
+                db_data.append((item["id"], "ru", item["ru"]))
+                db_data.append((item["id"], "kk", item["kk"]))
+
+            insert_sentence_translations(conn, db_data)
+            mark_lesson_correcting(conn, l_id, "end")
+            print(f"Successfully corrected: {title}")
 
 
 if __name__ == "__main__":
