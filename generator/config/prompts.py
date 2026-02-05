@@ -12,7 +12,7 @@ CORRECTOR_TASK: AIConfig = {
         "Саған YouTube видеосынан OCR арқылы алынған шикі сөйлемдер беріледі.\n\n"
         "Тапсырма:\n"
         "1. OCR қателерін түзе (мысалы, 'h3llo' -> 'hello').\n"
-        "2. Сөйлемді табиғи орыс тіліне аудар.\n"
+        "2. Сөйлемді табиғи орыс және қазақ тіліне аудар.\n"
         "3. Форматты сақта: ID өзгермеуі тиіс."
     ),
     "response_schema": {
@@ -23,8 +23,9 @@ CORRECTOR_TASK: AIConfig = {
                 "id": {"type": "integer"},
                 "en": {"type": "string"},
                 "ru": {"type": "string"},
+                "kk": {"type": "string"},
             },
-            "required": ["id", "en", "ru"],
+            "required": ["id", "en", "ru", "kk"],
         },
     },
 }

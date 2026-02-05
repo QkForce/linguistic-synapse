@@ -36,6 +36,7 @@ def correct_db_sentences(ai):
                 for item in result:
                     db_data.append((item["id"], "en", item["en"]))
                     db_data.append((item["id"], "ru", item["ru"]))
+                    db_data.append((item["id"], "kk", item["kk"]))
 
                 insert_sentence_translations(conn, db_data)
                 mark_lesson_correcting(conn, l_id, "end")
