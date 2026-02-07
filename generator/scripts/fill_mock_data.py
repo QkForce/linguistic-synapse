@@ -1,48 +1,53 @@
+import sqlite3
 from utils.db import (
     db_connection,
-    get_or_create_source,
-    get_or_create_module,
-    insert_lesson,
+    get_or_create_category,
     insert_sentences,
-    insert_lesson_log,
+    insert_session_log,
 )
-from config.mock_data import MODULES, LESSON_LOGS
+from config.mock_data import CATEGORIES, SESSION_LOGS
 
 
-def fill_mock_data():
-    with db_connection() as conn:
-        source_id = get_or_create_source(conn, "Mock Source")
-        for module in MODULES:
-            module_id = get_or_create_module(
-                conn, source_id, module["title"], module["description"]
+def fill_mock_categories(conn: sqlite3.Connection):
+    for category in CATEGORIES:
+        category_id = get_or_create_category(
+            conn,
+            category["title"],
+        )
+        sentence_data = [
+            (
+                category_id,
+                sentence["number"],
+                {
+                    "en": sentence.get("en", ""),
+                    "ru": sentence.get("ru", ""),
+                    "kk": sentence.get("kk", ""),
+                },
             )
-            for lesson in module["lessons"]:
-                lesson_id = insert_lesson(conn, module_id, lesson["title"])
-                sentence_data = [
-                    (
-                        lesson_id,
-                        sentence["number"],
-                        {
-                            "en": sentence.get("en", ""),
-                            "ru": sentence.get("ru", ""),
-                            "kk": sentence.get("kk", ""),
-                        },
-                    )
-                    for sentence in lesson["sentences"]
-                ]
-                insert_sentences(conn, sentence_data)
-    with db_connection() as conn:
-        for log in LESSON_LOGS:
-            insert_lesson_log(
-                conn,
-                log["lesson_id"],
-                log["accuracy"],
-                log["confidence"],
-                log["time_efficiency"],
-                log["final_score"],
-            )
-    print("✅ Mock деректер сәтті енгізілді!")
+            for sentence in category["sentences"]
+        ]
+        insert_sentences(conn, sentence_data)
+
+
+def fill_mock_session_logs(conn: sqlite3.Connection):
+    for log in SESSION_LOGS:
+        insert_session_log(
+            conn,
+            log["category_id"],
+            log["native_lang"],
+            log["target_lang"],
+            log["total_time_ms"],
+            log["ideal_time_ms"],
+            log["accuracy"],
+            log["confidence"],
+            log["time_efficiency"],
+            log["time_overuse_ms"],
+            log["final_score"],
+        )
 
 
 if __name__ == "__main__":
-    fill_mock_data()
+    with db_connection() as conn:
+        fill_mock_categories(conn)
+        fill_mock_session_logs(conn)
+    print("✅ Mock деректер сәтті енгізілді!")

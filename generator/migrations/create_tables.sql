@@ -1,33 +1,14 @@
 CREATE TABLE
-  IF NOT EXISTS sources (
+  IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE,
+    title TEXT UNIQUE NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-
-CREATE TABLE
-  IF NOT EXISTS modules (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    description TEXT,
-    source_id INTEGER NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (source_id) REFERENCES sources (id) ON DELETE CASCADE
-  );
-
-CREATE TABLE
-  IF NOT EXISTS lessons (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    module_id INTEGER NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (module_id) REFERENCES modules (id) ON DELETE CASCADE
   );
 
 CREATE TABLE
   IF NOT EXISTS sentences (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    lesson_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
     number INTEGER,
     next_review DATE DEFAULT (date ('now')),
     interval INTEGER DEFAULT 1,
@@ -35,7 +16,7 @@ CREATE TABLE
     reps INTEGER DEFAULT 0,
     lapses INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (lesson_id) REFERENCES lessons (id) ON DELETE CASCADE
+    FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE
   );
 
 CREATE TABLE
@@ -58,9 +39,9 @@ CREATE TABLE
   );
 
 CREATE TABLE
-  IF NOT EXISTS lesson_logs (
+  IF NOT EXISTS session_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    lesson_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
     native_lang TEXT,
     target_lang TEXT,
     total_time_ms INTEGER,
@@ -71,13 +52,13 @@ CREATE TABLE
     time_overuse_ms REAL,
     final_score REAL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (lesson_id) REFERENCES lessons (id)
+    FOREIGN KEY (category_id) REFERENCES categories (id)
   );
 
 CREATE TABLE
   IF NOT EXISTS sentence_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    lesson_log_id INTEGER,
+    session_log_id INTEGER,
     sentence_id INTEGER,
     native_text TEXT,
     target_text TEXT,
@@ -86,15 +67,11 @@ CREATE TABLE
     confidence REAL,
     response_time_ms INTEGER,
     ideal_time_ms INTEGER,
-    FOREIGN KEY (lesson_log_id) REFERENCES lesson_logs (id),
+    FOREIGN KEY (session_log_id) REFERENCES session_logs (id) ON DELETE CASCADE,
     FOREIGN KEY (sentence_id) REFERENCES sentences (id)
   );
 
-CREATE INDEX IF NOT EXISTS idx_modules_source ON modules (source_id);
-
-CREATE INDEX IF NOT EXISTS idx_lessons_module ON lessons (module_id);
-
-CREATE INDEX IF NOT EXISTS idx_sentences_lesson ON sentences (lesson_id);
+CREATE INDEX IF NOT EXISTS idx_sentences_category ON sentences (category_id);
 
 CREATE INDEX IF NOT EXISTS idx_sentences_srs_queue ON sentences (next_review, reps, ease_factor);
 
@@ -102,6 +79,6 @@ CREATE INDEX IF NOT EXISTS idx_translations_sentence ON sentence_translations (s
 
 CREATE INDEX IF NOT EXISTS idx_translations_lang ON sentence_translations (lang);
 
-CREATE INDEX IF NOT EXISTS idx_lesson_logs_created_at ON lesson_logs (created_at);
+CREATE INDEX IF NOT EXISTS idx_session_logs_created_at ON session_logs (created_at);
 
-CREATE INDEX IF NOT EXISTS idx_sentence_logs_lesson_log ON sentence_logs (lesson_log_id);
+CREATE INDEX IF NOT EXISTS idx_sentence_logs_session_log ON sentence_logs (session_log_id);

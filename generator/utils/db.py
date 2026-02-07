@@ -40,40 +40,15 @@ def seed_database(conn: sqlite3.Connection):
     print("[DB] The database has been seeded with initial data.")
 
 
-def get_or_create_source(conn: sqlite3.Connection, name):
+def get_or_create_category(conn: sqlite3.Connection, title):
     cursor = conn.cursor()
-    cursor.execute("SELECT id FROM sources WHERE name = ?", (name,))
+    cursor.execute(
+        "INSERT OR IGNORE INTO categories (title) VALUES (?)",
+        (title,),
+    )
+    cursor.execute("SELECT id FROM categories WHERE title = ?", (title,))
     row = cursor.fetchone()
-    if row:
-        return row[0]
-
-    cursor.execute("INSERT INTO sources (name) VALUES (?)", (name,))
-    return cursor.lastrowid
-
-
-def get_or_create_module(conn: sqlite3.Connection, source_id, title, description):
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT id FROM modules WHERE source_id = ? AND title = ?", (source_id, title)
-    )
-    row = cursor.fetchone()
-    if row:
-        return row[0]
-
-    cursor.execute(
-        "INSERT INTO modules (source_id, title, description) VALUES (?, ?, ?)",
-        (source_id, title, description),
-    )
-    return cursor.lastrowid
-
-
-def insert_lesson(conn: sqlite3.Connection, module_id, title):
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO lessons (title, module_id) VALUES (?, ?)",
-        (title, module_id),
-    )
-    return cursor.lastrowid
+    return row[0] if row else None
 
 
 def get_parsed_lessons(conn: sqlite3.Connection):
@@ -91,17 +66,17 @@ def get_parsed_lessons(conn: sqlite3.Connection):
 
 def insert_sentences(conn: sqlite3.Connection, data):
     """
-    data: list of tuples (lesson_id, number, translations_dict)
+    data: list of tuples (category_id, number, translations_dict)
     """
     cursor = conn.cursor()
-    last_id = None
-    for lesson_id, number, translations in data:
+    sentence_ids = []
+    for category_id, number, translations in data:
         cursor.execute(
-            "INSERT INTO sentences (lesson_id, number) VALUES (?, ?)",
-            (lesson_id, number),
+            "INSERT INTO sentences (category_id, number) VALUES (?, ?)",
+            (category_id, number),
         )
         sentence_id = cursor.lastrowid
-        last_id = sentence_id
+        sentence_ids.append(sentence_id)
 
         for lang, text in translations.items():
             if text and text.strip():
@@ -113,7 +88,7 @@ def insert_sentences(conn: sqlite3.Connection, data):
                     """,
                     (sentence_id, lang.lower(), text.strip()),
                 )
-    return last_id
+    return sentence_ids
 
 
 def get_raw_sentences(conn: sqlite3.Connection, lesson_id: str):
@@ -157,21 +132,48 @@ def mark_lesson_correcting(conn: sqlite3.Connection, lesson_id, state):
     )
 
 
-def insert_lesson_log(
+def insert_session_log(
     conn: sqlite3.Connection,
-    lesson_id,
+    category_id,
+    native_lang,
+    target_lang,
+    total_time_ms,
+    ideal_time_ms,
     accuracy,
     confidence,
     time_efficiency,
+    time_overuse_ms,
     final_score,
 ):
     cursor = conn.cursor()
     cursor.execute(
         """
-        INSERT INTO lesson_logs 
-        (lesson_id, accuracy, confidence, time_efficiency, final_score) 
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO session_logs 
+        (
+            category_id,
+            native_lang,
+            target_lang,
+            total_time_ms,
+            ideal_time_ms,
+            accuracy,
+            confidence,
+            time_efficiency,
+            time_overuse_ms,
+            final_score
+        ) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
-        (lesson_id, accuracy, confidence, time_efficiency, final_score),
+        (
+            category_id,
+            native_lang,
+            target_lang,
+            total_time_ms,
+            ideal_time_ms,
+            accuracy,
+            confidence,
+            time_efficiency,
+            time_overuse_ms,
+            final_score,
+        ),
     )
     return cursor.lastrowid
