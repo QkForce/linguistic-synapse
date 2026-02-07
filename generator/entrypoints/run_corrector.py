@@ -6,7 +6,7 @@ from utils.db import (
     insert_sentence_translations,
     mark_lesson_correcting,
 )
-from config.config import DB_PATH
+from config.config import CORRECTOR_DELAY_SECONDS, DB_PATH
 from config.prompts import CORRECTOR_TASK
 from utils.ai_client import AIGenerator
 
@@ -51,7 +51,7 @@ def correct_lessons(ai):
         lessons = get_parsed_lessons(conn)
     for lesson in lessons:
         correct_lesson(lesson, ai)
-        time.sleep(30)
+        time.sleep(CORRECTOR_DELAY_SECONDS)
 
 
 if __name__ == "__main__":
