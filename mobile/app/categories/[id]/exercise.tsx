@@ -163,7 +163,7 @@ export default function ExerciseScreen() {
           text: "OK",
           onPress: () =>
             router.replace({
-              pathname: `/lesson-stats/[logId]`,
+              pathname: `/session-stats/[logId]`,
               params: { logId: logId || "" },
             }),
         },
