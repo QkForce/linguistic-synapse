@@ -142,11 +142,11 @@ export default function ExerciseScreen() {
         results: updatedResults,
       }));
     } else {
-      finishLesson(updatedResults);
+      finishSession(updatedResults);
     }
   };
 
-  const finishLesson = (finalResults: SentenceResult[]) => {
+  const finishSession = (finalResults: SentenceResult[]) => {
     try {
       const stats = calculateSessionStats(finalResults);
       const logId = exerciseService.saveExerciseResults(
@@ -192,7 +192,7 @@ export default function ExerciseScreen() {
     return (
       <EmptyState
         title="Data not found"
-        description="Currently, lessons for this section are not in the database or have not been loaded."
+        description="Currently, sentences for this section are not in the database or have not been loaded."
         onPressClose={() => router.back()}
       />
     );
