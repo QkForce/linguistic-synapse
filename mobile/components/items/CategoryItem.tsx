@@ -7,25 +7,21 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
-import { ProgressBar } from "@/components/ProgressBar";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
+import { IconSymbol } from "../ui/IconSymbol";
 
-interface ModuleItemProps {
+interface CategoryItemProps {
   title: string;
-  description: string;
-  totalLessons: number;
-  completedLessons: number;
+  totalSentences: number;
   onPress?: () => void;
 }
 
-export function ModuleItem({
+export function CategoryItem({
   title,
-  description,
-  totalLessons,
-  completedLessons,
+  totalSentences,
   onPress,
-}: ModuleItemProps) {
+}: CategoryItemProps) {
   const colors = useThemeColor();
   const gradColors = useThemeGradient("brand");
   const scale = useSharedValue(1);
@@ -62,31 +58,25 @@ export function ModuleItem({
               },
             ]}
           >
-            <Text
-              style={[
-                styles.title,
-                { color: colors.title, textShadowColor: colors.titleShadow },
-              ]}
-            >
-              {title}
-            </Text>
-            <Text style={[styles.description, { color: colors.description }]}>
-              {description}
-            </Text>
-            <Text
-              style={[styles.progressLabel, { color: colors.description }]}
-            >{`${completedLessons}/${totalLessons}`}</Text>
-
-            <ProgressBar
-              current={completedLessons}
-              total={totalLessons}
-              style={[
-                styles.progressContainer,
-                { backgroundColor: colors.progressTrack },
-              ]}
-              indicatorStyle={styles.progressIndicator}
-              indicatorGradient={gradColors}
-            />
+            <View style={[styles.ava, { borderColor: colors.itemBorder }]}>
+              <Text
+                style={[styles.avaText, { color: colors.title }]}
+                children={title.charAt(0)}
+              />
+            </View>
+            <View>
+              <Text
+                style={[styles.title, { color: colors.text }]}
+                children={title}
+              />
+              <View style={styles.totalSentencesRow}>
+                <IconSymbol name="layers" size={10} color={colors.text} />
+                <Text
+                  style={[styles.totalSentences, { color: colors.text }]}
+                  children={`${totalSentences} сөйлем`}
+                />
+              </View>
+            </View>
           </View>
         </Animated.View>
       </Pressable>
@@ -109,6 +99,8 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   innerGlass: {
+    flexDirection: "row",
+    gap: 16,
     borderWidth: 1,
     borderRadius: 16,
     padding: 16,
@@ -116,30 +108,29 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 12,
   },
-  title: {
+  ava: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avaText: {
     fontSize: 18,
-    fontWeight: "700",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 8,
+    fontWeight: "black",
   },
-  description: {
-    marginTop: 4,
+  title: {
     fontSize: 14,
+    fontWeight: "700",
   },
-  progressLabel: {
-    alignSelf: "flex-end",
-    marginTop: 12,
-    fontSize: 12,
-    fontWeight: "600",
+  totalSentencesRow: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  progressContainer: {
-    height: 6,
-    borderRadius: 4,
-    overflow: "hidden",
-    marginTop: 10,
-  },
-  progressIndicator: {
-    height: "100%",
-    borderRadius: 4,
+  totalSentences: {
+    marginTop: 2,
+    marginLeft: 2,
+    fontSize: 10,
   },
 });

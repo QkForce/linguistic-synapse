@@ -1,47 +1,62 @@
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { BackgroundSVG } from "@/components/BackgroundSVG";
-import { ParallaxFlatList } from "@/components/ParallaxFlatList";
-import { ModuleItem } from "@/components/items/ModuleItem";
+import { CategoryItem } from "@/components/items/CategoryItem";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Module, moduleService } from "@/services/moduleService";
-// import { modules } from "@/data/modules";
+import { Category, categoryService } from "@/services/categoryService";
 
-export default function ModulesScreen() {
+export default function CategoriesScreen() {
   const router = useRouter();
-  const backgroundColor = useThemeColor({}, "background");
   const insets = useSafeAreaInsets();
-  const [modules, setModules] = useState<Module[]>([]);
+  const colors = useThemeColor();
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    const data = moduleService.getAllModules();
-    setModules(data);
+    const data = categoryService.getAllCategories();
+    setCategories(data);
   }, []);
 
   return (
-    <View style={[styles.container, { backgroundColor }]}>
-      <BackgroundSVG />
-      <View style={[styles.content, { paddingTop: insets.top }]}>
-        <ParallaxFlatList
-          title="Linguistic Synapse"
-          data={modules}
-          renderItem={({ item }) => (
-            <ModuleItem
-              title={item.title || "no title"}
-              description={item.description || "no description"}
-              onPress={() => router.push(`/modules/${item.id}/`)}
-              totalLessons={item.totalLessons || 0}
-              completedLessons={item.completedLessons || 0}
-            />
-          )}
-          keyExtractor={(item) => item.id.toString()}
-          style={styles.listContainer}
-          contentContainerStyle={styles.listContentContainer}
-        />
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: colors.background, paddingTop: insets.top },
+      ]}
+    >
+      {/* Header */}
+      <View style={styles.header}>
+        <Text
+          style={[
+            styles.title,
+            { color: colors.title, textShadowColor: colors.titleShadow },
+          ]}
+        >
+          Менің курстарым
+        </Text>
+        <Text style={[styles.subtitle, { color: colors.description }]}>
+          Барлық категориялар
+        </Text>
       </View>
+
+      {/* Search Bar */}
+      <View></View>
+
+      {/* Content Area */}
+      <FlatList
+        data={categories}
+        renderItem={({ item }) => (
+          <CategoryItem
+            title={item.title || "no title"}
+            // onPress={() => router.push(`/modules/${item.id}/`)}
+            totalSentences={item.totalSentences || 0}
+          />
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        style={styles.listContainer}
+        contentContainerStyle={styles.listContentContainer}
+      />
     </View>
   );
 }
@@ -50,15 +65,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {
-    flex: 1,
+  header: {
+    width: "100%",
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "black",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 12,
+  },
+  subtitle: {
+    fontSize: 10,
+    fontWeight: "bold",
+    textTransform: "uppercase",
   },
   listContainer: {
-    flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 24,
+    paddingBottom: 96,
   },
   listContentContainer: {
-    flexGrow: 1,
-    paddingBottom: 32,
+    gap: 12,
   },
 });
