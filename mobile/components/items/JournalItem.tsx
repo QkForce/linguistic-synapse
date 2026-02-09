@@ -6,14 +6,14 @@ import { IconSymbol } from "../ui/IconSymbol";
 
 type JournalItemProps = {
   dateString: string;
-  lesson_title: string;
+  cat_title: string;
   accuracy: number;
   onPress: () => void;
 };
 
 export function JournalItem({
   dateString,
-  lesson_title,
+  cat_title,
   accuracy,
   onPress,
 }: JournalItemProps) {
@@ -49,8 +49,8 @@ export function JournalItem({
 
       <View style={styles.middleContainer}>
         <Text
-          style={[styles.lessonTitle, { color: colors.text }]}
-          children={lesson_title}
+          style={[styles.categoryTitle, { color: colors.text }]}
+          children={cat_title}
         />
         <View style={styles.time}>
           <IconSymbol name="access-time" size={9} color={colors.title} />
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     justifyContent: "center",
   },
-  lessonTitle: {
+  categoryTitle: {
     fontSize: 12,
     fontWeight: "700",
     textAlignVertical: "center",

@@ -217,7 +217,7 @@ export default function JournalScreen() {
             <JournalItem
               key={i}
               dateString={log.created_at}
-              lesson_title={log.cat_title}
+              cat_title={log.cat_title}
               accuracy={Math.round(log.accuracy)}
               onPress={() => router.push(`/lesson-stats/${log.id}`)}
             />
