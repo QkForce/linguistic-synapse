@@ -1,9 +1,3 @@
-export interface Lesson {
-  id: number;
-  title: string;
-  completed: number;
-}
-
 export interface Exercise {
   id: number;
   cat_title: string;
