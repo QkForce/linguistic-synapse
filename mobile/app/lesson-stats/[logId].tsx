@@ -86,7 +86,7 @@ export default function StatDetailScreen() {
         <IconSymbol name="trophy" size={40} color={colors.awardIconContent} />
       </View>
 
-      <Text style={[styles.lessonTitle, { color: colors.description }]}>
+      <Text style={[styles.categoryTitle, { color: colors.description }]}>
         {state.cat_title}
       </Text>
 
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 16,
   },
-  lessonTitle: {
+  categoryTitle: {
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
