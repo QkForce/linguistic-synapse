@@ -11,7 +11,7 @@ export interface SessionLog {
   time_overuse_ms: number;
   final_score: number;
   created_at: string;
-  lesson_title: string;
+  cat_title: string;
   sentence_count?: number;
 }
 

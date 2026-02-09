@@ -87,7 +87,7 @@ export default function StatDetailScreen() {
       </View>
 
       <Text style={[styles.lessonTitle, { color: colors.description }]}>
-        {state.lesson_title}
+        {state.cat_title}
       </Text>
 
       <View style={styles.dateContainer}>

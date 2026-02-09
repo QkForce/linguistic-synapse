@@ -9,7 +9,7 @@ export const statService = {
         `
         SELECT 
           log.*, 
-          c.title as lesson_title
+          c.title as cat_title
         FROM session_logs log
         JOIN categories c ON log.category_id = c.id
         WHERE log.id = ?
@@ -48,7 +48,7 @@ export const statService = {
         `
         SELECT
           ll.*,
-          c.title AS lesson_title,
+          c.title AS cat_title,
           (
             SELECT COUNT(*) FROM sentence_logs sl
             WHERE sl.session_log_id = ll.id
