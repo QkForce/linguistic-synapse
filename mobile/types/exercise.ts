@@ -17,7 +17,7 @@ export interface SentenceResult {
   ideal_time_ms: number;
 }
 
-export interface LessonFinalStats {
+export interface SessionFinalStats {
   total_time_ms: number;
   ideal_time_ms: number;
   accuracy: number;

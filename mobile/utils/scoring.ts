@@ -1,4 +1,4 @@
-import { LessonFinalStats, SentenceResult } from "@/types/exercise";
+import { SentenceResult, SessionFinalStats } from "@/types/exercise";
 import { SessionLog } from "@/types/stat";
 
 const TIME_TO_WORD_RATIO = 2000;
@@ -96,7 +96,7 @@ export const prepareSentenceResult = (
 
 export const calculateSessionStats = (
   results: SentenceResult[],
-): LessonFinalStats => {
+): SessionFinalStats => {
   const total = results.length;
   if (total === 0)
     return {
