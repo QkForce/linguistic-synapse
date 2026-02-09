@@ -1,7 +1,7 @@
-import { Intensity, LessonLog } from "@/types/stat";
+import { Intensity, SessionLog } from "@/types/stat";
 
 export const convertLogsToActivityRecord = (
-  logs: LessonLog[],
+  logs: SessionLog[],
 ): Record<string, Intensity> => {
   const dailyTotal: Record<string, number> = {};
   logs.forEach((log) => {

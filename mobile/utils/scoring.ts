@@ -1,5 +1,5 @@
-import { LessonFinalStats, SentenceResult } from "@/types/lesson";
-import { LessonLog } from "@/types/stat";
+import { LessonFinalStats, SentenceResult } from "@/types/exercise";
+import { SessionLog } from "@/types/stat";
 
 const TIME_TO_WORD_RATIO = 2000;
 const BASE_TIME = 3000;
@@ -147,7 +147,7 @@ export const calculateLessonStats = (
 };
 
 export const calculateMonthlyStats = (
-  logs: LessonLog[],
+  logs: SessionLog[],
 ): { monthlyAccuracy: number } => {
   const total = logs.length;
   if (total === 0) return { monthlyAccuracy: 0 };

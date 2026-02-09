@@ -23,12 +23,12 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { useTimer } from "@/hooks/useTimer";
-import { lessonService } from "@/services/lessonService";
-import { Exercise, SentenceResult } from "@/types/lesson";
-import { calculateLessonStats, prepareSentenceResult } from "@/utils/scoring";
+import { exerciseService } from "@/services/exerciseService";
+import { Exercise, SentenceResult } from "@/types/exercise";
+import { prepareSentenceResult } from "@/utils/scoring";
 
 interface ExerciseState {
-  lessonTitle: string;
+  categoryTitle: string;
   sentences: Exercise[];
   currentNativeSentence: string;
   currentSentenceIndex: number;
@@ -42,7 +42,7 @@ interface ExerciseState {
 type ScreenStatus = "loading" | "success" | "error" | "empty";
 
 export default function LessonScreen() {
-  const { moduleId, lessonId } = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
   const insets = useSafeAreaInsets();
   const gradColors = useThemeGradient("brand");
   const colors = useThemeColor();
@@ -52,8 +52,9 @@ export default function LessonScreen() {
   const [status, setStatus] = useState<ScreenStatus>("loading");
   const [nativeLang, setNativeLang] = useState("kk");
   const [targetLang, setTargetLang] = useState("en");
+  const limit = 10;
   const [state, setState] = useState<ExerciseState>({
-    lessonTitle: "",
+    categoryTitle: "",
     sentences: [],
     currentNativeSentence: "",
     currentSentenceIndex: 0,
@@ -71,11 +72,11 @@ export default function LessonScreen() {
   const loadData = async () => {
     try {
       setStatus("loading");
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const data = lessonService.getExercisesByLessonId(
-        Number(lessonId),
+      const data = exerciseService.getExercisesByCategoryId(
+        Number(id),
         nativeLang,
         targetLang,
+        limit,
       );
       if (!data || data.length === 0) {
         setStatus("empty");
@@ -83,7 +84,7 @@ export default function LessonScreen() {
       }
       setState((prev) => ({
         ...prev,
-        lessonTitle: data[0].lesson_title,
+        categoryTitle: data[0].cat_title,
         sentences: data,
         currentNativeSentence: data[0].native_text,
         currentSentenceIndex: 0,
@@ -91,6 +92,7 @@ export default function LessonScreen() {
       }));
       setStatus("success");
     } catch (e) {
+      console.error("Error loading exercises:", e);
       setStatus("error");
     }
   };
@@ -145,30 +147,30 @@ export default function LessonScreen() {
   };
 
   const finishLesson = (finalResults: SentenceResult[]) => {
-    try {
-      const stats = calculateLessonStats(finalResults);
-      const logId = lessonService.saveLessonResults(
-        Number(lessonId),
-        {
-          ...stats,
-          native_lang: nativeLang,
-          target_lang: targetLang,
-        },
-        finalResults,
-      );
-      Alert.alert("Керемет!", "Жаттығу аяқталды, нәтижелер сақталды.", [
-        {
-          text: "OK",
-          onPress: () =>
-            router.replace({
-              pathname: `/lesson-stats/[logId]`,
-              params: { logId: logId },
-            }),
-        },
-      ]);
-    } catch (error) {
-      Alert.alert("Қате", "Нәтижелерді сақтау мүмкін болмады.");
-    }
+    // try {
+    //   const stats = calculateLessonStats(finalResults);
+    //   const logId = lessonService.saveLessonResults(
+    //     Number(id),
+    //     {
+    //       ...stats,
+    //       native_lang: nativeLang,
+    //       target_lang: targetLang,
+    //     },
+    //     finalResults,
+    //   );
+    //   Alert.alert("Керемет!", "Жаттығу аяқталды, нәтижелер сақталды.", [
+    //     {
+    //       text: "OK",
+    //       onPress: () =>
+    //         router.replace({
+    //           pathname: `/lesson-stats/[logId]`,
+    //           params: { logId: logId || "" },
+    //         }),
+    //     },
+    //   ]);
+    // } catch (error) {
+    //   Alert.alert("Қате", "Нәтижелерді сақтау мүмкін болмады.");
+    // }
   };
 
   if (status === "loading")
@@ -236,7 +238,7 @@ export default function LessonScreen() {
         >{`${state.currentSentenceIndex} / ${state.totalSentences}`}</Text>
       </View>
       <Text style={[styles.title, { color: colors.title }]}>
-        {state.lessonTitle}
+        {state.categoryTitle}
       </Text>
 
       <ScrollView

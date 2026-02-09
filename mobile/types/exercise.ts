@@ -6,7 +6,7 @@ export interface Lesson {
 
 export interface Exercise {
   id: number;
-  lesson_title: string;
+  cat_title: string;
   number: number;
   native_text: string;
   target_text: string;

@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function ModuleLayout() {
+export default function Layout() {
   return (
     <Stack
       screenOptions={{
@@ -14,8 +14,7 @@ export default function ModuleLayout() {
         headerShown: false,
       }}
     >
-      {/* Optionally configure static options outside the route.*/}
-      <Stack.Screen name="index" />
+      <Stack.Screen name="exercise" />
     </Stack>
   );
 }

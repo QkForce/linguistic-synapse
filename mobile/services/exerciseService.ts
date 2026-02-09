@@ -1,46 +1,33 @@
-import { Exercise, Lesson, SentenceResult } from "@/types/lesson";
+import { Exercise, SentenceResult } from "@/types/exercise";
 import { db } from "./db";
 
-export const lessonService = {
-  getAllLessons: (moduleId: number): Lesson[] => {
-    return db.getAllSync<Lesson>(
-      `SELECT 
-          l.id,
-          l.title,
-          MAX(CASE WHEN log.lesson_id IS NOT NULL THEN 1 ELSE 0 END) as completed
-      FROM lessons l
-      LEFT JOIN lesson_logs log ON l.id = log.lesson_id
-      WHERE l.module_id = ?
-      GROUP BY l.id`,
-      [moduleId]
-    );
-  },
-  getLessonById: (id: number): Lesson | null => {
-    return db.getFirstSync<Lesson>("SELECT * FROM lessons WHERE id = ?", [id]);
-  },
-  getExercisesByLessonId: (
-    lessonId: number,
+export const exerciseService = {
+  getExercisesByCategoryId: (
+    categoryId: number,
     nativeLang: string = "kk",
-    targetLang: string = "en"
+    targetLang: string = "en",
+    limit: number = 10,
   ): Exercise[] => {
     return db.getAllSync<Exercise>(
       `SELECT 
         s.id,
-        l.title as lesson_title,
+        c.title as cat_title,
         s.number,
         st_native.text as native_text,
         st_target.text as target_text
       FROM sentences s
-      JOIN lessons l ON s.lesson_id = l.id
+      JOIN categories c ON s.category_id = c.id
       JOIN sentence_translations st_native ON s.id = st_native.sentence_id AND st_native.lang = ?
       JOIN sentence_translations st_target ON s.id = st_target.sentence_id AND st_target.lang = ?
-      WHERE s.lesson_id = ?
-      ORDER BY s.number ASC`,
-      [nativeLang, targetLang, lessonId]
+      WHERE s.category_id = ?
+      ORDER BY s.number ASC
+      LIMIT ?
+      `,
+      [nativeLang, targetLang, categoryId, limit],
     );
   },
-  saveLessonResults: (
-    lessonId: number,
+  saveExerciseResults: (
+    categoryId: number,
     totalStats: {
       native_lang: string;
       target_lang: string;
@@ -52,7 +39,7 @@ export const lessonService = {
       time_overuse_ms: number;
       final_score: number;
     },
-    sentenceResults: SentenceResult[]
+    sentenceResults: SentenceResult[],
   ): number | null => {
     let lessonLogId: number | null = null;
     db.withTransactionSync(() => {
@@ -73,7 +60,7 @@ export const lessonService = {
         VALUES
           (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          lessonId,
+          categoryId,
           totalStats.native_lang,
           totalStats.target_lang,
           totalStats.total_time_ms,
@@ -83,7 +70,7 @@ export const lessonService = {
           totalStats.time_efficiency,
           totalStats.time_overuse_ms,
           totalStats.final_score,
-        ]
+        ],
       );
       lessonLogId = result.lastInsertRowId;
       for (const res of sentenceResults) {
@@ -112,7 +99,7 @@ export const lessonService = {
             res.confidence,
             res.response_time_ms,
             res.ideal_time_ms,
-          ]
+          ],
         );
       }
     });

@@ -49,7 +49,7 @@ export default function CategoriesScreen() {
         renderItem={({ item }) => (
           <CategoryItem
             title={item.title || "no title"}
-            // onPress={() => router.push(`/modules/${item.id}/`)}
+            onPress={() => router.push(`/categories/${item.id}/exercise`)}
             totalSentences={item.totalSentences || 0}
           />
         )}
