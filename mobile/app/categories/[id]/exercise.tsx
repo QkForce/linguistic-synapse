@@ -41,7 +41,7 @@ interface ExerciseState {
 
 type ScreenStatus = "loading" | "success" | "error" | "empty";
 
-export default function LessonScreen() {
+export default function ExerciseScreen() {
   const { id } = useLocalSearchParams();
   const insets = useSafeAreaInsets();
   const gradColors = useThemeGradient("brand");
