@@ -12,7 +12,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { SentenceLog } from "@/types/stat";
 import { formatMsToTime } from "@/utils/time";
 
-export const LessonStatsItem = ({
+export const SessionStatsItem = ({
   item,
   nativeLang,
   targetLang,
@@ -37,12 +37,12 @@ export const LessonStatsItem = ({
       const translateY = interpolate(
         offset.value,
         [0, 1],
-        isBack ? [30, 0] : [0, -30]
+        isBack ? [30, 0] : [0, -30],
       );
       const opacity = interpolate(
         offset.value,
         [0, 0.9, 1],
-        isBack ? [0, 0.2, 1] : [1, 0.2, 0]
+        isBack ? [0, 0.2, 1] : [1, 0.2, 0],
       );
       return {
         transform: [{ translateY }],

@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "@/components/Button";
-import { LessonStatsItem } from "@/components/items/LessonStatsItem";
+import { SessionStatsItem } from "@/components/items/SessionStatsItem";
 import { StatsSummary } from "@/components/sections/StatsSummary";
 import { EmptyState } from "@/components/states/EmptyState";
 import { ErrorState } from "@/components/states/ErrorState";
@@ -134,7 +134,7 @@ export default function StatDetailScreen() {
 
       <View style={styles.sentencesContainer}>
         {state.sentences.map((item, index) => (
-          <LessonStatsItem
+          <SessionStatsItem
             item={item}
             nativeLang={state.native_lang}
             targetLang={state.target_lang}
