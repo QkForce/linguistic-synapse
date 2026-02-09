@@ -25,7 +25,7 @@ import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { useTimer } from "@/hooks/useTimer";
 import { exerciseService } from "@/services/exerciseService";
 import { Exercise, SentenceResult } from "@/types/exercise";
-import { calculateLessonStats, prepareSentenceResult } from "@/utils/scoring";
+import { calculateSessionStats, prepareSentenceResult } from "@/utils/scoring";
 
 interface ExerciseState {
   categoryTitle: string;
@@ -148,7 +148,7 @@ export default function LessonScreen() {
 
   const finishLesson = (finalResults: SentenceResult[]) => {
     try {
-      const stats = calculateLessonStats(finalResults);
+      const stats = calculateSessionStats(finalResults);
       const logId = exerciseService.saveExerciseResults(
         Number(id),
         {

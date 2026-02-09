@@ -94,7 +94,7 @@ export const prepareSentenceResult = (
   };
 };
 
-export const calculateLessonStats = (
+export const calculateSessionStats = (
   results: SentenceResult[],
 ): LessonFinalStats => {
   const total = results.length;
