@@ -41,12 +41,12 @@ export const exerciseService = {
     },
     sentenceResults: SentenceResult[],
   ): number | null => {
-    let lessonLogId: number | null = null;
+    let sessionLogId: number | null = null;
     db.withTransactionSync(() => {
       const result = db.runSync(
         `INSERT INTO
-          lesson_logs (
-            lesson_id,
+          session_logs (
+            category_id,
             native_lang,
             target_lang,
             total_time_ms,
@@ -72,12 +72,12 @@ export const exerciseService = {
           totalStats.final_score,
         ],
       );
-      lessonLogId = result.lastInsertRowId;
+      sessionLogId = result.lastInsertRowId;
       for (const res of sentenceResults) {
         db.runSync(
           `INSERT INTO
             sentence_logs (
-              lesson_log_id,
+              session_log_id,
               sentence_id,
               native_text,
               target_text,
@@ -90,7 +90,7 @@ export const exerciseService = {
           VALUES
             (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
-            lessonLogId,
+            sessionLogId,
             res.sentence_id,
             res.native_text,
             res.target_text,
@@ -103,6 +103,6 @@ export const exerciseService = {
         );
       }
     });
-    return lessonLogId;
+    return sessionLogId;
   },
 };

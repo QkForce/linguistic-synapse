@@ -1,6 +1,6 @@
-export interface LessonLog {
+export interface SessionLog {
   id: number;
-  lesson_id: number;
+  category_id: number;
   native_lang: string;
   target_lang: string;
   total_time_ms: number;
@@ -17,7 +17,7 @@ export interface LessonLog {
 
 export interface SentenceLog {
   id: number;
-  lesson_log_id: number;
+  session_log_id: number;
   sentence_id: number;
   native_text: string;
   target_text: string;
@@ -28,8 +28,7 @@ export interface SentenceLog {
   ideal_time_ms: number;
 }
 
-export interface LogDetails extends LessonLog {
-  module_title: string;
+export interface LogDetails extends SessionLog {
   sentences: SentenceLog[];
 }
 

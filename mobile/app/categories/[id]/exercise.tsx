@@ -25,7 +25,7 @@ import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { useTimer } from "@/hooks/useTimer";
 import { exerciseService } from "@/services/exerciseService";
 import { Exercise, SentenceResult } from "@/types/exercise";
-import { prepareSentenceResult } from "@/utils/scoring";
+import { calculateLessonStats, prepareSentenceResult } from "@/utils/scoring";
 
 interface ExerciseState {
   categoryTitle: string;
@@ -147,30 +147,30 @@ export default function LessonScreen() {
   };
 
   const finishLesson = (finalResults: SentenceResult[]) => {
-    // try {
-    //   const stats = calculateLessonStats(finalResults);
-    //   const logId = lessonService.saveLessonResults(
-    //     Number(id),
-    //     {
-    //       ...stats,
-    //       native_lang: nativeLang,
-    //       target_lang: targetLang,
-    //     },
-    //     finalResults,
-    //   );
-    //   Alert.alert("Керемет!", "Жаттығу аяқталды, нәтижелер сақталды.", [
-    //     {
-    //       text: "OK",
-    //       onPress: () =>
-    //         router.replace({
-    //           pathname: `/lesson-stats/[logId]`,
-    //           params: { logId: logId || "" },
-    //         }),
-    //     },
-    //   ]);
-    // } catch (error) {
-    //   Alert.alert("Қате", "Нәтижелерді сақтау мүмкін болмады.");
-    // }
+    try {
+      const stats = calculateLessonStats(finalResults);
+      const logId = exerciseService.saveExerciseResults(
+        Number(id),
+        {
+          ...stats,
+          native_lang: nativeLang,
+          target_lang: targetLang,
+        },
+        finalResults,
+      );
+      Alert.alert("Керемет!", "Жаттығу аяқталды, нәтижелер сақталды.", [
+        {
+          text: "OK",
+          onPress: () =>
+            router.replace({
+              pathname: `/lesson-stats/[logId]`,
+              params: { logId: logId || "" },
+            }),
+        },
+      ]);
+    } catch (error) {
+      Alert.alert("Қате", "Нәтижелерді сақтау мүмкін болмады.");
+    }
   };
 
   if (status === "loading")
