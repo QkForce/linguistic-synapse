@@ -22,7 +22,6 @@ import { LoadingState } from "@/components/states/LoadingState";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
-import { useTimer } from "@/hooks/useTimer";
 import { exerciseService } from "@/services/exerciseService";
 import { Exercise, SentenceResult } from "@/types/exercise";
 import { calculateSessionStats, prepareSentenceResult } from "@/utils/scoring";
@@ -48,7 +47,6 @@ export default function ExerciseScreen() {
   const colors = useThemeColor();
   const theme = useCurrentTheme();
   const router = useRouter();
-  const { timeString } = useTimer(true);
   const [status, setStatus] = useState<ScreenStatus>("loading");
   const [nativeLang, setNativeLang] = useState("kk");
   const [targetLang, setTargetLang] = useState("en");
@@ -207,42 +205,37 @@ export default function ExerciseScreen() {
       keyboardVerticalOffset={Platform.OS === "android" ? -insets.top : 0}
     >
       <StatusBar style={theme} />
+
+      {/* Header Area */}
+      <View style={styles.header}>
+        <Pressable onPress={handleClose} style={styles.closeButton}>
+          <IconSymbol color={colors.title} name="close" />
+        </Pressable>
+        <View style={styles.headerCenterContainer}>
+          <Text
+            style={[styles.title, { color: colors.label }]}
+            children={state.categoryTitle}
+          />
+          <Text
+            style={[styles.progressTextIndicator, { color: colors.title }]}
+            children={`${state.currentSentenceIndex}/${state.totalSentences}`}
+          />
+        </View>
+        <Pressable style={[styles.voiceButton]}>
+          <IconSymbol name="volume-up" color={colors.title} size={24} />
+        </Pressable>
+      </View>
+
+      {/* Progress Line (Super thin) */}
       <ProgressBar
         current={state.currentSentenceIndex}
         total={state.totalSentences}
         indicatorGradient={gradColors}
-        style={styles.progressBar}
+        style={[styles.progressBar, { backgroundColor: colors.progressTrack }]}
       />
 
-      <View style={styles.header}>
-        <Pressable onPress={handleClose} style={styles.closeButton}>
-          <IconSymbol
-            color={colors.title}
-            name="close"
-            style={styles.closeIcon}
-          />
-        </Pressable>
-        <View style={styles.timeContainer}>
-          <IconSymbol
-            name="access-time"
-            color={colors.title}
-            style={styles.timeIcon}
-            size={18}
-          />
-          <Text style={[styles.timeText, { color: colors.text }]}>
-            {timeString}
-          </Text>
-        </View>
-        <Text
-          style={[styles.progressTextIndicator, { color: colors.label }]}
-        >{`${state.currentSentenceIndex} / ${state.totalSentences}`}</Text>
-      </View>
-      <Text style={[styles.title, { color: colors.title }]}>
-        {state.categoryTitle}
-      </Text>
-
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1, padding: 16 }}
         keyboardShouldPersistTaps="handled"
       >
         <View
@@ -257,22 +250,6 @@ export default function ExerciseScreen() {
           <Text style={[styles.nativeText, { color: colors.title }]}>
             {state.currentNativeSentence}
           </Text>
-          <Pressable
-            style={[
-              styles.voiceButton,
-              {
-                backgroundColor: colors.itemInnerGlass,
-                borderColor: colors.itemBorder,
-              },
-            ]}
-          >
-            <IconSymbol
-              name="volume-up"
-              color={colors.title}
-              style={styles.volumeIcon}
-              size={30}
-            />
-          </Pressable>
         </View>
 
         <Text style={[styles.inputLabel, { color: colors.label }]}>
@@ -346,31 +323,28 @@ export default function ExerciseScreen() {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-  },
-  progressBar: {
-    height: 6,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingTop: 15,
+    paddingTop: 12,
+    paddingBottom: 12,
   },
   closeButton: {
-    width: 27,
-    height: 27,
+    paddingHorizontal: 8,
     alignItems: "center",
     justifyContent: "center",
   },
-  closeIcon: {},
-  timeContainer: {
-    height: 27,
-    flexDirection: "row",
+  headerCenterContainer: {
     alignItems: "center",
     borderColor: "white",
   },
-  timeIcon: { marginRight: 5 },
-  timeText: { fontSize: 16 },
+  title: {
+    fontSize: 10,
+    fontWeight: "400",
+    textAlign: "center",
+    textTransform: "uppercase",
+  },
   progressTextIndicator: {
     fontSize: 16,
     height: 27,
@@ -378,16 +352,20 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     lineHeight: 27,
   },
-  title: {
-    fontWeight: "400",
-    fontSize: 18,
-    textAlign: "center",
-    marginTop: 20,
+  voiceButton: {
+    paddingHorizontal: 8,
+    marginRight: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  progressBar: {
+    height: 2,
+    borderRadius: 0,
   },
   cardContainer: {
     width: "100%",
     minHeight: 200,
-    marginTop: 30,
+    marginTop: 10,
     alignItems: "center",
     padding: 10,
     borderWidth: 1,
@@ -401,16 +379,6 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center",
   },
-  voiceButton: {
-    width: 60,
-    height: 60,
-    marginVertical: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderRadius: 17,
-  },
-  volumeIcon: {},
   inputLabel: {
     fontSize: 12,
     textTransform: "uppercase",
