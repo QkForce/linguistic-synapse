@@ -6,7 +6,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -234,88 +233,84 @@ export default function ExerciseScreen() {
         style={[styles.progressBar, { backgroundColor: colors.progressTrack }]}
       />
 
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, padding: 16 }}
-        keyboardShouldPersistTaps="handled"
-      >
+      {/* Main Exercise Space */}
+      <View style={{ flexGrow: 1, padding: 16 }}>
+        <Text style={[styles.nativeText, { color: colors.title }]}>
+          {state.currentNativeSentence}
+        </Text>
+
+        {/* Docked or Floating Capsule */}
         <View
           style={[
-            styles.cardContainer,
-            {
-              borderColor: colors.itemBorder,
-              backgroundColor: colors.itemGlass,
-            },
+            styles.dockedContainer,
+            { backgroundColor: colors.itemInnerGlass },
           ]}
         >
-          <Text style={[styles.nativeText, { color: colors.title }]}>
-            {state.currentNativeSentence}
-          </Text>
-        </View>
-
-        <Text style={[styles.inputLabel, { color: colors.label }]}>
-          Enter the translation:
-        </Text>
-        <TextInput
-          onChangeText={(text) =>
-            setState((prev) => ({ ...prev, translation: text }))
-          }
-          value={state.translation}
-          style={[
-            styles.input,
-            {
-              color: colors.text,
-              borderColor: colors.itemBorder,
-              backgroundColor: colors.itemInnerGlass,
-            },
-          ]}
-          multiline={true}
-          autoFocus={true}
-          returnKeyType="done"
-          placeholder="Type translationhere…"
-          placeholderTextColor={colors.placeholder}
-        />
-
-        <View style={styles.assessmentControls}>
-          <Button
-            title="unsure"
-            variant={state.confidence === "unsure" ? "danger" : "ghost"}
-            onPress={() => toggleConfidence("unsure")}
-            height={40}
-            style={{ marginRight: 20, ...styles.assessmentButton }}
-            iconName="close"
-            iconSize={18}
-            iconStyle={styles.assessmentButtonIcon}
+          <TextInput
+            onChangeText={(text) =>
+              setState((prev) => ({ ...prev, translation: text }))
+            }
+            value={state.translation}
+            style={[
+              styles.input,
+              {
+                color: colors.text,
+                borderColor: colors.itemBorder,
+                backgroundColor: colors.itemInnerGlass,
+              },
+            ]}
+            multiline={true}
+            // autoFocus={true}
+            returnKeyType="done"
+            placeholder="Type translation here…"
+            placeholderTextColor={colors.placeholder}
           />
-          <Button
-            title="sure"
-            variant={state.confidence === "sure" ? "success" : "ghost"}
-            onPress={() => toggleConfidence("sure")}
-            height={40}
-            style={styles.assessmentButton}
-            iconName="check"
-            iconSize={18}
-            iconStyle={styles.assessmentButtonIcon}
-          />
+
+          {/* Confidence Toggle */}
+          <View style={styles.assessmentControls}>
+            <Button
+              title="unsure"
+              variant={state.confidence === "unsure" ? "danger" : "ghost"}
+              onPress={() => toggleConfidence("unsure")}
+              height={40}
+              style={styles.assessmentButton}
+              iconName="close"
+              iconSize={18}
+              iconStyle={styles.assessmentButtonIcon}
+            />
+            <Button
+              title="sure"
+              variant={state.confidence === "sure" ? "success" : "ghost"}
+              onPress={() => toggleConfidence("sure")}
+              height={40}
+              style={styles.assessmentButton}
+              iconName="check"
+              iconSize={18}
+              iconStyle={styles.assessmentButtonIcon}
+            />
+            <Button
+              title={
+                state.currentSentenceIndex === state.totalSentences - 1
+                  ? "finish"
+                  : "next"
+              }
+              variant={
+                state.translation.trim() && state.confidence
+                  ? "primary"
+                  : "ghost"
+              }
+              disabled={!state.translation.trim() || !state.confidence}
+              onPress={handleNext}
+              style={styles.nextButton}
+              height={40}
+              iconName="chevron.right"
+              iconPosition="right"
+              iconSize={18}
+              iconStyle={styles.nextButtonIcon}
+            />
+          </View>
         </View>
-        <Button
-          title={
-            state.currentSentenceIndex === state.totalSentences - 1
-              ? "finish"
-              : "next"
-          }
-          variant={
-            state.translation.trim() && state.confidence ? "primary" : "ghost"
-          }
-          disabled={!state.translation.trim() || !state.confidence}
-          onPress={handleNext}
-          style={styles.nextButton}
-          height={65}
-          iconName="chevron.right"
-          iconPosition="right"
-          iconSize={28}
-          iconStyle={styles.nextButtonIcon}
-        />
-      </ScrollView>
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -362,16 +357,6 @@ export const styles = StyleSheet.create({
     height: 2,
     borderRadius: 0,
   },
-  cardContainer: {
-    width: "100%",
-    minHeight: 200,
-    marginTop: 10,
-    alignItems: "center",
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 30,
-    overflow: "hidden",
-  },
   nativeText: {
     flex: 1,
     fontWeight: "700",
@@ -379,17 +364,17 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center",
   },
-  inputLabel: {
-    fontSize: 12,
-    textTransform: "uppercase",
+  dockedContainer: {
     marginTop: 20,
+    marginBottom: 48,
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+    borderRadius: 40,
   },
   input: {
-    minHeight: 70,
-    maxHeight: 150,
     marginTop: 10,
     borderWidth: 1,
-    borderRadius: 17,
+    borderRadius: 24,
     padding: 15,
     fontSize: 16,
     textAlignVertical: "top",
@@ -397,20 +382,20 @@ export const styles = StyleSheet.create({
   assessmentControls: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-end",
-    marginTop: 20,
-    flex: 1,
-    fontSize: 14,
+    alignItems: "flex-start",
+    marginTop: 10,
+    gap: 10,
   },
   assessmentButton: {
     flex: 1,
+    fontSize: 10,
   },
   assessmentButtonIcon: {
     marginRight: 5,
   },
   nextButton: {
-    marginVertical: 30,
-    fontSize: 20,
+    flex: 1,
+    fontSize: 14,
     fontWeight: "bold",
   },
   nextButtonIcon: {
