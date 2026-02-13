@@ -63,7 +63,7 @@ export const Button = ({
     ? CONTENT_COLORS.ghost
     : CONTENT_COLORS[variant];
   const flatStyle = (StyleSheet.flatten(style) || {}) as ViewStyle;
-  const finalHeight = (flatStyle.height as number) || 56;
+  const finalHeight = (flatStyle.height || 56) as number;
   const finalRadius =
     flatStyle.borderRadius !== undefined
       ? (flatStyle.borderRadius as number)
@@ -76,21 +76,21 @@ export const Button = ({
   const fontWeight = (flatStyle as TextStyle).fontWeight || "600";
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style, { height: finalHeight }]}>
       <Pressable
         onPress={onPress}
         disabled={disabled || loading}
         style={({ pressed }) => [
           styles.pressable,
           {
-            height: finalHeight,
             borderRadius: finalRadius,
             borderTopLeftRadius,
             borderTopRightRadius,
             borderBottomLeftRadius,
             borderBottomRightRadius,
             opacity: pressed ? tokens.pressOpacity : 1,
-            borderColor: colors.btnOuterBorder,
+            borderColor:
+              variant === "ghost" ? "transparent" : colors.btnOuterBorder,
             borderWidth: tokens.btnOuterBorderWidth,
           },
         ]}
@@ -124,7 +124,8 @@ export const Button = ({
               borderBottomLeftRadius,
               borderBottomRightRadius,
               borderColor: borderColor,
-              backgroundColor: colors.btnGlassBg,
+              backgroundColor:
+                variant === "ghost" ? "transparent" : colors.btnGlassBg,
             },
           ]}
         >

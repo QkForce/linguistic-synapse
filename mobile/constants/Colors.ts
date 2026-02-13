@@ -84,7 +84,7 @@ export const Colors = {
     btnDangerBorder: palette.deepRed,
     btnDangerContent: palette.deepRed,
 
-    btnGhostBorder: palette.blackBorderOpacity,
+    btnGhostBorder: "transparent",
     btnGhostContent: palette.blackOpacity,
 
     btnDisabledContent: palette.mediumGray,
@@ -125,7 +125,7 @@ export const Colors = {
     btnDangerBorder: palette.red,
     btnDangerContent: palette.red,
 
-    btnGhostBorder: palette.whiteBorderOpacity,
+    btnGhostBorder: "transparent",
     btnGhostContent: palette.whiteOpacity,
 
     btnDisabledContent: palette.gray,
