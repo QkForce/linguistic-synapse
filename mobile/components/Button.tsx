@@ -68,6 +68,10 @@ export const Button = ({
     flatStyle.borderRadius !== undefined
       ? (flatStyle.borderRadius as number)
       : finalHeight * 0.3;
+  const borderTopLeftRadius = flatStyle.borderTopLeftRadius;
+  const borderTopRightRadius = flatStyle.borderTopRightRadius;
+  const borderBottomLeftRadius = flatStyle.borderBottomLeftRadius;
+  const borderBottomRightRadius = flatStyle.borderBottomRightRadius;
   const fontSize = (flatStyle as TextStyle).fontSize || 16;
   const fontWeight = (flatStyle as TextStyle).fontWeight || "600";
 
@@ -81,6 +85,10 @@ export const Button = ({
           {
             height: finalHeight,
             borderRadius: finalRadius,
+            borderTopLeftRadius,
+            borderTopRightRadius,
+            borderBottomLeftRadius,
+            borderBottomRightRadius,
             opacity: pressed ? tokens.pressOpacity : 1,
             borderColor: colors.btnOuterBorder,
             borderWidth: tokens.btnOuterBorderWidth,
@@ -92,7 +100,14 @@ export const Button = ({
           colors={gradColors}
           style={[
             StyleSheet.absoluteFill,
-            { borderRadius: finalRadius, opacity: tokens.btnGlowOpacity },
+            {
+              borderRadius: finalRadius,
+              borderTopLeftRadius,
+              borderTopRightRadius,
+              borderBottomLeftRadius,
+              borderBottomRightRadius,
+              opacity: tokens.btnGlowOpacity,
+            },
           ]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
@@ -104,6 +119,10 @@ export const Button = ({
             styles.innerFrame,
             {
               borderRadius: finalRadius,
+              borderTopLeftRadius,
+              borderTopRightRadius,
+              borderBottomLeftRadius,
+              borderBottomRightRadius,
               borderColor: borderColor,
               backgroundColor: colors.btnGlassBg,
             },
