@@ -29,7 +29,7 @@ export function EmptyState({
     translateY.value = withRepeat(
       withTiming(-15, { duration: 1500 }),
       -1,
-      true
+      true,
     );
   }, []);
 
@@ -65,7 +65,6 @@ export function EmptyState({
         variant="primary"
         onPress={onPressClose}
         style={styles.closeButton}
-        height={65}
         iconName="arrow.backward"
         iconPosition="left"
         iconSize={28}
@@ -103,6 +102,6 @@ const styles = StyleSheet.create({
   },
   title: { marginTop: 80, fontSize: 28, textAlign: "center" },
   description: { marginTop: 20, fontSize: 16, textAlign: "justify" },
-  closeButton: { marginTop: 70 },
+  closeButton: { marginTop: 70, height: 65 },
   buttonIcon: { marginRight: 6 },
 });

@@ -272,7 +272,6 @@ export default function ExerciseScreen() {
               title="unsure"
               variant={state.confidence === "unsure" ? "danger" : "ghost"}
               onPress={() => toggleConfidence("unsure")}
-              height={40}
               style={styles.assessmentButton}
               iconName="close"
               iconSize={18}
@@ -282,7 +281,6 @@ export default function ExerciseScreen() {
               title="sure"
               variant={state.confidence === "sure" ? "success" : "ghost"}
               onPress={() => toggleConfidence("sure")}
-              height={40}
               style={styles.assessmentButton}
               iconName="check"
               iconSize={18}
@@ -302,7 +300,6 @@ export default function ExerciseScreen() {
               disabled={!state.translation.trim() || !state.confidence}
               onPress={handleNext}
               style={styles.nextButton}
-              height={40}
               iconName="chevron.right"
               iconPosition="right"
               iconSize={18}
@@ -388,6 +385,7 @@ export const styles = StyleSheet.create({
   },
   assessmentButton: {
     flex: 1,
+    height: 40,
     fontSize: 10,
   },
   assessmentButtonIcon: {
@@ -395,6 +393,7 @@ export const styles = StyleSheet.create({
   },
   nextButton: {
     flex: 1,
+    height: 40,
     fontSize: 14,
     fontWeight: "bold",
   },

@@ -28,7 +28,6 @@ interface ButtonProps {
   iconStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
   loading?: boolean;
-  height?: number;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -42,13 +41,11 @@ export const Button = ({
   iconStyle,
   disabled = false,
   loading = false,
-  height = 56,
   style,
 }: ButtonProps) => {
   const colors = useThemeColor();
   const gradColors = useThemeGradient(variant);
   const tokens = useThemeTokens();
-  const borderRadius = height * 0.3;
   const BORDER_COLORS = {
     primary: colors.btnPrimaryBorder,
     success: colors.btnSuccessBorder,
@@ -65,19 +62,25 @@ export const Button = ({
   const contentColor = disabled
     ? CONTENT_COLORS.ghost
     : CONTENT_COLORS[variant];
-  const flatStyle = StyleSheet.flatten(style) as TextStyle;
-  const fontSize = flatStyle?.fontSize || 16;
-  const fontWeight = flatStyle?.fontWeight || "600";
+  const flatStyle = (StyleSheet.flatten(style) || {}) as ViewStyle;
+  const finalHeight = (flatStyle.height as number) || 56;
+  const finalRadius =
+    flatStyle.borderRadius !== undefined
+      ? (flatStyle.borderRadius as number)
+      : finalHeight * 0.3;
+  const fontSize = (flatStyle as TextStyle).fontSize || 16;
+  const fontWeight = (flatStyle as TextStyle).fontWeight || "600";
 
   return (
-    <View style={[styles.container, { height }, style]}>
+    <View style={[styles.container, style]}>
       <Pressable
         onPress={onPress}
         disabled={disabled || loading}
         style={({ pressed }) => [
           styles.pressable,
           {
-            borderRadius,
+            height: finalHeight,
+            borderRadius: finalRadius,
             opacity: pressed ? tokens.pressOpacity : 1,
             borderColor: colors.btnOuterBorder,
             borderWidth: tokens.btnOuterBorderWidth,
@@ -89,7 +92,7 @@ export const Button = ({
           colors={gradColors}
           style={[
             StyleSheet.absoluteFill,
-            { borderRadius, opacity: tokens.btnGlowOpacity },
+            { borderRadius: finalRadius, opacity: tokens.btnGlowOpacity },
           ]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
@@ -100,7 +103,7 @@ export const Button = ({
           style={[
             styles.innerFrame,
             {
-              borderRadius,
+              borderRadius: finalRadius,
               borderColor: borderColor,
               backgroundColor: colors.btnGlassBg,
             },

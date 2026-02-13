@@ -37,7 +37,7 @@ export function ErrorState({
       withTiming(10, { duration: 50 }),
       withTiming(-10, { duration: 50 }),
       withTiming(10, { duration: 50 }),
-      withTiming(0, { duration: 50 })
+      withTiming(0, { duration: 50 }),
     );
   };
 
@@ -72,7 +72,6 @@ export function ErrorState({
           variant="danger"
           onPress={onPressRetry}
           style={styles.retryButton}
-          height={65}
           iconName="replay"
           iconPosition="left"
           iconSize={28}
@@ -83,7 +82,6 @@ export function ErrorState({
           variant="ghost"
           onPress={onPressClose}
           style={styles.closeButton}
-          height={65}
           iconName="arrow.backward"
           iconPosition="left"
           iconSize={28}
@@ -118,7 +116,7 @@ const styles = StyleSheet.create({
   controls: {
     marginTop: 70,
   },
-  retryButton: { marginTop: 20 },
-  closeButton: { marginTop: 20 },
+  retryButton: { marginTop: 20, height: 65 },
+  closeButton: { marginTop: 20, height: 65 },
   buttonIcon: { marginRight: 6 },
 });
