@@ -266,26 +266,34 @@ export default function ExerciseScreen() {
             placeholderTextColor={colors.placeholder}
           />
 
-          {/* Confidence Toggle */}
-          <View style={styles.assessmentControls}>
-            <Button
-              title="unsure"
-              variant={state.confidence === "unsure" ? "danger" : "ghost"}
-              onPress={() => toggleConfidence("unsure")}
-              style={styles.assessmentButton}
-              iconName="close"
-              iconSize={18}
-              iconStyle={styles.assessmentButtonIcon}
-            />
-            <Button
-              title="sure"
-              variant={state.confidence === "sure" ? "success" : "ghost"}
-              onPress={() => toggleConfidence("sure")}
-              style={styles.assessmentButton}
-              iconName="check"
-              iconSize={18}
-              iconStyle={styles.assessmentButtonIcon}
-            />
+          {/* Action Controls */}
+          <View style={styles.actionControls}>
+            {/* Confidence Toggle */}
+            <View
+              style={[
+                styles.confidenceButtons,
+                { backgroundColor: colors.itemInnerGlass },
+              ]}
+            >
+              <Button
+                title="unsure"
+                variant={state.confidence === "unsure" ? "danger" : "ghost"}
+                onPress={() => toggleConfidence("unsure")}
+                style={styles.assessmentButton}
+                iconName="close"
+                iconSize={18}
+                iconStyle={styles.assessmentButtonIcon}
+              />
+              <Button
+                title="sure"
+                variant={state.confidence === "sure" ? "success" : "ghost"}
+                onPress={() => toggleConfidence("sure")}
+                style={styles.assessmentButton}
+                iconName="check"
+                iconSize={18}
+                iconStyle={styles.assessmentButtonIcon}
+              />
+            </View>
             <Button
               title={
                 state.currentSentenceIndex === state.totalSentences - 1
@@ -376,24 +384,33 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     textAlignVertical: "top",
   },
-  assessmentControls: {
+  actionControls: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
     marginTop: 10,
     gap: 10,
   },
+  confidenceButtons: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 4,
+    borderRadius: 30,
+  },
   assessmentButton: {
     flex: 1,
     height: 40,
-    fontSize: 10,
+    fontSize: 9,
+    borderRadius: 20,
   },
   assessmentButtonIcon: {
-    marginRight: 5,
+    marginRight: 2,
   },
   nextButton: {
-    flex: 1,
-    height: 40,
+    width: "auto",
+    height: 48,
+    borderRadius: 24,
     fontSize: 14,
     fontWeight: "bold",
   },
