@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import {
   Alert,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -49,6 +50,7 @@ export default function ExerciseScreen() {
   const [status, setStatus] = useState<ScreenStatus>("loading");
   const [nativeLang, setNativeLang] = useState("kk");
   const [targetLang, setTargetLang] = useState("en");
+  const [isKeyboardOpen, setKeyboardOpen] = useState(false);
   const limit = 10;
   const [state, setState] = useState<ExerciseState>({
     categoryTitle: "",
@@ -63,7 +65,17 @@ export default function ExerciseScreen() {
   });
 
   useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () =>
+      setKeyboardOpen(true),
+    );
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () =>
+      setKeyboardOpen(false),
+    );
     loadData();
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
   }, []);
 
   const loadData = async () => {
@@ -234,7 +246,7 @@ export default function ExerciseScreen() {
       />
 
       {/* Main Exercise Space */}
-      <View style={{ flexGrow: 1, padding: 16 }}>
+      <View style={{ flexGrow: 1 }}>
         <Text style={[styles.nativeText, { color: colors.title }]}>
           {state.currentNativeSentence}
         </Text>
@@ -243,7 +255,13 @@ export default function ExerciseScreen() {
         <View
           style={[
             styles.dockedContainer,
-            { backgroundColor: colors.itemInnerGlass },
+            {
+              backgroundColor: colors.itemInnerGlass,
+              marginHorizontal: isKeyboardOpen ? 0 : 16,
+              marginBottom: isKeyboardOpen ? insets.top : insets.bottom,
+              borderBottomLeftRadius: isKeyboardOpen ? 0 : 40,
+              borderBottomRightRadius: isKeyboardOpen ? 0 : 40,
+            },
           ]}
         >
           <TextInput
@@ -371,7 +389,6 @@ export const styles = StyleSheet.create({
   },
   dockedContainer: {
     marginTop: 20,
-    marginBottom: 48,
     paddingHorizontal: 12,
     paddingVertical: 16,
     borderRadius: 40,
