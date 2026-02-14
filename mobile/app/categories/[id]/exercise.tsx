@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import {
   Alert,
+  Dimensions,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -43,6 +44,8 @@ interface ExerciseState {
 }
 
 type ScreenStatus = "loading" | "success" | "error" | "empty";
+
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export default function ExerciseScreen() {
   const { id } = useLocalSearchParams();
@@ -235,7 +238,16 @@ export default function ExerciseScreen() {
 
       {/* Header Area */}
       <View style={styles.header}>
-        <Pressable onPress={handleClose} style={styles.closeButton}>
+        <Pressable
+          onPress={handleClose}
+          style={[
+            styles.headerButton,
+            {
+              backgroundColor: colors.itemInnerGlass,
+              borderColor: colors.itemBorder,
+            },
+          ]}
+        >
           <IconSymbol color={colors.title} name="close" />
         </Pressable>
         <View style={styles.headerCenterContainer}>
@@ -248,7 +260,15 @@ export default function ExerciseScreen() {
             children={`${state.currentSentenceIndex}/${state.totalSentences}`}
           />
         </View>
-        <Pressable style={[styles.voiceButton]}>
+        <Pressable
+          style={[
+            styles.headerButton,
+            {
+              backgroundColor: colors.itemInnerGlass,
+              borderColor: colors.itemBorder,
+            },
+          ]}
+        >
           <IconSymbol name="volume-up" color={colors.title} size={24} />
         </Pressable>
       </View>
@@ -258,7 +278,10 @@ export default function ExerciseScreen() {
         current={state.currentSentenceIndex}
         total={state.totalSentences}
         indicatorGradient={gradColors}
-        style={[styles.progressBar, { backgroundColor: colors.progressTrack }]}
+        style={[
+          styles.progressBar,
+          { backgroundColor: colors.progressTrack, width: SCREEN_WIDTH - 64 },
+        ]}
       />
 
       {/* Task Content */}
@@ -352,13 +375,16 @@ export const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: "center",
   },
-  closeButton: {
-    paddingHorizontal: 8,
+  headerButton: {
+    padding: 8,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
+    borderRadius: 12,
   },
   headerCenterContainer: {
     alignItems: "center",
@@ -377,15 +403,10 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     lineHeight: 27,
   },
-  voiceButton: {
-    paddingHorizontal: 8,
-    marginRight: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   progressBar: {
-    height: 2,
-    borderRadius: 0,
+    height: 4,
+    alignSelf: "center",
+    marginVertical: 12,
   },
   nativeText: {
     flex: 1,
