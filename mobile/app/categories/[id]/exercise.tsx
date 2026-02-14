@@ -245,93 +245,89 @@ export default function ExerciseScreen() {
         style={[styles.progressBar, { backgroundColor: colors.progressTrack }]}
       />
 
-      {/* Main Exercise Space */}
-      <View style={{ flexGrow: 1 }}>
-        <Text style={[styles.nativeText, { color: colors.title }]}>
-          {state.currentNativeSentence}
-        </Text>
+      {/* Task Content */}
+      <Text style={[styles.nativeText, { color: colors.title }]}>
+        {state.currentNativeSentence}
+      </Text>
 
-        {/* Docked or Floating Capsule */}
-        <View
+      {/* Docked or Floating Capsule */}
+      <View
+        style={[
+          styles.dockedContainer,
+          {
+            backgroundColor: colors.itemInnerGlass,
+            marginHorizontal: isKeyboardOpen ? 0 : 16,
+            marginBottom: isKeyboardOpen ? insets.top : insets.bottom,
+            borderBottomLeftRadius: isKeyboardOpen ? 0 : 40,
+            borderBottomRightRadius: isKeyboardOpen ? 0 : 40,
+          },
+        ]}
+      >
+        <TextInput
+          onChangeText={(text) =>
+            setState((prev) => ({ ...prev, translation: text }))
+          }
+          value={state.translation}
           style={[
-            styles.dockedContainer,
+            styles.input,
             {
+              color: colors.text,
+              borderColor: colors.itemBorder,
               backgroundColor: colors.itemInnerGlass,
-              marginHorizontal: isKeyboardOpen ? 0 : 16,
-              marginBottom: isKeyboardOpen ? insets.top : insets.bottom,
-              borderBottomLeftRadius: isKeyboardOpen ? 0 : 40,
-              borderBottomRightRadius: isKeyboardOpen ? 0 : 40,
             },
           ]}
-        >
-          <TextInput
-            onChangeText={(text) =>
-              setState((prev) => ({ ...prev, translation: text }))
-            }
-            value={state.translation}
-            style={[
-              styles.input,
-              {
-                color: colors.text,
-                borderColor: colors.itemBorder,
-                backgroundColor: colors.itemInnerGlass,
-              },
-            ]}
-            multiline={true}
-            // autoFocus={true}
-            returnKeyType="done"
-            placeholder="Type translation here…"
-            placeholderTextColor={colors.placeholder}
-          />
+          multiline={true}
+          // autoFocus={true}
+          returnKeyType="done"
+          placeholder="Type translation here…"
+          placeholderTextColor={colors.placeholder}
+        />
 
-          {/* Action Controls */}
-          <View style={styles.actionControls}>
-            {/* Confidence Toggle */}
-            <View
-              style={[
-                styles.confidenceButtons,
-                { backgroundColor: colors.itemInnerGlass },
-              ]}
-            >
-              <Button
-                title="unsure"
-                variant={state.confidence === "unsure" ? "danger" : "ghost"}
-                onPress={() => toggleConfidence("unsure")}
-                style={styles.assessmentButton}
-                iconName="close"
-                iconSize={18}
-                iconStyle={styles.assessmentButtonIcon}
-              />
-              <Button
-                title="sure"
-                variant={state.confidence === "sure" ? "success" : "ghost"}
-                onPress={() => toggleConfidence("sure")}
-                style={styles.assessmentButton}
-                iconName="check"
-                iconSize={18}
-                iconStyle={styles.assessmentButtonIcon}
-              />
-            </View>
+        {/* Action Controls */}
+        <View style={styles.actionControls}>
+          {/* Confidence Toggle */}
+          <View
+            style={[
+              styles.confidenceButtons,
+              { backgroundColor: colors.itemInnerGlass },
+            ]}
+          >
             <Button
-              title={
-                state.currentSentenceIndex === state.totalSentences - 1
-                  ? "finish"
-                  : "next"
-              }
-              variant={
-                state.translation.trim() && state.confidence
-                  ? "primary"
-                  : "ghost"
-              }
-              disabled={!state.translation.trim() || !state.confidence}
-              onPress={handleNext}
-              style={styles.nextButton}
-              iconName="chevron.right"
-              iconPosition="right"
+              title="unsure"
+              variant={state.confidence === "unsure" ? "danger" : "ghost"}
+              onPress={() => toggleConfidence("unsure")}
+              style={styles.assessmentButton}
+              iconName="close"
               iconSize={18}
-              iconStyle={styles.nextButtonIcon}
+              iconStyle={styles.assessmentButtonIcon}
+            />
+            <Button
+              title="sure"
+              variant={state.confidence === "sure" ? "success" : "ghost"}
+              onPress={() => toggleConfidence("sure")}
+              style={styles.assessmentButton}
+              iconName="check"
+              iconSize={18}
+              iconStyle={styles.assessmentButtonIcon}
             />
           </View>
+          <Button
+            title={
+              state.currentSentenceIndex === state.totalSentences - 1
+                ? "finish"
+                : "next"
+            }
+            variant={
+              state.translation.trim() && state.confidence ? "primary" : "ghost"
+            }
+            disabled={!state.translation.trim() || !state.confidence}
+            onPress={handleNext}
+            style={styles.nextButton}
+            iconName="chevron.right"
+            iconPosition="right"
+            iconSize={18}
+            iconStyle={styles.nextButtonIcon}
+          />
         </View>
       </View>
     </KeyboardAvoidingView>
