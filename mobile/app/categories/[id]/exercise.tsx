@@ -12,6 +12,10 @@ import {
   TextInput,
   View,
 } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "@/components/Button";
@@ -63,6 +67,18 @@ export default function ExerciseScreen() {
     startTime: Date.now(),
     results: [],
   });
+  const animatedDockedCapsuleStyle = useAnimatedStyle(() => ({
+    marginHorizontal: withTiming(isKeyboardOpen ? 0 : 16, { duration: 200 }),
+    marginBottom: withTiming(isKeyboardOpen ? insets.top : insets.bottom, {
+      duration: 200,
+    }),
+    borderBottomLeftRadius: withTiming(isKeyboardOpen ? 0 : 40, {
+      duration: 200,
+    }),
+    borderBottomRightRadius: withTiming(isKeyboardOpen ? 0 : 40, {
+      duration: 200,
+    }),
+  }));
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () =>
@@ -251,16 +267,11 @@ export default function ExerciseScreen() {
       </Text>
 
       {/* Docked or Floating Capsule */}
-      <View
+      <Animated.View
         style={[
           styles.dockedContainer,
-          {
-            backgroundColor: colors.itemInnerGlass,
-            marginHorizontal: isKeyboardOpen ? 0 : 16,
-            marginBottom: isKeyboardOpen ? insets.top : insets.bottom,
-            borderBottomLeftRadius: isKeyboardOpen ? 0 : 40,
-            borderBottomRightRadius: isKeyboardOpen ? 0 : 40,
-          },
+          { backgroundColor: colors.itemInnerGlass },
+          animatedDockedCapsuleStyle,
         ]}
       >
         <TextInput
@@ -329,7 +340,7 @@ export default function ExerciseScreen() {
             iconStyle={styles.nextButtonIcon}
           />
         </View>
-      </View>
+      </Animated.View>
     </KeyboardAvoidingView>
   );
 }
