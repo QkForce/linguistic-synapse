@@ -11,7 +11,7 @@ export default function DatabaseScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Настройки</Text>
       <Button
-        title="Импортировать БД"
+        title="ДҚ-ны импорттау"
         onPress={async () => {
           const success = await importSQLiteFile();
           if (success) {
@@ -19,6 +19,20 @@ export default function DatabaseScreen() {
           }
         }}
         iconName="file.download"
+        style={styles.importButton}
+        variant="primary"
+      />
+      <Button
+        title="Сөйлемдерді импорттау"
+        onPress={() => {}}
+        iconName="file.download"
+        style={styles.importButton}
+        variant="primary"
+      />
+      <Button
+        title="Категорияны экспорттау"
+        onPress={() => {}}
+        iconName="file.upload"
         style={styles.importButton}
         variant="primary"
       />

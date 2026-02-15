@@ -36,6 +36,7 @@ const MAPPING = {
   stop: "stop",
   "play.circle.fill": "play-circle-filled",
   "file.download": "file-download",
+  "file.upload": "file-upload",
   "checkmark.circle": "check-circle",
   timer: "timer",
   spinner: "autorenew",
