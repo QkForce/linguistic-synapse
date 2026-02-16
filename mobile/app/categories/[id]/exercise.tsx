@@ -21,10 +21,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "@/components/Button";
 import { ProgressBar } from "@/components/ProgressBar";
+import { CountdownState } from "@/components/states/CountdownState";
 import { EmptyState } from "@/components/states/EmptyState";
 import { ErrorState } from "@/components/states/ErrorState";
 import { LoadingState } from "@/components/states/LoadingState";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { useExerciseTimer } from "@/hooks/useExerciseTimer";
 import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { exerciseService } from "@/services/exerciseService";
@@ -58,6 +60,7 @@ export default function ExerciseScreen() {
   const [nativeLang, setNativeLang] = useState("kk");
   const [targetLang, setTargetLang] = useState("en");
   const [isKeyboardOpen, setKeyboardOpen] = useState(false);
+  const { countdown, isReady } = useExerciseTimer(3);
   const limit = 10;
   const [state, setState] = useState<ExerciseState>({
     categoryTitle: "",
@@ -71,6 +74,7 @@ export default function ExerciseScreen() {
     results: [],
   });
   const animatedDockedCapsuleStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(isReady ? 1 : 0.1, { duration: 500 }),
     marginHorizontal: withTiming(isKeyboardOpen ? 0 : 16, { duration: 200 }),
     marginBottom: withTiming(isKeyboardOpen ? insets.top : insets.bottom, {
       duration: 200,
@@ -81,6 +85,9 @@ export default function ExerciseScreen() {
     borderBottomRightRadius: withTiming(isKeyboardOpen ? 0 : 40, {
       duration: 200,
     }),
+  }));
+  const animatedNativeTextStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(isReady ? 1 : 0, { duration: 500 }),
   }));
 
   useEffect(() => {
@@ -285,9 +292,19 @@ export default function ExerciseScreen() {
       />
 
       {/* Task Content */}
-      <Text style={[styles.nativeText, { color: colors.title }]}>
-        {state.currentNativeSentence}
-      </Text>
+      {isReady ? (
+        <Animated.Text
+          style={[
+            styles.nativeText,
+            animatedNativeTextStyle,
+            { color: colors.title },
+          ]}
+        >
+          {state.currentNativeSentence}
+        </Animated.Text>
+      ) : (
+        <CountdownState countdown={countdown} />
+      )}
 
       {/* Docked or Floating Capsule */}
       <Animated.View
@@ -315,6 +332,7 @@ export default function ExerciseScreen() {
           returnKeyType="done"
           placeholder="Type translation here…"
           placeholderTextColor={colors.placeholder}
+          editable={isReady}
         />
 
         {/* Action Controls */}
@@ -334,6 +352,7 @@ export default function ExerciseScreen() {
               iconName="close"
               iconSize={18}
               iconStyle={styles.assessmentButtonIcon}
+              disabled={!isReady}
             />
             <Button
               title="sure"
@@ -343,6 +362,7 @@ export default function ExerciseScreen() {
               iconName="check"
               iconSize={18}
               iconStyle={styles.assessmentButtonIcon}
+              disabled={!isReady}
             />
           </View>
           <Button
