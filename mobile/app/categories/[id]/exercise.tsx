@@ -70,7 +70,7 @@ export default function ExerciseScreen() {
     totalSentences: 0,
     translation: "",
     confidence: null,
-    startTime: Date.now(),
+    startTime: 0,
     results: [],
   });
   const animatedDockedCapsuleStyle = useAnimatedStyle(() => ({
@@ -103,6 +103,12 @@ export default function ExerciseScreen() {
       hideSubscription.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (isReady) {
+      setState((prev) => ({ ...prev, startTime: Date.now() }));
+    }
+  }, [isReady]);
 
   const loadData = async () => {
     try {
