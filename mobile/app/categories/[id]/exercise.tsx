@@ -60,7 +60,9 @@ export default function ExerciseScreen() {
   const [nativeLang, setNativeLang] = useState("kk");
   const [targetLang, setTargetLang] = useState("en");
   const [isKeyboardOpen, setKeyboardOpen] = useState(false);
-  const { countdown, isReady } = useExerciseTimer(3);
+  const { countdown, isReady } = useExerciseTimer(
+    status === "success" ? 3 : null,
+  );
   const limit = 10;
   const [state, setState] = useState<ExerciseState>({
     categoryTitle: "",
@@ -105,10 +107,10 @@ export default function ExerciseScreen() {
   }, []);
 
   useEffect(() => {
-    if (isReady) {
+    if (status === "success" && isReady) {
       setState((prev) => ({ ...prev, startTime: Date.now() }));
     }
-  }, [isReady]);
+  }, [status, isReady]);
 
   const loadData = async () => {
     try {
