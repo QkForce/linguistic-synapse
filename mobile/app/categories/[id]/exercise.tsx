@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -60,6 +60,7 @@ export default function ExerciseScreen() {
   const [nativeLang, setNativeLang] = useState("kk");
   const [targetLang, setTargetLang] = useState("en");
   const [isKeyboardOpen, setKeyboardOpen] = useState(false);
+  const inputRef = useRef<TextInput>(null);
   const { countdown, isReady } = useExerciseTimer(
     status === "success" ? 3 : null,
   );
@@ -109,6 +110,7 @@ export default function ExerciseScreen() {
   useEffect(() => {
     if (status === "success" && isReady) {
       setState((prev) => ({ ...prev, startTime: Date.now() }));
+      inputRef.current?.focus();
     }
   }, [status, isReady]);
 
@@ -323,6 +325,7 @@ export default function ExerciseScreen() {
         ]}
       >
         <TextInput
+          ref={inputRef}
           onChangeText={(text) =>
             setState((prev) => ({ ...prev, translation: text }))
           }
@@ -336,7 +339,7 @@ export default function ExerciseScreen() {
             },
           ]}
           multiline={true}
-          // autoFocus={true}
+          autoFocus={true}
           returnKeyType="done"
           placeholder="Type translation here…"
           placeholderTextColor={colors.placeholder}
