@@ -40,6 +40,7 @@ def correct_lesson(lesson, ai):
             db_data.append((item["id"], "en", item["en"]))
             db_data.append((item["id"], "ru", item["ru"]))
             db_data.append((item["id"], "kk", item["kk"]))
+            db_data.append((item["id"], "aspect", item["aspect"]))
 
         insert_sentence_translations(conn, db_data)
         mark_lesson_correcting(conn, l_id, "end")
