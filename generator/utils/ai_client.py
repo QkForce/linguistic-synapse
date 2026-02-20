@@ -20,13 +20,9 @@ class AIGenerator:
         if response_schema:
             config["response_schema"] = response_schema
 
-        try:
-            response = self.client.models.generate_content(
-                model=MODEL_NAME,
-                contents=full_content,
-                config=config,
-            )
-            return json.loads(response.text)
-        except Exception as e:
-            print(f"AI Generation Error: {e}")
-            return None
+        response = self.client.models.generate_content(
+            model=MODEL_NAME,
+            contents=full_content,
+            config=config,
+        )
+        return json.loads(response.text)

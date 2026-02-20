@@ -1,4 +1,6 @@
 import time
+from google.genai.errors import ClientError
+
 from utils.db import (
     db_connection,
     get_parsed_lessons,
@@ -6,11 +8,13 @@ from utils.db import (
     insert_sentence_translations,
     mark_lesson_correcting,
 )
+from utils.helpers import retry_on_error
+from utils.ai_client import AIGenerator
 from config.config import CORRECTOR_DELAY_SECONDS, DB_PATH
 from config.prompts import CORRECTOR_TASK
-from utils.ai_client import AIGenerator
 
 
+@retry_on_error(retries=5, delay=60 * 10, error_types=(ClientError,))
 def correct_lesson(lesson, ai):
     l_id, title, number = lesson
     with db_connection(DB_PATH) as conn:
