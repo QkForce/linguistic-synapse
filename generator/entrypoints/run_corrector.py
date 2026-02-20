@@ -1,4 +1,3 @@
-import time
 from google.genai.errors import ClientError
 
 from utils.db import (
@@ -10,11 +9,19 @@ from utils.db import (
 )
 from utils.helpers import retry_on_error
 from utils.ai_client import AIGenerator
-from config.config import CORRECTOR_DELAY_SECONDS, DB_PATH
+from config.config import (
+    DB_PATH,
+    CORRECTOR_MAX_RETRIES,
+    CORRECTOR_RETRY_DELAY_SECONDS,
+)
 from config.prompts import CORRECTOR_TASK
 
 
-@retry_on_error(retries=5, delay=60 * 10, error_types=(ClientError,))
+@retry_on_error(
+    retries=CORRECTOR_MAX_RETRIES,
+    delay=CORRECTOR_RETRY_DELAY_SECONDS,
+    error_types=(ClientError,),
+)
 def correct_lesson(lesson, ai):
     l_id, title, number = lesson
     with db_connection(DB_PATH) as conn:
@@ -56,7 +63,6 @@ def correct_lessons(ai):
         lessons = get_parsed_lessons(conn)
     for lesson in lessons:
         correct_lesson(lesson, ai)
-        time.sleep(CORRECTOR_DELAY_SECONDS)
 
 
 if __name__ == "__main__":
