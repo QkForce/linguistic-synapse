@@ -120,3 +120,23 @@ def add_tags_to_lesson(conn: sqlite3.Connection, lesson_id: str, tags: list[str]
             "INSERT OR IGNORE INTO lesson_tags (lesson_id, tag_id) VALUES (?, ?)",
             (lesson_id, tag_id),
         )
+
+
+def get_export_data(conn: sqlite3.Connection):
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        SELECT 
+            l.id AS lesson_id,
+            l.title,
+            s.id AS sentence_id,
+            st.lang,
+            st.text
+        FROM lessons l
+        JOIN sentences s ON l.id = s.lesson_id
+        JOIN sentence_translations st ON s.id = st.sentence_id
+        WHERE l.correct_end IS NOT NULL
+        ORDER BY l.number, s.number;
+        """
+    )
+    return cursor.fetchall()

@@ -25,3 +25,6 @@ MAD_CONSISTENCY_CONSTANT = 0.6745
 # The threshold value proposed by Iglewicz and Hoaglin.
 # 3.5 is the most optimal ("golden mean") indicator for detecting anomalies.
 ANOMALY_THRESHOLD = 3.5
+
+EXPORT_CATEGORY_PATH = os.path.join(os.getcwd(), "data", "exported_category.json")
+EXPORT_CATEGORY_TITLE = os.getenv("EXPORT_CATEGORY_TITLE", "default_category")
