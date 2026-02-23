@@ -13,10 +13,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "@/components/Button";
@@ -26,6 +23,7 @@ import { EmptyState } from "@/components/states/EmptyState";
 import { ErrorState } from "@/components/states/ErrorState";
 import { LoadingState } from "@/components/states/LoadingState";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { useExerciseAnimations } from "@/hooks/useExerciseAnimations";
 import { useExerciseTimer } from "@/hooks/useExerciseTimer";
 import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
@@ -76,22 +74,8 @@ export default function ExerciseScreen() {
     startTime: 0,
     results: [],
   });
-  const animatedDockedCapsuleStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(isReady ? 1 : 0.1, { duration: 500 }),
-    marginHorizontal: withTiming(isKeyboardOpen ? 0 : 16, { duration: 200 }),
-    marginBottom: withTiming(isKeyboardOpen ? insets.top : insets.bottom, {
-      duration: 200,
-    }),
-    borderBottomLeftRadius: withTiming(isKeyboardOpen ? 0 : 40, {
-      duration: 200,
-    }),
-    borderBottomRightRadius: withTiming(isKeyboardOpen ? 0 : 40, {
-      duration: 200,
-    }),
-  }));
-  const animatedNativeTextStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(isReady ? 1 : 0, { duration: 500 }),
-  }));
+  const { animatedDockedCapsuleStyle, animatedNativeTextStyle } =
+    useExerciseAnimations(isReady, isKeyboardOpen, insets);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () =>
