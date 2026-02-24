@@ -79,7 +79,7 @@ export const Button = ({
   const paddings = {
     padding: flatStyle.padding,
     paddingVertical: flatStyle.paddingVertical,
-    paddingHorizontal: flatStyle.paddingHorizontal,
+    paddingHorizontal: flatStyle.paddingHorizontal || 16,
   };
   const borderRadii = {
     borderRadius:
@@ -97,91 +97,79 @@ export const Button = ({
   };
 
   return (
-    <View
-      style={[
-        styles.container,
+    <Pressable
+      onPress={onPress}
+      disabled={disabled || loading}
+      style={({ pressed }) => [
+        styles.pressable,
+        borderRadii,
         {
           width,
           flex,
           height: finalHeight,
+          opacity: pressed ? tokens.pressOpacity : 1,
+          borderColor:
+            variant === "ghost" ? "transparent" : colors.btnOuterBorder,
+          borderWidth: tokens.btnOuterBorderWidth,
         },
         margins,
       ]}
     >
-      <Pressable
-        onPress={onPress}
-        disabled={disabled || loading}
-        style={({ pressed }) => [
-          styles.pressable,
+      {/* LAYER 1: Glow - Low Opacity Gradient */}
+      <LinearGradient
+        colors={gradColors}
+        style={[
+          StyleSheet.absoluteFill,
+          borderRadii,
+          { opacity: tokens.btnGlowOpacity },
+        ]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+      />
+
+      {/* LAYER 2: Base Glass */}
+      <View
+        style={[
+          styles.innerFrame,
           borderRadii,
           {
-            opacity: pressed ? tokens.pressOpacity : 1,
-            borderColor:
-              variant === "ghost" ? "transparent" : colors.btnOuterBorder,
-            borderWidth: tokens.btnOuterBorderWidth,
+            borderColor: borderColor,
+            backgroundColor:
+              variant === "ghost" ? "transparent" : colors.btnGlassBg,
           },
+          paddings,
         ]}
       >
-        {/* LAYER 1: Glow - Low Opacity Gradient */}
-        <LinearGradient
-          colors={gradColors}
-          style={[
-            StyleSheet.absoluteFill,
-            borderRadii,
-            { opacity: tokens.btnGlowOpacity },
-          ]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-        />
-
-        {/* LAYER 2: Base Glass */}
-        <View
-          style={[
-            styles.innerFrame,
-            borderRadii,
-            {
-              borderColor: borderColor,
-              backgroundColor:
-                variant === "ghost" ? "transparent" : colors.btnGlassBg,
-            },
-            paddings,
-          ]}
-        >
-          {loading ? (
-            <ActivityIndicator color={contentColor} size="small" />
-          ) : (
-            <View
-              style={[
-                styles.content,
-                {
-                  flexDirection:
-                    iconPosition === "left" ? "row" : "row-reverse",
-                },
-              ]}
-            >
-              {iconName && (
-                <IconSymbol
-                  name={iconName}
-                  size={iconSize}
-                  color={contentColor}
-                  style={iconStyle}
-                />
-              )}
-              <Text style={[styles.text, { color: contentColor }, fonts]}>
-                {title}
-              </Text>
-            </View>
-          )}
-        </View>
-      </Pressable>
-    </View>
+        {loading ? (
+          <ActivityIndicator color={contentColor} size="small" />
+        ) : (
+          <View
+            style={[
+              styles.content,
+              {
+                flexDirection: iconPosition === "left" ? "row" : "row-reverse",
+              },
+            ]}
+          >
+            {iconName && (
+              <IconSymbol
+                name={iconName}
+                size={iconSize}
+                color={contentColor}
+                style={iconStyle}
+              />
+            )}
+            <Text style={[styles.text, { color: contentColor }, fonts]}>
+              {title}
+            </Text>
+          </View>
+        )}
+      </View>
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-  },
   pressable: {
     flex: 1,
     overflow: "hidden",
