@@ -464,6 +464,7 @@ export const styles = StyleSheet.create({
     height: 40,
     fontSize: 9,
     borderRadius: 20,
+    paddingHorizontal: 12,
   },
   assessmentButtonIcon: {
     marginRight: 2,

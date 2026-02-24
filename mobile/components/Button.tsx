@@ -63,11 +63,25 @@ export const Button = ({
     ? CONTENT_COLORS.ghost
     : CONTENT_COLORS[variant];
   const flatStyle = (StyleSheet.flatten(style) || {}) as ViewStyle;
+  const {
+    margin,
+    marginVertical,
+    marginHorizontal,
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+  } = flatStyle;
+  const width = flatStyle.width;
   const finalHeight = (flatStyle.height || 56) as number;
   const finalRadius =
     flatStyle.borderRadius !== undefined
       ? (flatStyle.borderRadius as number)
       : finalHeight * 0.3;
+  const flex = flatStyle.flex;
+  const padding = flatStyle.padding;
+  const paddingVertical = flatStyle.paddingVertical;
+  const paddingHorizontal = flatStyle.paddingHorizontal;
   const borderTopLeftRadius = flatStyle.borderTopLeftRadius;
   const borderTopRightRadius = flatStyle.borderTopRightRadius;
   const borderBottomLeftRadius = flatStyle.borderBottomLeftRadius;
@@ -76,7 +90,23 @@ export const Button = ({
   const fontWeight = (flatStyle as TextStyle).fontWeight || "600";
 
   return (
-    <View style={[styles.container, style, { height: finalHeight }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          width,
+          flex,
+          height: finalHeight,
+          margin,
+          marginVertical,
+          marginHorizontal,
+          marginTop,
+          marginBottom,
+          marginLeft,
+          marginRight,
+        },
+      ]}
+    >
       <Pressable
         onPress={onPress}
         disabled={disabled || loading}
@@ -126,6 +156,9 @@ export const Button = ({
               borderColor: borderColor,
               backgroundColor:
                 variant === "ghost" ? "transparent" : colors.btnGlassBg,
+              padding: padding,
+              paddingVertical: paddingVertical,
+              paddingHorizontal: paddingHorizontal,
             },
           ]}
         >
@@ -179,7 +212,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 20,
   },
   content: {
     alignItems: "center",
