@@ -136,6 +136,7 @@ export const Button = ({
             borderColor: borderColor,
             backgroundColor:
               variant === "ghost" ? "transparent" : colors.btnGlassBg,
+            flexDirection: iconPosition === "left" ? "row" : "row-reverse",
           },
           paddings,
         ]}
@@ -143,14 +144,7 @@ export const Button = ({
         {loading ? (
           <ActivityIndicator color={contentColor} size="small" />
         ) : (
-          <View
-            style={[
-              styles.content,
-              {
-                flexDirection: iconPosition === "left" ? "row" : "row-reverse",
-              },
-            ]}
-          >
+          <>
             {iconName && (
               <IconSymbol
                 name={iconName}
@@ -162,7 +156,7 @@ export const Button = ({
             <Text style={[styles.text, { color: contentColor }, fonts]}>
               {title}
             </Text>
-          </View>
+          </>
         )}
       </View>
     </Pressable>
@@ -178,10 +172,6 @@ const styles = StyleSheet.create({
   innerFrame: {
     flex: 1,
     borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  content: {
     alignItems: "center",
     justifyContent: "center",
   },
