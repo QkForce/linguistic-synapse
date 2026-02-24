@@ -25,6 +25,7 @@ import { LoadingState } from "@/components/states/LoadingState";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useExerciseAnimations } from "@/hooks/useExerciseAnimations";
 import { useExerciseTimer } from "@/hooks/useExerciseTimer";
+import { useStrings } from "@/hooks/useStrings";
 import { useCurrentTheme, useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeGradient } from "@/hooks/useThemeGradient";
 import { exerciseService } from "@/services/exerciseService";
@@ -53,6 +54,8 @@ export default function ExerciseScreen() {
   const gradColors = useThemeGradient("brand");
   const colors = useThemeColor();
   const theme = useCurrentTheme();
+  const strings = useStrings();
+  const exsstr = strings.exercise;
   const router = useRouter();
   const [status, setStatus] = useState<ScreenStatus>("loading");
   const [nativeLang, setNativeLang] = useState("kk");
@@ -134,14 +137,14 @@ export default function ExerciseScreen() {
   };
 
   const handleClose = () => {
-    Alert.alert(
-      "Stop training",
-      "Are you sure you want to quit? Progress will not be saved.",
-      [
-        { text: "Stay", style: "cancel" },
-        { text: "Quit", style: "destructive", onPress: () => router.back() },
-      ],
-    );
+    Alert.alert(exsstr.stopTitle, exsstr.stopDesc, [
+      { text: strings.common.cancel, style: "cancel" },
+      {
+        text: exsstr.btnClose,
+        style: "destructive",
+        onPress: () => router.back(),
+      },
+    ]);
   };
 
   const handleNext = () => {
@@ -187,9 +190,9 @@ export default function ExerciseScreen() {
         },
         finalResults,
       );
-      Alert.alert("Керемет!", "Жаттығу аяқталды, нәтижелер сақталды.", [
+      Alert.alert(exsstr.finishTitle, exsstr.finishDesc, [
         {
-          text: "OK",
+          text: strings.common.ok,
           onPress: () =>
             router.replace({
               pathname: `/session-stats/[logId]`,
@@ -198,20 +201,18 @@ export default function ExerciseScreen() {
         },
       ]);
     } catch (error) {
-      Alert.alert("Қате", "Нәтижелерді сақтау мүмкін болмады.");
+      Alert.alert(strings.common.ok);
     }
   };
 
   if (status === "loading")
-    return (
-      <LoadingState title="Loading" description="Data is being retrieved." />
-    );
+    return <LoadingState title={strings.common.loading} />;
 
   if (status === "error")
     return (
       <ErrorState
-        title="Error"
-        description="An erroroccurred"
+        title={exsstr.errorTitle}
+        description={exsstr.errorDesc}
         onPressRetry={loadData}
         onPressClose={() => router.back()}
       />
@@ -220,8 +221,8 @@ export default function ExerciseScreen() {
   if (status === "empty")
     return (
       <EmptyState
-        title="Data not found"
-        description="Currently, sentences for this section are not in the database or have not been loaded."
+        title={exsstr.emptyTitle}
+        description={exsstr.emptyDesc}
         onPressClose={() => router.back()}
       />
     );
@@ -325,7 +326,7 @@ export default function ExerciseScreen() {
           multiline={true}
           autoFocus={true}
           returnKeyType="done"
-          placeholder="Type translation here…"
+          placeholder={exsstr.inputPlaceholder}
           placeholderTextColor={colors.placeholder}
           editable={isReady}
         />
@@ -340,7 +341,7 @@ export default function ExerciseScreen() {
             ]}
           >
             <Button
-              title="unsure"
+              title={exsstr.btnUnsure}
               variant={state.confidence === "unsure" ? "danger" : "ghost"}
               onPress={() => toggleConfidence("unsure")}
               style={styles.assessmentButton}
@@ -350,7 +351,7 @@ export default function ExerciseScreen() {
               disabled={!isReady}
             />
             <Button
-              title="sure"
+              title={exsstr.btnSure}
               variant={state.confidence === "sure" ? "success" : "ghost"}
               onPress={() => toggleConfidence("sure")}
               style={styles.assessmentButton}
@@ -363,8 +364,8 @@ export default function ExerciseScreen() {
           <Button
             title={
               state.currentSentenceIndex === state.totalSentences - 1
-                ? "finish"
-                : "next"
+                ? exsstr.btnFinish
+                : exsstr.btnNext
             }
             variant={
               state.translation.trim() && state.confidence ? "primary" : "ghost"
