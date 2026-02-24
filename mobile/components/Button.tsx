@@ -25,7 +25,6 @@ interface ButtonProps {
   iconName?: IconSymbolName;
   iconPosition?: "left" | "right";
   iconSize?: number;
-  iconStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -38,7 +37,6 @@ export const Button = ({
   iconName,
   iconPosition = "left",
   iconSize = 24,
-  iconStyle,
   disabled = false,
   loading = false,
   style,
@@ -76,6 +74,7 @@ export const Button = ({
   const width = flatStyle.width;
   const finalHeight = (flatStyle.height || 56) as number;
   const flex = flatStyle.flex;
+  const gap = flatStyle.gap || 2;
   const paddings = {
     padding: flatStyle.padding,
     paddingVertical: flatStyle.paddingVertical,
@@ -137,6 +136,7 @@ export const Button = ({
             backgroundColor:
               variant === "ghost" ? "transparent" : colors.btnGlassBg,
             flexDirection: iconPosition === "left" ? "row" : "row-reverse",
+            gap,
           },
           paddings,
         ]}
@@ -150,7 +150,6 @@ export const Button = ({
                 name={iconName}
                 size={iconSize}
                 color={contentColor}
-                style={iconStyle}
               />
             )}
             <Text style={[styles.text, { color: contentColor }, fonts]}>

@@ -151,7 +151,6 @@ export default function StatDetailScreen() {
           iconName="replay"
           onPress={() => {}}
           style={styles.button}
-          iconStyle={{ marginRight: 8 }}
         />
         <Button
           variant="ghost"
@@ -159,7 +158,6 @@ export default function StatDetailScreen() {
           iconName="house.fill"
           onPress={() => router.replace("/(tabs)")}
           style={styles.button}
-          iconStyle={{ marginRight: 8 }}
         />
       </View>
     </ScrollView>
@@ -250,5 +248,6 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
+    gap: 8,
   },
 });

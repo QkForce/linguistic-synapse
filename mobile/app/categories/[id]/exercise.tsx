@@ -347,7 +347,6 @@ export default function ExerciseScreen() {
               style={styles.assessmentButton}
               iconName="close"
               iconSize={18}
-              iconStyle={styles.assessmentButtonIcon}
               disabled={!isReady}
             />
             <Button
@@ -357,7 +356,6 @@ export default function ExerciseScreen() {
               style={styles.assessmentButton}
               iconName="check"
               iconSize={18}
-              iconStyle={styles.assessmentButtonIcon}
               disabled={!isReady}
             />
           </View>
@@ -376,7 +374,6 @@ export default function ExerciseScreen() {
             iconName="chevron.right"
             iconPosition="right"
             iconSize={18}
-            iconStyle={styles.nextButtonIcon}
           />
         </View>
       </Animated.View>
@@ -466,17 +463,11 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 12,
   },
-  assessmentButtonIcon: {
-    marginRight: 2,
-  },
   nextButton: {
     width: "auto",
     height: 48,
     borderRadius: 24,
     fontSize: 14,
     fontWeight: "bold",
-  },
-  nextButtonIcon: {
-    marginLeft: 2,
   },
 });

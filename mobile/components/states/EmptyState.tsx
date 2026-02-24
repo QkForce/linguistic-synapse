@@ -68,7 +68,6 @@ export function EmptyState({
         iconName="arrow.backward"
         iconPosition="left"
         iconSize={28}
-        iconStyle={styles.buttonIcon}
       />
     </View>
   );
@@ -102,6 +101,5 @@ const styles = StyleSheet.create({
   },
   title: { marginTop: 80, fontSize: 28, textAlign: "center" },
   description: { marginTop: 20, fontSize: 16, textAlign: "justify" },
-  closeButton: { marginTop: 70, height: 65 },
-  buttonIcon: { marginRight: 6 },
+  closeButton: { marginTop: 70, height: 65, gap: 6 },
 });

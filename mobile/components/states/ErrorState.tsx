@@ -71,21 +71,19 @@ export function ErrorState({
           title="retry"
           variant="danger"
           onPress={onPressRetry}
-          style={styles.retryButton}
+          style={styles.button}
           iconName="replay"
           iconPosition="left"
           iconSize={28}
-          iconStyle={styles.buttonIcon}
         />
         <Button
           title="go back"
           variant="ghost"
           onPress={onPressClose}
-          style={styles.closeButton}
+          style={styles.button}
           iconName="arrow.backward"
           iconPosition="left"
           iconSize={28}
-          iconStyle={styles.buttonIcon}
         />
       </View>
     </View>
@@ -116,7 +114,5 @@ const styles = StyleSheet.create({
   controls: {
     marginTop: 70,
   },
-  retryButton: { marginTop: 20, height: 65 },
-  closeButton: { marginTop: 20, height: 65 },
-  buttonIcon: { marginRight: 6 },
+  button: { marginTop: 20, height: 65, gap: 6 },
 });
