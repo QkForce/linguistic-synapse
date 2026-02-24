@@ -63,31 +63,38 @@ export const Button = ({
     ? CONTENT_COLORS.ghost
     : CONTENT_COLORS[variant];
   const flatStyle = (StyleSheet.flatten(style) || {}) as ViewStyle;
-  const {
-    margin,
-    marginVertical,
-    marginHorizontal,
-    marginTop,
-    marginBottom,
-    marginLeft,
-    marginRight,
-  } = flatStyle;
+  const flatTextStyle = flatStyle as TextStyle;
+  const margins = {
+    margin: flatStyle.margin,
+    marginVertical: flatStyle.marginVertical,
+    marginHorizontal: flatStyle.marginHorizontal,
+    marginTop: flatStyle.marginTop,
+    marginBottom: flatStyle.marginBottom,
+    marginLeft: flatStyle.marginLeft,
+    marginRight: flatStyle.marginRight,
+  };
   const width = flatStyle.width;
   const finalHeight = (flatStyle.height || 56) as number;
-  const finalRadius =
-    flatStyle.borderRadius !== undefined
-      ? (flatStyle.borderRadius as number)
-      : finalHeight * 0.3;
   const flex = flatStyle.flex;
-  const padding = flatStyle.padding;
-  const paddingVertical = flatStyle.paddingVertical;
-  const paddingHorizontal = flatStyle.paddingHorizontal;
-  const borderTopLeftRadius = flatStyle.borderTopLeftRadius;
-  const borderTopRightRadius = flatStyle.borderTopRightRadius;
-  const borderBottomLeftRadius = flatStyle.borderBottomLeftRadius;
-  const borderBottomRightRadius = flatStyle.borderBottomRightRadius;
-  const fontSize = (flatStyle as TextStyle).fontSize || 16;
-  const fontWeight = (flatStyle as TextStyle).fontWeight || "600";
+  const paddings = {
+    padding: flatStyle.padding,
+    paddingVertical: flatStyle.paddingVertical,
+    paddingHorizontal: flatStyle.paddingHorizontal,
+  };
+  const borderRadii = {
+    borderRadius:
+      flatStyle.borderRadius !== undefined
+        ? (flatStyle.borderRadius as number)
+        : finalHeight * 0.3,
+    borderTopLeftRadius: flatStyle.borderTopLeftRadius,
+    borderTopRightRadius: flatStyle.borderTopRightRadius,
+    borderBottomLeftRadius: flatStyle.borderBottomLeftRadius,
+    borderBottomRightRadius: flatStyle.borderBottomRightRadius,
+  };
+  const fonts = {
+    fontSize: flatTextStyle.fontSize || 16,
+    fontWeight: flatTextStyle.fontWeight || "600",
+  };
 
   return (
     <View
@@ -97,14 +104,8 @@ export const Button = ({
           width,
           flex,
           height: finalHeight,
-          margin,
-          marginVertical,
-          marginHorizontal,
-          marginTop,
-          marginBottom,
-          marginLeft,
-          marginRight,
         },
+        margins,
       ]}
     >
       <Pressable
@@ -112,12 +113,8 @@ export const Button = ({
         disabled={disabled || loading}
         style={({ pressed }) => [
           styles.pressable,
+          borderRadii,
           {
-            borderRadius: finalRadius,
-            borderTopLeftRadius,
-            borderTopRightRadius,
-            borderBottomLeftRadius,
-            borderBottomRightRadius,
             opacity: pressed ? tokens.pressOpacity : 1,
             borderColor:
               variant === "ghost" ? "transparent" : colors.btnOuterBorder,
@@ -130,14 +127,8 @@ export const Button = ({
           colors={gradColors}
           style={[
             StyleSheet.absoluteFill,
-            {
-              borderRadius: finalRadius,
-              borderTopLeftRadius,
-              borderTopRightRadius,
-              borderBottomLeftRadius,
-              borderBottomRightRadius,
-              opacity: tokens.btnGlowOpacity,
-            },
+            borderRadii,
+            { opacity: tokens.btnGlowOpacity },
           ]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
@@ -147,19 +138,13 @@ export const Button = ({
         <View
           style={[
             styles.innerFrame,
+            borderRadii,
             {
-              borderRadius: finalRadius,
-              borderTopLeftRadius,
-              borderTopRightRadius,
-              borderBottomLeftRadius,
-              borderBottomRightRadius,
               borderColor: borderColor,
               backgroundColor:
                 variant === "ghost" ? "transparent" : colors.btnGlassBg,
-              padding: padding,
-              paddingVertical: paddingVertical,
-              paddingHorizontal: paddingHorizontal,
             },
+            paddings,
           ]}
         >
           {loading ? (
@@ -182,12 +167,7 @@ export const Button = ({
                   style={iconStyle}
                 />
               )}
-              <Text
-                style={[
-                  styles.text,
-                  { color: contentColor, fontSize, fontWeight },
-                ]}
-              >
+              <Text style={[styles.text, { color: contentColor }, fonts]}>
                 {title}
               </Text>
             </View>
