@@ -30,14 +30,12 @@ def transform_to_category_json(
     rows, target_lang="en", category_title="default_category"
 ):
     export_data = {}
-    sentences = []
+    all_sentences = []
     grouped_list = union_by_text(rows, target_lang=target_lang)
     for lang_text_dict in grouped_list:
-        sentence_dict = {}
-        for lang, text_set in lang_text_dict.items():
-            sentence_dict[lang] = ";".join(text_set)
-        sentences.append(sentence_dict)
+        sentences = {lang: list(text_set) for lang, text_set in lang_text_dict.items()}
+        all_sentences.append(sentences)
     if len(grouped_list) > 0:
         export_data["title"] = category_title
-        export_data["sentences"] = sentences
+        export_data["sentences"] = all_sentences
     return export_data
