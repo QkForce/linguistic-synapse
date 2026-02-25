@@ -67,6 +67,7 @@ def get_parsed_lessons(conn: sqlite3.Connection):
 def insert_sentences(conn: sqlite3.Connection, data):
     """
     data: list of tuples (category_id, number, translations_dict)
+    translations_dict: {'en': ['text1', 'text2'], 'ru': 'text1;text2'}
     """
     cursor = conn.cursor()
     sentence_ids = []
@@ -77,17 +78,21 @@ def insert_sentences(conn: sqlite3.Connection, data):
         )
         sentence_id = cursor.lastrowid
         sentence_ids.append(sentence_id)
-
-        for lang, text in translations.items():
-            if text and text.strip():
-                cursor.execute(
-                    """
-                    INSERT OR IGNORE INTO sentence_translations 
-                    (sentence_id, lang, text) 
-                    VALUES (?, ?, ?)
-                    """,
-                    (sentence_id, lang.lower(), text.strip()),
-                )
+        for lang, content in translations.items():
+            if not content:
+                continue
+            variants = content if isinstance(content, list) else content.split(";")
+            for text in variants:
+                clean_text = text.strip()
+                if clean_text:
+                    cursor.execute(
+                        """
+                        INSERT INTO sentence_translations 
+                        (sentence_id, lang, text) 
+                        VALUES (?, ?, ?)
+                        """,
+                        (sentence_id, lang.lower(), clean_text),
+                    )
     return sentence_ids
 
 

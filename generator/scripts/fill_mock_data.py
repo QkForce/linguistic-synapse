@@ -19,9 +19,9 @@ def fill_mock_categories(conn: sqlite3.Connection):
                 category_id,
                 sentence["number"],
                 {
-                    "en": sentence.get("en", ""),
-                    "ru": sentence.get("ru", ""),
-                    "kk": sentence.get("kk", ""),
+                    "en": sentence.get("en", []),
+                    "ru": sentence.get("ru", []),
+                    "kk": sentence.get("kk", []),
                 },
             )
             for sentence in category["sentences"]
