@@ -33,7 +33,7 @@ CREATE TABLE
     lang TEXT NOT NULL,
     text TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (sentence_id, lang),
+    -- UNIQUE (sentence_id, lang),
     FOREIGN KEY (lang) REFERENCES languages (code),
     FOREIGN KEY (sentence_id) REFERENCES sentences (id) ON DELETE CASCADE
   );
