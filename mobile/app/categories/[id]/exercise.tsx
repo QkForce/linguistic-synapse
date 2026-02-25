@@ -153,7 +153,7 @@ export default function ExerciseScreen() {
     const currentResult = prepareSentenceResult(
       currentEx.id,
       currentEx.native_text,
-      currentEx.target_text,
+      currentEx.target_texts,
       state.translation,
       state.confidence === "sure" ? 1.0 : 0.5,
       endTime - state.startTime,

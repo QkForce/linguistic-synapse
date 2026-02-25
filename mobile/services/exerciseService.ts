@@ -8,23 +8,33 @@ export const exerciseService = {
     targetLang: string = "en",
     limit: number = 10,
   ): Exercise[] => {
-    return db.getAllSync<Exercise>(
+    const rows = db.getAllSync<any>(
       `SELECT 
         s.id,
         c.title as cat_title,
         s.number,
-        st_native.text as native_text,
-        st_target.text as target_text
+        GROUP_CONCAT(st_native.text, ';') as all_native,
+        GROUP_CONCAT(st_target.text, ';') as all_target
       FROM sentences s
       JOIN categories c ON s.category_id = c.id
       JOIN sentence_translations st_native ON s.id = st_native.sentence_id AND st_native.lang = ?
       JOIN sentence_translations st_target ON s.id = st_target.sentence_id AND st_target.lang = ?
       WHERE s.category_id = ?
+      GROUP BY s.id
       ORDER BY s.number ASC
-      LIMIT ?
-      `,
+      LIMIT ?`,
       [nativeLang, targetLang, categoryId, limit],
     );
+
+    return rows.map((row) => ({
+      id: row.id,
+      cat_title: row.cat_title,
+      number: row.number,
+      native_texts: row.all_native.split(";"),
+      target_texts: row.all_target.split(";"),
+      native_text: row.all_native.split(";")[0],
+      target_text: row.all_target.split(";")[0],
+    }));
   },
   saveExerciseResults: (
     categoryId: number,

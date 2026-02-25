@@ -35,6 +35,24 @@ const getLevenshteinDistance = (a: string, b: string): number => {
   return matrix[b.length][a.length];
 };
 
+const getMaxAccuracy = (
+  response: string,
+  targets: string[],
+): { accuracy: number; target_text: string } => {
+  const distances = targets.map((t) => getLevenshteinDistance(response, t));
+  const accuracy_list = distances.map((d, idx) => {
+    const maxLength = Math.max(response.length, targets[idx].length);
+    let accuracy = (maxLength - d) / maxLength;
+    return accuracy;
+  });
+  const maxAccuracy = Math.max(...accuracy_list);
+  const maxIndex = accuracy_list.indexOf(maxAccuracy);
+  return {
+    accuracy: parseFloat(maxAccuracy.toFixed(2)),
+    target_text: targets[maxIndex],
+  };
+};
+
 const normalizeText = (text: string): string => {
   return text
     .toLowerCase()
@@ -45,20 +63,20 @@ const normalizeText = (text: string): string => {
 
 const calculateSentenceAccuracy = (
   responseText: string,
-  targetText: string,
-): number => {
+  targetTexts: string[],
+): { accuracy: number; target_text: string } => {
   const response = normalizeText(responseText || "");
-  const target = normalizeText(targetText);
+  const targets = targetTexts.map((txt) => normalizeText(txt));
 
-  if (response === target) return 1.0;
-  if (response.length === 0) return 0;
+  const idx = targets.indexOf(response);
+  if (idx >= 0) return { accuracy: 1.0, target_text: targets[idx] };
+  if (response.length === 0)
+    return {
+      accuracy: 1.0,
+      target_text: targets.reduce((acc, cur) => `${acc};${cur}`, ""),
+    };
 
-  const distance = getLevenshteinDistance(response, target);
-  const maxLength = Math.max(response.length, target.length);
-  let accuracy = (maxLength - distance) / maxLength;
-  accuracy = Math.max(0, accuracy);
-
-  return parseFloat(accuracy.toFixed(2));
+  return getMaxAccuracy(response, targets);
 };
 
 export const getScoreForTimeEfficiency = (
@@ -74,13 +92,16 @@ export const getScoreForTimeEfficiency = (
 export const prepareSentenceResult = (
   sentence_id: number,
   native_text: string,
-  target_text: string,
+  target_texts: string[],
   response_text: string,
   confidence: number,
   response_time_ms: number,
   target_lang: string,
 ): SentenceResult => {
-  const accuracy = calculateSentenceAccuracy(response_text, target_text);
+  const { accuracy, target_text } = calculateSentenceAccuracy(
+    response_text,
+    target_texts,
+  );
   const ideal_time_ms = calculateIdealTime(target_text, target_lang);
   return {
     sentence_id,

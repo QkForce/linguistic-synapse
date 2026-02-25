@@ -4,6 +4,8 @@ export interface Exercise {
   number: number;
   native_text: string;
   target_text: string;
+  native_texts: string[];
+  target_texts: string[];
 }
 
 export interface SentenceResult {
