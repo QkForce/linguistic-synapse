@@ -34,3 +34,14 @@ export const saveAndShareJson = async (
     throw error;
   }
 };
+
+export const readJsonFile = async (fileUri: string): Promise<any> => {
+  try {
+    const file = new File(fileUri);
+    const content = await file.text();
+    return JSON.parse(content);
+  } catch (error) {
+    console.error("Read JSON Error:", error);
+    throw new Error("Файлды оқу мүмкін болмады немесе формат қате.");
+  }
+};

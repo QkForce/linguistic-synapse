@@ -1,11 +1,30 @@
+import * as DocumentPicker from "expo-document-picker";
 import { StyleSheet, Text, View } from "react-native";
 
 import { Button } from "@/components/Button";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { dataTransferService } from "@/services/dataTransferService";
 import { importSQLiteFile } from "@/utils/sqliteUtils";
 
 export default function DatabaseScreen() {
   const colors = useThemeColor();
+
+  const handleImport = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "application/json",
+        copyToCacheDirectory: true,
+      });
+
+      if (!result.canceled) {
+        const fileUri = result.assets[0].uri;
+        await dataTransferService.importCategory(fileUri);
+        alert("Категория сәтті импортталды!");
+      }
+    } catch (error) {
+      alert("Импорт кезінде қате шықты");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -23,8 +42,8 @@ export default function DatabaseScreen() {
         variant="primary"
       />
       <Button
-        title="Сөйлемдерді импорттау"
-        onPress={() => {}}
+        title="Import category"
+        onPress={handleImport}
         iconName="file.download"
         style={styles.importButton}
         variant="primary"

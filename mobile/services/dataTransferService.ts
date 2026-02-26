@@ -1,7 +1,12 @@
-import { saveAndShareJson } from "@/utils/fileUtils";
+import { readJsonFile, saveAndShareJson } from "@/utils/fileUtils";
 import { db } from "./db";
 
-export const dataService = {
+interface DataTransferCategory {
+  title: string;
+  sentences: Record<string, string[]>[];
+}
+
+export const dataTransferService = {
   exportCategory: async (categoryId: number, fileName: string) => {
     const categoryRow = db.getFirstSync<{ title: string }>(
       `SELECT title FROM categories WHERE id = ?`,
@@ -36,5 +41,41 @@ export const dataService = {
     };
     await saveAndShareJson(jsonData, fileName);
   },
-  importCategory: () => {},
+  importCategory: async (fileUri: string) => {
+    const data: DataTransferCategory = await readJsonFile(fileUri);
+    if (!data.title || !Array.isArray(data.sentences)) {
+      throw new Error("Файл құрылымы қате!");
+    }
+    try {
+      const categoryResult = db.runSync(
+        `INSERT INTO categories (title) VALUES (?)`,
+        [data.title.trim() + " (imported)"],
+      );
+      const categoryId = categoryResult.lastInsertRowId;
+
+      let orderNumber = 0;
+      for (const sentence of data.sentences) {
+        orderNumber++;
+        const sentenceResult = db.runSync(
+          `INSERT INTO sentences (category_id, number) VALUES (?, ?)`,
+          [categoryId, orderNumber],
+        );
+        const sentenceId = sentenceResult.lastInsertRowId;
+        Object.entries(sentence).forEach(([lang, texts]) => {
+          if (Array.isArray(texts)) {
+            texts.forEach((text) => {
+              db.runSync(
+                `INSERT INTO sentence_translations (sentence_id, lang, text) VALUES (?, ?, ?)`,
+                [sentenceId, lang, text],
+              );
+            });
+          }
+        });
+      }
+      return true;
+    } catch (error) {
+      console.error("Database Import Error:", error);
+      throw error;
+    }
+  },
 };
