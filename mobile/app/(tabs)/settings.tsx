@@ -1,13 +1,23 @@
 import * as DocumentPicker from "expo-document-picker";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Button } from "@/components/Button";
+import { SettingsItem } from "@/components/items/SettingsItem";
+import { SectionHeader } from "@/components/SectionHeader";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { dataTransferService } from "@/services/dataTransferService";
 import { importSQLiteFile } from "@/utils/sqliteUtils";
 
 export default function DatabaseScreen() {
   const colors = useThemeColor();
+  const insets = useSafeAreaInsets();
+
+  const hangleImportSQLite = async () => {
+    const success = await importSQLiteFile();
+    if (success) {
+      alert("Деректер қоры жаңартылды! Қосымшаны қайта іске қосыңыз.");
+    }
+  };
 
   const handleImport = async () => {
     try {
@@ -27,42 +37,58 @@ export default function DatabaseScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Настройки</Text>
-      <Button
+    <View
+      style={[
+        styles.container,
+        { paddingTop: insets.top, backgroundColor: colors.background },
+      ]}
+    >
+      <SectionHeader
+        iconName="database"
+        text="Деректерді басқару"
+        style={styles.sectionHeader}
+      />
+      <SettingsItem
+        iconName="file.download"
         title="ДҚ-ны импорттау"
-        onPress={async () => {
-          const success = await importSQLiteFile();
-          if (success) {
-            alert("Деректер қоры жаңартылды! Қосымшаны қайта іске қосыңыз.");
-          }
-        }}
-        iconName="file.download"
-        style={styles.importButton}
-        variant="primary"
+        description="ДҚ-ны импорттау"
+        onPress={hangleImportSQLite}
       />
-      <Button
-        title="Import category"
-        onPress={handleImport}
-        iconName="file.download"
-        style={styles.importButton}
-        variant="primary"
-      />
-      <Button
-        title="Категорияны экспорттау"
-        onPress={() => {}}
+      <SettingsItem
         iconName="file.upload"
-        style={styles.importButton}
-        variant="primary"
+        title="Экспорттау"
+        description="Категорияны таңдап, бөлісу"
+        onPress={() => {}}
+      />
+      <SettingsItem
+        iconName="file.download"
+        title="Импорттау"
+        description="JSON файлдан деректерді жүктеу"
+        onPress={handleImport}
+      />
+
+      <SectionHeader
+        iconName="settings"
+        text="Жалпы баптаулар"
+        style={styles.sectionHeader}
+      />
+      <SettingsItem
+        iconName="play.circle.fill"
+        title="Интерфейс тілі"
+        description="Қазақ тілі"
+        onPress={() => {}}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, justifyContent: "flex-start" },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 24 },
-  importButton: {
-    marginTop: 20,
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: "flex-start",
+  },
+  sectionHeader: {
+    marginTop: 10,
   },
 });
