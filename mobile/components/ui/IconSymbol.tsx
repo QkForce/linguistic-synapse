@@ -64,6 +64,7 @@ const MAPPING = {
   message: "message",
   bolt: "electric-bolt",
   layers: "layers",
+  share: "share",
 } as const;
 
 /**

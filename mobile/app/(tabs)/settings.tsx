@@ -1,16 +1,30 @@
 import * as DocumentPicker from "expo-document-picker";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import BottomSheet from "@gorhom/bottom-sheet";
+
 import { SettingsItem } from "@/components/items/SettingsItem";
+import { CategoryExportSheet } from "@/components/modals/CategoryExportSheet";
 import { SectionHeader } from "@/components/SectionHeader";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { Category, categoryService } from "@/services/categoryService";
 import { dataTransferService } from "@/services/dataTransferService";
 import { importSQLiteFile } from "@/utils/sqliteUtils";
 
 export default function DatabaseScreen() {
   const colors = useThemeColor();
   const insets = useSafeAreaInsets();
+  const sheetRef = useRef<BottomSheet>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      sheetRef.current?.expand();
+      // sheetRef.current?.snapToIndex(0);
+    }
+  }, [categories]);
 
   const hangleImportSQLite = async () => {
     const success = await importSQLiteFile();
@@ -36,6 +50,19 @@ export default function DatabaseScreen() {
     }
   };
 
+  const handleExportPress = () => {
+    const data = categoryService.getAllCategories();
+    setCategories(data);
+  };
+
+  const onCategorySelect = async (id: number, title: string) => {
+    sheetRef.current?.close();
+    let fileName = title.replaceAll(/\s/g, "_");
+    fileName = fileName.replaceAll(/[^a-zA-Z0-9_-]/g, "");
+    fileName = fileName.replaceAll(/_{2,}/g, "_");
+    await dataTransferService.exportCategory(id, `${fileName}.json`);
+  };
+
   return (
     <View
       style={[
@@ -58,7 +85,7 @@ export default function DatabaseScreen() {
         iconName="file.upload"
         title="Экспорттау"
         description="Категорияны таңдап, бөлісу"
-        onPress={() => {}}
+        onPress={handleExportPress}
       />
       <SettingsItem
         iconName="file.download"
@@ -77,6 +104,12 @@ export default function DatabaseScreen() {
         title="Интерфейс тілі"
         description="Қазақ тілі"
         onPress={() => {}}
+      />
+
+      <CategoryExportSheet
+        ref={sheetRef}
+        categories={categories}
+        onSelect={onCategorySelect}
       />
     </View>
   );
